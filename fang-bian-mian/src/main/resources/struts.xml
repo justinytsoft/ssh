@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <!-- 这个配置是用来指定struts2框架对于上传文件的临时路径，如果不指定会采用servlet容器的默认路径。
+    <constant name="struts.multipart.saveDir" value=""/> -->
+    <!-- 指定由spring容器产生action实例，这样才能注入需要服务 -->
+    <constant name="struts.objectFactory" value="spring" />
+    <!-- struts配置文件改动后，是否重新加载（生产环境中建议设置为false） -->
+    <constant name="struts.configuration.xml.reload" value="true" />
+    <!-- 关闭动态方法调用 -->
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <!-- 请求参数的编码方式 -->
+    <constant name="struts.i18n.encoding" value="utf-8" />
+    
+    <include file="actions/userAction.xml"></include>
+    <include file="actions/baseAction.xml"></include>
+    
+    <!-- <package name="user" namespace="/user" extends="struts-default">
+  		  配置默认请求转发地址
+        <default-action-ref name="home" />
+        
+       	 配置全局result
+        <global-results>
+            <result name="home" type="redirect">home_browseHome</result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </global-results>
+       
+       	配置action
+        <action name="login" class="com.yt.fbm.action.UserAction" method="execute">
+			<result name="success" type="redirect">/pages/home/index.jsp?username=${username}</result>
+		</action>
+        
+                        使用通配符的方法调用
+        <action name="home_*" class="action.HomeAction" method="{1}">
+            <result name="home">/WEB-INF/jsp/home.jsp?page=${pageIndex}</result>
+            <result name="success">/WEB-INF/jsp/success.jsp</result>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+        </action>
+    </package> -->
+</struts>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping package="com.yt.fbm.bean">
+
+	<!-- 将java对象和数据库表进行关联 -->
+	<class name="User" table="sys_users">
+		
+		<!-- id元素用于指定主键属性 -->
+		<!-- name:java对象里的字段，column:数据库里的字段 -->
+		<id name="id" column="id" type="java.lang.Integer">
+			<!-- 该元素用于指定主键值生成策略hilo native increment sequence uuid -->
+			<generator class="native"></generator>
+		</id>
+		
+		<!-- 对其它属性还有配置 -->
+		<!-- name:java对象里的字段 -->
+		<property name="username" type="java.lang.String">
+			<!-- name:数据库里的字段 -->
+			<column name="username" not-null="false" />
+		</property>
+
+		<property name="password" type="java.lang.String">
+			<column name="password" not-null="false" />
+		</property>
+		
+		<property name="name" type="java.lang.String">
+			<column name="name" not-null="false" />
+		</property>
+		
+	</class>
+
+</hibernate-mapping>

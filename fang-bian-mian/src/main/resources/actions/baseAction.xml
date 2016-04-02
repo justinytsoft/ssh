@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="baseAction" extends="struts-default">
+       
+        <action name="login" class="com.yt.fbm.action.BaseAction" method="login">
+			<result name="success" type="redirect">/pages/home/index.jsp</result>
+			<result name="error">/pages/home/login.jsp</result>
+		</action>
+		
+		<!-- 返回JSON -->
+		<action name="get*" class="com.yt.fbm.action.BaseAction" method="get{1}"></action>
+
+    </package>
+</struts>    
