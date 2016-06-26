@@ -1,0 +1,244 @@
+@CHARSET "UTF-8";
+
+body {
+	margin: 0px;
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 12px;
+	color: #404040;
+	text-decoration: none;
+}
+
+table,td,p,form,select,li {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	color: #404040;
+	text-decoration: none;
+	line-height: 18px;
+}
+
+textarea {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #404040;
+	text-decoration: none;
+}
+
+a:hover {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+a:visited {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+a:visited:hover {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+a:link {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+h3 {
+	font: normal 18px 宋体;
+	color: white;
+}
+
+.textTitle {
+	line-height: 30px;
+}
+
+.textTitle span {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 13px;
+	color: #404040;
+	font-weight: bold;
+	text-decoration: none;
+	line-height: 30px;
+}
+
+.fixedDataGrid {
+	width: 100%;
+	HEIGHT: 100%;
+	overflow: scroll;
+	BORDER-RIGHT: #002200 1px solid;
+	BORDER-TOP: #002200 1px solid;
+	BORDER-LEFT: #002200 1px solid;
+	BORDER-BOTTOM: #002200 1px solid;
+}
+
+table.list {
+	BORDER-RIGHT: #ffffff 1px solid;
+	BORDER-TOP: #002200 1px solid;
+	BORDER-LEFT: #002200 1px solid;
+	BORDER-BOTTOM: #ffffff 1px solid;
+	font-size: 11px;
+	line-height: 18px;
+	text-align: center;
+}
+
+table.list tbody tr.even {
+	background-color: #F9F9F9;
+}
+
+table.list th {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #FFFFFF;
+	font-weight: bold;
+	BORDER-RIGHT: #002200 1px solid;
+	BORDER-TOP: #ffffff 1px solid;
+	BORDER-LEFT: #ffffff 1px solid;
+	BORDER-BOTTOM: #002200 1px solid;
+	BACKGROUND-COLOR: #3671bf;
+	height: 30px;
+}
+
+table.list td {
+	color: #000000;
+	border: 1px solid #14556b;
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	BORDER-RIGHT: #002200 1px solid;
+	BORDER-TOP: #ffffff 1px solid;
+	BORDER-LEFT: #ffffff 1px solid;
+	BORDER-BOTTOM: #002200 1px solid;
+}
+
+table.detail th {
+	background-repeat: no-repeat;
+	background-position-x: 22px;
+	background-position-y: center;
+	line-height: 25px;
+	text-align: left;
+}
+
+table.detail th span {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #808080;
+	font-weight: bold;
+	text-decoration: none;
+	padding-left: 30px;
+	line-height: 25px;
+}
+
+table.page td {
+	border: 0px;
+	border-collapse: collapse;
+}
+
+table.listFixed {
+	BORDER-RIGHT: #ffffff 0px solid;
+	BORDER-TOP: #002200 0px solid;
+	BORDER-LEFT: #ffffff 0px solid;
+	BORDER-BOTTOM: #ffffff 0px solid;
+	font-size: 11px;
+	line-height: 18px;
+	text-align: center;
+}
+
+table.page td a {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+table.page td a:hover {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+table.page td a:link {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+table.page td a:visited {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+table.page td a:visited:hover {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #092393;
+	text-decoration: underline;
+}
+
+table.listFixed thead tr {
+	position: relative;
+	top: expression(this .     offsetParent .     scrollTop);
+	background-color: #3671bf;
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #404040;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+	z-Index: 998;
+}
+
+table.listFixed th {
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	color: #FFFFFF;
+	font-weight: bold;
+	BORDER-RIGHT: #002200 1px solid;
+	BORDER-TOP: #ffffff 1px solid;
+	BORDER-LEFT: #ffffff 1px solid;
+	BORDER-BOTTOM: #002200 1px solid;
+	BACKGROUND-COLOR: #3671bf;
+	height: 30px;
+}
+
+table.listFixed td {
+	color: #000000;
+	border: 1px solid #14556b;
+	font-family: "Verdana", "Arial", "Helvetica", "sans-serif";
+	font-size: 11px;
+	BORDER-RIGHT: #002200 1px solid;
+	BORDER-TOP: #ffffff 1px solid;
+	BORDER-LEFT: #ffffff 1px solid;
+	BORDER-BOTTOM: #002200 1px solid;
+}
+
+table.listFixed tbody tr.even {
+	background-color: #F9F9F9;
+}
+
+.menu {
+	font-size: 13px;
+	font-weight: bold;
+	padding: 10px 0;
+}
+
+.tipInfo {
+	color: red;
+}
+
+.errorInfo {
+	color: red;
+}
+
+tr.exceptionStyle td {
+	color: red;
+}

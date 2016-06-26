@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.SysUsersDao">
+
+	<select id="queryUserByIds" resultType="com.goldCityWeb.domain.UserDetail">
+		SELECT * FROM sys_users WHERE id IN (${ids})
+	</select>
+
+	<!-- ======================================================= -->
+	<!-- ======================================================= -->
+	<!-- =====================商家SQL============================= -->	
+	
+	<!-- 通过id数组查询消费记录 -->
+	<select id="queryFeeRecordsByIds" resultType="com.goldCityWeb.domain.FeeRecord">
+		SELECT * FROM fee_record 
+		<where>
+			record_type=1 AND mid = #{mid} AND status = 0 AND id IN(${ids}) 
+		</where>
+	</select>
+	
+	<update id="updateMerGoldCount" parameterType="com.goldCityWeb.domain.UserDetail">
+		UPDATE sys_users SET gold_count = #{gold_count} WHERE id = #{id}
+	</update>
+	
+	<update id="updateUserLevelByUserId" >
+		UPDATE sys_users SET `level` = IF(`experience` &gt; 15000,10,IF(`experience` &gt; 10000,9,IF(`experience` &gt; 8000,8,IF(`experience` &gt; 6000,7,IF(`experience` &gt; 4000,6,IF(`experience` &gt; 2000,5,IF(`experience` &gt; 1000,4,IF(`experience` &gt; 300,3,IF(`experience` &gt; 100,2,IF(`experience` &gt; 10,1,0)))))))))) WHERE id = #{id}
+	</update>
+	
+	<update id="updateUserItem" parameterType="com.goldCityWeb.domain.UserDetail">
+		UPDATE sys_users SET 
+			grab = grab - #{grab},
+			lucky = lucky - #{lucky}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 查询订单 -->
+	<select id="queryMerFeeRecords" resultType="com.goldCityWeb.domain.FeeRecord">
+		SELECT fr.*, su.username AS fee_user, DATE_FORMAT(fr.create_time,'%Y/%m/%d %H:%i') AS str_create_time 
+		FROM fee_record fr LEFT JOIN sys_users su ON su.id = fr.uid 
+		<where>
+			fr.record_type=1
+			<if test="param.mid!=null">AND fr.mid=#{param.mid}</if>
+			<if test="param.status!=null">AND fr.status=#{param.status}</if>
+			<if test="param.sdate!=null">AND fr.create_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND fr.create_time <= #{param.edate}]]></if>
+			<if test="param.pay_status!=null">AND fr.pay_status=#{param.pay_status}</if>
+		</where>
+		<if test="param.page!=null and param.rows!=null">
+			LIMIT #{param.page}, #{param.rows}
+		</if>
+	</select>
+	
+	<!-- 查询订单总数 -->
+	<select id="queryMerFeeRecordsTotal" resultType="int">
+		SELECT COUNT(1)
+		FROM fee_record fr LEFT JOIN sys_users su ON su.id = fr.uid
+		<where>
+			fr.record_type=1
+			<if test="param.mid!=null">AND fr.mid=#{param.mid}</if>
+			<if test="param.status!=null">AND fr.status=#{param.status}</if>
+			<if test="param.sdate!=null">AND fr.create_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND fr.create_time <= #{param.edate}]]></if>
+			<if test="param.pay_status!=null">AND fr.pay_status=#{param.pay_status}</if>
+		</where>
+	</select>
+	
+	<!-- 查询订单 -->
+	<!-- <select id="queryMerFeeRecords" resultType="com.goldCityWeb.domain.FeeRecord">
+		SELECT fr.*, su.username AS fee_user, DATE_FORMAT(fr.create_time,'%Y/%m/%d %H:%i') AS str_create_time 
+		FROM fee_record fr LEFT JOIN company c ON c.id = fr.mid LEFT JOIN sys_users su ON su.id = fr.uid
+		<where>
+			fr.record_type=1
+			<if test="param.mid!=null">AND c.user_id=#{param.mid}</if>
+			<if test="param.status!=null">AND fr.status=#{param.status}</if>
+			<if test="param.sdate!=null">AND fr.create_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND fr.create_time <= #{param.edate}]]></if>
+			<if test="param.pay_status!=null">AND pay_status=#{param.pay_status}</if>
+		</where>
+		<if test="param.page!=null and param.rows!=null">
+			LIMIT #{param.page}, #{param.rows}
+		</if>
+	</select> -->
+	
+	<!-- 查询订单总数 -->
+	<!-- <select id="queryMerFeeRecordsTotal" resultType="int">
+		SELECT COUNT(1) FROM fee_record fr LEFT JOIN company c ON c.id = fr.mid LEFT JOIN sys_users su ON su.id = fr.uid
+		<where>
+			fr.record_type=1
+			<if test="param.mid!=null">AND c.user_id=#{param.mid}</if>
+			<if test="param.status!=null">AND fr.status=#{param.status}</if>
+			<if test="param.sdate!=null">AND fr.create_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND fr.create_time <= #{param.edate}]]></if>
+			<if test="param.pay_status!=null">AND pay_status=#{param.pay_status}</if>
+		</where>
+	</select> -->
+	
+	<!-- 查询消费记录 -->	
+	<select id="queryFeeRecordsByStatus" resultType="com.goldCityWeb.domain.FeeRecord">
+		SELECT fr.* FROM fee_record fr LEFT JOIN company c ON c.id = fr.mid
+		<where>
+			fr.record_type=1 AND c.user_id = #{mid} AND pay_status=#{pay_status}
+			<if test="status!=null">AND fr.status = #{status}</if>
+		</where>
+		ORDER BY fr.create_time DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<!-- 查询消费记录总数 -->	
+	<select id="queryFeeRecordsByStatusTotal" resultType="INT">
+		SELECT COUNT(1) FROM fee_record fr LEFT JOIN company c ON c.id = fr.mid
+		<where>
+			fr.record_type=1 AND c.user_id = #{mid} AND pay_status=#{pay_status}
+			<if test="status!=null">AND fr.status = #{status}</if>
+		</where>
+	</select>
+	
+	<!-- 查询举报类型 -->	
+	<select id="queryReportType" resultType="com.goldCityWeb.domain.Report">
+		select *
+		from report_type
+	</select>
+	
+		
+	<select id="querySignStatusById" resultType="com.goldCityWeb.domain.SignRecord">
+		SELECT * FROM sign_record WHERE DATE_FORMAT(now(), '%Y-%m-%d') = DATE_FORMAT(sign_time, '%Y-%m-%d') AND user_id=#{id}
+	</select>
+	
+	<select id="querySignTableById" resultType="com.goldCityWeb.domain.SignTable">
+		SELECT * FROM sign_table WHERE id=#{id}
+	</select>
+	
+	<!-- 更新消费记录的状态为申请结算 -->
+	<update id="updateFeeRecordStatusToApplyClose">
+		UPDATE fee_record
+		<set>
+			t_type = #{param.t_type},
+			status = #{param.status}
+		</set>
+		<where>
+			record_type=1 AND mid = #{param.mid} AND status = 0 AND id IN(${param.ids}) 
+		</where>
+	</update>
+	
+	<!--  -->
+	<update id="updateFeeRecordStatusToSettlement">
+		UPDATE fee_record
+		<set>
+			status = 2
+		</set>
+		<where>
+			record_type=1 AND mid = #{mid} AND status = 1
+		</where>
+	</update>
+
+	<!-- ======================================================= -->
+	<!-- ======================================================= -->
+	<!-- =====================用户SQL============================= -->
+
+	<!-- 查询消费记录 -->	
+	<select id="queryFeeRecords" resultType="com.goldCityWeb.domain.FeeRecord">
+		SELECT * FROM fee_record
+		<where>
+			record_type=1 AND uid = #{uid}
+			AND `pay_status`=#{pay_status}
+		</where>
+		ORDER BY create_time DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+
+	<!-- 查询消费记录总数 -->	
+	<select id="queryFeeRecordsTotal" resultType="int">
+		SELECT COUNT(1) FROM fee_record
+		<where>
+			record_type=1 AND uid = #{uid}
+			AND `pay_status`=#{pay_status}
+		</where>
+		order by real_fee desc
+	</select>
+
+	<!-- 查询我的消息 -->	
+	<select id="queryIncomes" resultType="com.goldCityWeb.domain.Income">
+		SELECT i.*,c.logo FROM income i LEFT JOIN company c ON c.id=i.mid
+		<where>
+			uid = #{uid}
+		</where>
+		ORDER BY create_time DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+
+	<!-- 查询我的消息总数 -->	
+	<select id="queryIncomesTotal" resultType="int">
+		SELECT COUNT(1) FROM income
+		<where>
+			uid = #{uid}
+		</where>
+	</select>
+
+	<!-- 查询我的消息 -->	
+	<select id="queryMessages" resultType="com.goldCityWeb.domain.Message">
+		SELECT * FROM message
+		<where>
+			uid = #{uid}
+		</where>
+		ORDER BY create_time DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+
+	<!-- 查询我的消息总数 -->	
+	<select id="queryMessagesTotal" resultType="int">
+		SELECT COUNT(1) FROM message
+		<where>
+			uid = #{uid}
+		</where>
+	</select>
+
+	<!-- ============================================ -->
+	<!-- ============================================ -->
+	<!-- =================以前的SQL==================== -->
+
+
+	<select id="queryUserinfoByUsername" resultType="com.goldCityWeb.domain.UserInfo">
+		SELECT * FROM
+		sys_users WHERE username=#{username}  AND `delete`!=1
+	</select>
+
+	<select id="queryUserByUsername" resultType="com.goldCityWeb.domain.SysUsers">
+		SELECT * FROM sys_users WHERE username=#{username}  AND `delete`!=1
+	</select>
+	
+	<select id="queryUserDetailById" resultType="com.goldCityWeb.domain.UserDetail">
+		SELECT * FROM sys_users WHERE id=#{id}  AND `delete`!=1
+	</select>
+
+	<select id="queryUserMenusByUsrId" resultType="com.goldCityWeb.domain.SysMenus">
+		SELECT sm.* FROM
+		sys_roles_users sru, sys_roles_menus srm, sys_menus sm
+		WHERE
+		sru.user_id = #{userId} AND sru.role_id = srm.role_id AND srm.menu_id
+		= sm.id
+		ORDER BY sm.parent_id ASC, sm.weight ASC
+	</select>
+	
+	
+	<select id="queryHeadList" resultType="com.goldCityWeb.domain.HeadList">
+		select * from headlist
+		<if test="limit != null">
+				LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryHeadList_count" resultType="java.lang.Integer">
+		select count(1) from headlist	
+	</select>
+	
+	<select id="queryCompanyTypeList" resultType="com.goldCityWeb.domain.CompanyType">
+		select * from company_type
+		<if test="limit != null">
+				LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCompanyTypeList_count" resultType="java.lang.Integer">
+		select count(1) from company_type	
+	</select>
+	
+	<select id="querySignRecordList" resultType="com.goldCityWeb.domain.SignRecord">
+		select sr.*,su.name from sign_record sr,sys_users su
+		where sr.user_id=su.id
+		<if test="date1 != null">
+			and sr.sign_time between #{date1} and #{date2}
+		</if> 
+		<if test="limit != null">
+				LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="querySignRecordList_count" resultType="java.lang.Integer">
+		select count(1) from sign_record where 1=1
+		<if test="date1 != null">
+			and sign_time between #{date1} and #{date2}
+		</if> 
+	</select>
+	
+	<select id="queryRobotGoldList" resultType="com.goldCityWeb.domain.RobotGold">
+		select gc.* ,adv.company_name from grab_count gc,adv
+		where adv.id=gc.adv_id
+		<if test="date1 != null">
+			and gc.grab_time between #{date1} and #{date2}
+		</if> 
+		<if test="limit != null">
+				LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryRobotGoldList_count" resultType="java.lang.Integer">
+		select count(1) from grab_count where 1=1
+		<if test="date1 != null">
+			and grab_time between #{date1} and #{date2}
+		</if> 
+	</select>
+	
+	<select id="querySectionList" resultType="com.goldCityWeb.domain.Section">
+		select * from section
+		<if test="limit != null">
+				LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+
+	
+	<select id="querySectionList_count" resultType="java.lang.Integer">
+		select count(1) from section	
+	</select>
+	
+		<select id="queryUserdetailList" resultType="com.goldCityWeb.domain.UserDetail">
+			select enabled,id,nick_name,level,experience,gold_count, head,age,sex,address,work,income, sign_count from sys_users where 1=1
+			<if test="type != null">
+				AND `type`=#{type}
+			</if>
+			<if test="name != null">
+				AND su.name LIKE '%${name}%'
+			</if>
+			<if test="limit != null">
+				LIMIT #{limit} OFFSET #{offset}
+			</if>
+	</select>
+		
+		<select id="queryUserdetailList_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM sys_users where 1=1
+		<if test="type != null">
+				AND `type`=#{type}
+			</if>
+		<if test="name != null">
+			AND name LIKE '%${name}%'
+		</if>
+		<if test="type!= null">
+			AND type=#{type}
+		</if>
+	</select>
+	
+	<select id="queryUserList" resultType="com.goldCityWeb.domain.SysUsers">
+		SELECT su.*,c.name AS college ,m.name AS major FROM sys_users su LEFT JOIN college c ON su.college_id=c.id LEFT JOIN major m ON su.major_id=m.id WHERE  su.`delete`!=1
+		<if test="type==4">
+			AND reg_company=1
+		</if>
+		<if test="type==5">
+			AND reg_student=1
+		</if>
+		<if test="phone != null">
+			AND su.username = #{phone}
+		</if>
+		<if test="name != null">
+			AND su.name LIKE '%${name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	<select id="queryUserList_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM sys_users WHERE  `delete`!=1
+		<if test="type==4">
+			AND reg_company=1
+		</if>
+		<if test="type==5">
+			AND reg_student=1
+		</if>
+		<if test="phone != null">
+			AND username = #{phone}
+		</if>
+		<if test="name != null">
+			AND name LIKE '%${name}%'
+		</if>
+	</select>
+	
+	<select id="queryReportlist" resultType="com.goldCityWeb.domain.Report">
+		SELECT r.create_time,c.company_name as company_name,r.type,r.content,su.name as username,su.username AS phone
+		FROM report r,company c,sys_users su
+		WHERE r.`company_id`=c.`id` AND r.`user_id`=su.`id`
+		<if test="name!=null">
+			and c.company_name like '%${name}%'
+		</if>
+		<if test="type!=null">
+			and r.type=#{type}
+		</if>
+		order by r.create_time desc
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryReportlist_count" resultType="java.lang.Integer">
+		SELECT count(1)  FROM  report r,company c,sys_users su
+		WHERE r.`company_id`=c.`id` 
+		AND r.`user_id`=su.`id`
+		<if test="name!=null">
+			and c.company_name like '%${name}%'
+		</if>
+		<if test="type!=null">
+			and r.type=#{type}
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryLoginImgList" resultType="com.goldCityWeb.domain.LoginImg">
+		select * from login_img
+		ORDER BY sort_num ASC , create_time DESC 
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryLoginImgList_count" resultType="java.lang.Integer">
+		SELECT count(1)  FROM  login_img
+	</select>
+	
+	<select id="queryCostlist" resultType="com.goldCityWeb.domain.FeeRecord">
+		select * from fee_record
+		where record_type=1 AND uid=#{uid}
+		order by real_fee desc
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCostlist_count" resultType="java.lang.Integer">
+		SELECT count(1)  FROM  fee_record
+		where record_type=1 AND uid=#{uid}
+	</select>
+	
+	<select id="queryHouQinList" resultType="com.goldCityWeb.domain.SysUsers">
+		SELECT su.*,c.name AS college  FROM sys_users su LEFT JOIN college c ON su.college_id=c.id LEFT JOIN sys_roles_users srs ON srs.user_id=su.id WHERE  su.`delete`!=1
+		AND srs.role_id=2
+		
+		<if test="username != null">
+			AND su.username = #{username}
+		</if>
+		<if test="college != null">
+			AND c.name LIKE '%${college}%'
+		</if>
+		ORDER BY su.create_time DESC
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	<select id="queryHouQinList_count" resultType="java.lang.Integer">
+		SELECT count(1)  FROM sys_users su LEFT JOIN college c ON su.college_id=c.id LEFT JOIN sys_roles_users srs ON srs.user_id=su.id WHERE  su.`delete`!=1
+		AND srs.role_id=2
+		
+		<if test="username != null">
+			AND su.username = #{username}
+		</if>
+		<if test="college != null">
+			AND c.name LIKE '%${college}%'
+		</if>
+	</select>
+
+	<select id="querySysUserByUPD" resultType="com.goldCityWeb.domain.SysUsers">
+		SELECT s.* FROM sys_users s WHERE username=#{username}  AND s.`delete`!=1
+		<if test="password != null">
+			and password=#{password}
+		</if>
+	</select>
+	<update id="updatePassword">
+		UPDATE sys_users SET password=#{password} WHERE
+		id=#{userId}
+	</update>
+
+	<update id="updateValidateState">
+		UPDATE sys_users SET state=#{state} WHERE id=#{id}
+	</update>
+
+	<update id="updateUser">
+		UPDATE sys_users SET phone=#{phone}, head=#{head},`name`=#{name},enabled = #{enabled},nick_name=#{nick_name},validity=#{validity},album_no=#{album_no},photo_no=#{photo_no} 
+		WHERE id=#{id}
+	</update>
+	
+	<update id="updateStudent">
+		UPDATE `sys_users`
+SET 
+  
+  `name` = #{name}, 
+  `head` = #{head},
+  <if test="college_id!=null">
+  `college_id` = #{college_id},
+  </if>
+  <if test="major_id!=null">
+  `major_id` = #{major_id},
+  </if>
+  
+  `sex` = #{sex},
+  `sign` = #{sign},
+  `nick_name` = #{nick_name},
+  `birthday` = #{birthday},
+  `reg_student` = #{reg_student}
+WHERE `id` = #{id}
+	</update>
+	
+	
+	<update id="updateUserDetail">
+		
+UPDATE sys_users 
+	<set>
+	<if test="head != null">
+	head = #{head} , 
+	</if>
+	<if test="sex != null">
+	sex = #{sex} , 
+	</if>
+	<if test="nick_name != null">
+	nick_name = #{nick_name} , 
+	</if>
+	<if test="age != null">
+	age = #{age} ,
+	</if>
+	<if test="address != null"> 
+	address = #{address} , 
+	</if>
+	<if test="work != null">
+	work = #{work} ,
+	</if>
+	<if test="income != null"> 
+	income = #{income}
+	</if>
+	</set>
+	WHERE
+	id = #{id} 
+	</update>
+	
+	
+	<update id="updateCompany">
+		UPDATE `sys_users`
+SET 
+  `name` = #{name},
+  `company_name` = #{company_name}, 
+  `head` = #{head},
+  `company_intruduction` = #{company_intruduction},
+  `company_scope` = #{company_scope},
+  `company_site` = #{company_site},
+  `company_address` = #{company_address},
+  `superiority` = #{superiority},
+  `my_job` = #{my_job},
+  `reg_company` = #{reg_company}
+WHERE `id` = #{id}
+	</update>
+
+
+	<insert id="insertCompanySuperiority" >
+		INSERT INTO `company_label`
+            (
+             `user_id`,
+             `label_id`)
+VALUES (
+        #{user_id},
+        #{label_id})
+	</insert>
+
+	<insert id="insertreport" parameterType="com.goldCityWeb.domain.Report"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into report(type,content,user_id,create_time,company_id)
+		values(#{type},#{content},#{user_id},now(),#{company_id})
+	</insert>
+	
+	<insert id="insertUser" parameterType="com.goldCityWeb.domain.SysUsers"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into sys_users (username,`name`,`password`,create_time,enabled,phone,head,nick_name,validity,album_no,photo_no) 
+		values (#{username},#{name},#{password},now(),#{enabled},#{phone},#{head},#{nick_name},#{validity},#{album_no},#{photo_no})
+	</insert>
+	
+	<insert id="insertUsers" parameterType="com.goldCityWeb.domain.SysUsers"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into sys_users (username,`name`,`password`,create_time,enabled,head,nick_name,type) 
+		values (#{username},#{name},#{password},now(),1,#{head},#{nick_name},#{type})
+	</insert>
+	
+	<insert id="insertHouQin" parameterType="com.goldCityWeb.domain.SysUsers"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into sys_users (username,`name`,`password`,create_time,college_id) 
+		values (#{username},#{name},#{password},now(),#{college_id})
+	</insert>
+	
+	<insert id="insertHeadPath" parameterType="java.lang.String"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into headlist(path)
+		values (#{path})
+	</insert>
+	
+	<insert id="insertLoginImg" parameterType="com.goldCityWeb.domain.LoginImg"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into login_img(path,sort_num,create_time)
+		values(#{path},#{sort_num},now())
+	</insert>
+	
+	<insert id="insertSection" parameterType="com.goldCityWeb.domain.SysUsers"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into section (name,`message`)
+		values(#{name},#{message})
+	</insert>
+	
+	<insert id="insertCompType" parameterType="com.goldCityWeb.domain.CompanyType"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into company_type (type_name)
+		values(#{type_name})
+	</insert>
+	
+	<update id="updateHouQin" >
+		update sys_users set college_id=#{college_id}
+		<if test="password!=null">
+			,`password`=#{password}
+		</if>
+		 where id=#{id}
+		
+	</update>
+	
+	
+	<insert id="insertStudent" parameterType="com.goldCityWeb.domain.SysUsers"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `sys_users`
+            (
+             `username`,
+             `name`,
+             `password`,
+             `create_time`,
+             `enabled`,
+           
+             `head`,
+             `college_id`,
+             `major_id`,
+             `sex`,
+             `sign`,
+             `nick_name`,
+             `birthday`,
+             `type`,
+             reg_student)
+VALUES (
+        #{username},
+        #{name},
+        #{password},
+        now(),
+        1,
+        
+        #{head},
+        #{college_id},
+        #{major_id},
+        #{sex},
+        #{sign},
+        #{nick_name},
+        #{birthday},
+        #{type},
+        #{reg_student})
+	</insert>
+	
+	
+	
+	
+	<insert id="insertCompany" parameterType="com.goldCityWeb.domain.SysUsers"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_users
+            (
+             `username`,
+             `name`,
+             `password`,
+             `create_time`,
+             `enabled`,
+            
+             `weixin`,
+             `company_name`,
+             `my_job`,
+             `head`,
+             `company_scope`,
+             `company_intruduction`,
+             `company_full_name`,
+             `company_site`,
+             `company_address`,
+             `type`,
+             `superiority`,
+             reg_company,
+             `sex`,
+  			`birthday`)
+VALUES (
+        #{username},
+        #{name},
+        #{password},
+        now(),
+        1,
+      
+        #{weixin},
+        #{company_name},
+        #{my_job},
+        #{head},
+        #{company_scope},
+        #{company_intruduction},
+        #{company_full_name},
+        #{company_site},
+        #{company_address},
+        
+        #{type},
+        #{superiority},
+        #{reg_company},
+        #{sex},
+        #{birthday}
+        )
+	</insert>
+	
+	<delete id="deleteHead">
+		delete from headlist where id=#{id}
+	</delete>
+	
+	<delete id="deleteloginimg">
+		delete from login_img where id=#{id}
+	</delete>
+	
+	<delete id="deleteSection">
+		delete from section where id=#{id}
+	</delete>
+	
+	<delete id="deletecomptype">
+		delete from company_type where id=#{id}
+	</delete>
+	
+	<delete id="quitGroup">
+		delete from group_join where user_id=#{user_id} AND
+		group_id=#{group_id}
+	</delete>
+	
+	<delete id="deleteSysUsers">
+		UPDATE sys_users SET `delete`=1,del_time=now() where id=#{user_id}
+	</delete>
+
+	<select id="querySysUserNickNameById" resultType="java.lang.String">
+		SELECT
+		nick_name FROM sys_users where id=#{id}
+	</select>
+
+	<select id="querySysUserById" resultType="com.goldCityWeb.domain.SysUsers">
+		SELECT * FROM sys_users WHERE id = #{id} AND `delete`!=1
+	</select>
+	<select id="queryMoreUserPicByUserId" resultType="java.lang.String">
+		SELECT user_pic from user_pic where user_id=#{id}
+	</select>
+	
+	<update id="updateOverdue">
+		UPDATE sys_users SET overdue = #{overdue} WHERE id = #{id}
+	</update>
+	
+	<update id="updateUserExperience">
+		UPDATE sys_users SET experience = experience + #{exp} WHERE id = #{user_id}
+	</update>
+	
+	<update id="updateuserEnabled">
+		UPDATE sys_users SET enabled = #{enabled} WHERE id = #{id}
+	</update>
+	
+	<update id="updateUserHead">
+		UPDATE sys_users SET head = #{head} WHERE id = #{id}
+	</update>
+	
+	<select id="querySysUserItemById" resultType="com.goldCityWeb.domain.Item">
+		SELECT
+		grab,lucky FROM sys_users where id=#{id}
+	</select>
+	
+	<insert id="insertSignRecord" parameterType="com.goldCityWeb.domain.SignRecord"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sign_record(user_id,sign_time,grab,lucky,`exp`,gold_count)VALUES(#{user_id},now(),#{grab},#{lucky},#{exp},#{gold_count})
+	</insert>
+	<update id="updateUserSignRecord">
+		UPDATE sys_users SET experience = experience + #{exp},gold_count = gold_count + #{gold_count},lucky = lucky + #{lucky},sign_count = sign_count + 1,grab = grab + #{grab} WHERE id = #{user_id}
+	</update>
+</mapper>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	var s2 = document.getElementById("s2");
+	if(s2.checked){
+		//alert(11);
+		$("#hi").removeClass("hidd");
+	}
+	
+	$("#s1").click(function(){
+		$("#s2").removeAttr("checked");
+		$("#share_status").val(0);
+		$("#share").val('')
+		$("#hi").addClass("hidd");
+	})
+	$("#s2").click(function(){
+		$("#s1").removeAttr("checked");
+		$("#share_status").val(1);
+		$("#hi").removeClass("hidd");
+		
+	})
+	
+	$("#saveButton").click(function() {
+		var content = $("#share").val();
+		var share_status = $("#share_status").val();
+		if(content.length==0 && share_status==1){
+			alert("请输入分享内容")
+			return;
+		}
+		
+		$("#saveForm").submit();
+		
+		
+	});
+	
+	
+});
+/*]]>*/
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>其它管理 </li>
+	    	<li>分享内容设置</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<div class=" saveformModi addtableModify0">
+		<form  class="formbody" th:action="@{/admin/share/save}" name="saveForm" id="saveForm" method="post">
+		   <ul class="forminfoModi0 mauto" style="width:450px;">
+			    <li>
+			    	<label class="labelModi">分享地址为APK地址</label>
+			    	<input type="checkbox" name="share_s" id="s1" style="line-height:30px;display:inline-block;height:30px" th:checked="${share.share==0}"/>
+			    	<label class="labelModi">分享地址自定义</label>
+			    	<input type="checkbox" name="share_s" id="s2" style="line-height:30px;display:inline-block;height:30px" th:checked="${share.share==1}"/>
+			    	<input type="hidden" name="share_status" id="share_status"/>
+			    </li>
+			    <li  id="hi" class="hidd">
+			    	<label class="labelModi">编辑地址</label>
+			    	<textarea class="textinputModi" rows="5" cols="10" id="share" name="share" th:text="${share.content}"></textarea>
+			    </li>
+			     <li class="tc mt20">
+		    	<input name="saveButton" id="saveButton" type="button"  class="btn" value="确认修改"/>
+		    </li>
+		    </ul>
+		    </form>
+	    </div>
+    </div>
+    <div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+</html>

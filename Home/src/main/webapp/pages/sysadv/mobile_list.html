@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+<script th:src="@{/assets/js/ajaxfileupload.js}"></script>
+<script th:src="@{/assets/js/jquery.ui.plupload/jquery.ui.plupload.min.js}"></script>
+<link th:href="@{/assets/js/jquery.ui.plupload/css/jquery.ui.plupload.css}" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<script th:src="@{/assets/js/jquery.mobile.custom.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/style_tel.css}" />
+
+<style type="text/css">
+    .shoucang-list li a .shoucang-list-r {width: 100%;}
+	.shoucang-list-r h4{width: 100%;color: #bfccdd;font-weight:normal;font-size: 18px;}
+	.tel_select li{height: 100%; width: 49%;margin: 4px 0.25% 4px 0.5%;border: none;font-size: 0px;float: left;}
+	.tel_select li>a>img {width: 100%;border: 0px;}
+	.tel_select ul {padding-bottom: 0px;font-size: 0px;}
+	.shoucang-list li a .shoucang-list-r div span:nth-of-type(1) {font-size: 10px;color:#bfccdd ;}
+	.tel_select a{font-size: 0px;}
+	.shoucang-list li {border-bottom: 1px solid #bcc9da;width: 99%;margin: 0 auto;padding: 10px 0;}
+    .person-header {text-align: center;line-height: 44px;}
+    .share {vertical-align: middle;}
+</style>
+<body style="background:#1f2a48 ">
+	<!-- <header class="person-header" style="background: #3b393a;">
+		<img class="leftMenu" src="images/sideMenu.png" />
+		<img class="share" src="images/all_screen.png" />
+	</header> -->
+	<section class="tel_select" >
+		<ul style="background: #172434;">
+			<li th:each="image:${imageList}">
+				<a th:href="${application.baseHtmlUrl + image.content}">
+					<img th:src="${application.baseImageUrl + image.image}" />
+				</a>
+			</li>
+		</ul>
+	</section>
+	<section class="shoucang-list" style="margin-bottom: 60px; background: #172434;">
+		<ul style="background: #172434;">
+			<li th:each="text:${textList}">
+				<a th:href="${application.baseHtmlUrl + '\' + text.content}">
+					<div class="shoucang-list-r">
+						<h4 th:text="${text.text_content}">6月4日停服维护公告</h4>
+						<div>
+							<span th:text="${text.create_time}">2015-07-15 </span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<!-- <li>
+				<a href="#">
+					<div class="shoucang-list-r">
+						<h4>6月4日停服维护公告</h4>
+						<div>
+							<span>2015-07-15 </span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="shoucang-list-r">
+						<h4>6月4日停服维护公告</h4>
+						<div>
+							<span>2015-07-15 </span>
+						</div>
+					</div>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<div class="shoucang-list-r">
+						<h4>6月4日停服维护公告</h4>
+						<div>
+							<span>2015-07-15 </span>
+						</div>
+					</div>
+				</a>
+			</li> -->
+		</ul>
+	</section>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+
+/*]]>*/
+</script>
+</html>

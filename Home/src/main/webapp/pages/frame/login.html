@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>欢迎登录后台管理系统</title>
+	<link rel="stylesheet" href="../assets/css/style.css" th:href="@{/assets/css/style.css}" />
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<script th:src="@{/assets/js/jquery.cookie.js}"></script>
+	<script th:src="@{/assets/js/cloud.js}"></script>
+</head>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(function() {
+    $('.loginbox').css({'position':'absolute','left':($(window).width() - 692) / 2});
+	$(window).resize(function() {  
+    	$('.loginbox').css({'position':'absolute','left':($(window).width() - 692) / 2});
+    });
+	
+	if ($.cookie("rmbUser") == "true") {
+		$("#rmbUser").attr("checked", true);
+		$("#j_username").val($.cookie("userName"));
+		$("#j_password").val($.cookie("passWord"));
+	}
+	
+	$("#submitButton").click(function() {
+		saveUserInfo();
+		$("#loginForm").submit();
+	});
+});
+
+function saveUserInfo() {
+	if ($("#rmbUser").attr("checked") == true) {
+		var userName = $("#j_username").val();
+		var passWord = $("#j_password").val();
+		$.cookie("rmbUser", "true", {expires : 7}); // 存储一个带7天期限的 cookie
+		$.cookie("userName", userName, {expires : 7}); // 存储一个带7天期限的 cookie
+		$.cookie("passWord", passWord, {expires : 7}); // 存储一个带7天期限的 cookie
+	} else {
+		$.cookie("rmbUser", "false", {expires : -1});
+		$.cookie("userName", '', {expires : -1});
+		$.cookie("passWord", '', {expires : -1});
+	}
+}
+/*]]>*/
+</script> 
+<body th:style="'background-color:#1c77ac; background-image:url(' + @{/assets/images/light.png} + '); background-repeat:no-repeat; background-position:center top; overflow:hidden;'">
+	<div id="mainBody">
+	  <div id="cloud1" class="cloud"></div>
+	  <div id="cloud2" class="cloud"></div>
+	</div>
+	
+	<div class="logintop">
+		<span>欢迎登录后台管理界面平台</span>
+		<!--  
+		<ul>
+			<li><a href="#">回首页</a></li>
+			<li><a href="#">帮助</a></li>
+			<li><a href="#">关于</a></li>
+		</ul>
+		-->
+	</div>
+    <div class="loginbody">
+    	<span class="systemlogo"></span> 
+    	<div class="loginbox">
+    		<form action="authentication" id="loginForm" th:action="@{/authentication}" method="post">
+    			<input type="hidden" name="type" value="admin"/>
+			    <ul>
+			    	<li><input id="j_username" name="j_username" type="text" class="loginuser" /></li>
+			    	<li><input id="j_password" name="j_password" type="password" class="loginpwd" placeholder="密码..." /></li>
+			    	<li>
+			    		<input type="button" class="loginbtn" value="登录"  id="submitButton"  />
+			    		<label><input id="rmbUser" name="rmbUser" type="checkbox" checked="checked" />记住密码</label>
+			    		<!--  <label><a href="#">忘记密码？</a></label>-->
+			    		<span th:if="${error!=null}" style="color: red;">用户名或密码错误！</span>
+			    	</li>
+			    </ul>
+		    </form>
+    	</div>
+    </div>
+    <div class="loginbm">版权所有  2014</div>   
+</body>
+</html>

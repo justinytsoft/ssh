@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		$("input[type=text]").each(function(){
+			$(this).val($.trim($(this).val()));
+		})
+		var oss = $("#os").val();
+		if (oss == 0) {
+			alert("请选择客户端系统！");
+			return ;
+		}
+		
+		var version = $("#version").val();
+		if(version.length==0){
+			alert("请输入更新版本号！");
+			return;
+		}
+		
+		var update_path = $("#update_path").val();
+		if(update_path.length==0){
+			alert("请输入更新地址！");
+			return;
+		}
+		var must_update = $("#must_update").val();
+		if(must_update.length==0){
+			alert("请输入是否必须更新:0(否),1(是)");
+			return;
+		}
+		var message = $("#message").val();
+		if(message.length==0){
+			alert("请输入更新信息！");
+			return;
+		}
+		
+		$.ajax({
+   			url : [[@{/admin/upgrade/save}]],
+   			data : {
+   				os:$("#os").val(),
+   				version:$("#version").val(),
+   				update_path:$("#update_path").val(),
+   				id:$("#id").val(),
+   				must_update:$("#must_update").val(),
+   				message:$("#message").val()
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data, textStatus, jqXHR) {
+   				alert("保存成功！");
+   			}
+   		});
+	});
+	
+	$("select[name=os]").change(function() {
+		var osi = $(this).val();
+		if (osi != 0) {
+			$.ajax({
+	   			url : [[@{/admin/upgrade/load}]],
+	   			data : {
+	   				os:osi
+	   			},
+	   			dataType: 'json',
+	   			type: 'get',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				if (data != 'null') {
+	   					$("#version").val(data.version);
+	   					$("#update_path").val(data.update_path);
+	   					$("#id").val(data.id);
+	   					$("#must_update").val(data.must_update);
+	   					$("#message").val(data.message);
+	   				} else {
+	   					$("#version").val("");
+	   					$("#update_path").val("");
+	   					$("#id").val("0");
+	   					$("#must_update").val("");
+	   					$("#message").val("");
+	   				}
+	   			}
+	   		});
+		}
+	});
+});
+/*]]>*/
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li th:if="${session.current_community!=null}" th:text="${session.current_community.name}"></li>
+	    	<li>其它管理 </li>
+	    	<li>检查更新设置</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<div class=" saveformModi addtableModify0">
+		    <ul class="forminfo mauto" style="width:550px;">
+			    <li>
+			    	<select name="os" id="os" class="new_select pt5 pb5" style="opacity:1; filter:alpha
+
+(opacity:100);">
+						<option value="0">请选择</option>
+			    		<option value="android">安卓系统</option>
+			    		<option value="ios">苹果系统</option>
+			    	</select>
+			    </li>
+			    <li>
+			    	<label class="tr mr20"><span class="red">*</span>版本号:</label>
+			    	<input type="text" name="version" id="version" class="dfinput" />
+			    </li>
+			    <li>
+			    	<label class="tr mr20"><span class="red">*</span>更新地址:</label>
+			    	<input type="text" name="update_path" id="update_path" class="dfinput" />
+			    </li>
+			    <li>
+			    <label class="tr mr20"><span class="red">*</span>是否必须更新:</label>
+			    <select name="must_update" id="must_update" class="new_select pt5 pb5" style="opacity:1; filter:alpha
+
+(opacity:100);">
+			    		<option value="1">是</option>
+			    		<option value="0">否</option>
+			    	</select>
+			    </li>
+			    <li>
+			    	<label class="tr mr20"><span class="red">*</span>更新说明:</label>
+			    	<input type="text" name="message" id="message"  class="dfinput" />
+			    </li>
+			    <li class="tc" style="margin-left:130px; width:345px;">
+					<input type="hidden" name="id" value="0" id="id"/>
+			    	<input name="saveButton" id="saveButton" type="button" class="btn" value="确认保存"/>
+			    </li>
+		    </ul>
+	    </div>
+    </div>
+</body>
+</html>

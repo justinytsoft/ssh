@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/basic.css}" />
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+    var msg = [[${msg}]];
+	if(msg!=null){
+		cAlert(msg);
+	}
+     
+/*]]>*/
+</script>
+
+<body class="body">
+	<div class="place">
+		<span>活动详情信息</span>
+	</div>
+	<div class="normal-box normal2-box">
+		<div class="paketTable">
+			<form th:action="@{/sysadv/save}" method="post" class="formbody" style="width:960px">
+				<table>
+					<tr>
+						<th width="100">标题</th>
+						<td width="800"><textarea style="width: 100%; height: 100%;" name="push_title" th:text="${sa.push_title}" /></td>
+					</tr>
+					<tr>
+						<th>内容</th>
+						<td ><textarea style="width: 100%; height: 100%;" name="push_content" 	th:text="${sa.push_content}" /></td>
+					</tr>
+					<tr>
+						<th>链接</th>
+						<td ><textarea style="width: 100%; height: 100%;" name="content" th:text="${sa.content}" /></td>
+					</tr>
+				</table>
+				<input type="hidden" name="id" th:value="${sa.id}"/>
+				<input type="hidden" name="push_type" th:value="${sa.id==1?0:1}"/>
+				<input type="submit" value="保存"/>
+			</form>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+ 
+/*]]>*/
+</script>
+
+</html>

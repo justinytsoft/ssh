@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" ></head>
+
+
+<body style="background:url(' + @{/assets/images/bodyBg.png} + ');">
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>标签管理</li>
+	    	<li>创建标签</li>
+	    </ul>
+    </div>
+    
+    <div class="webPage">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?	'':msg}"></b>
+		</div>
+	    <form class="formbody mauto" th:action="@{/admin/label/save_label}" name="saveForm" id="saveForm" method="post"  enctype="multipart/form-data" >
+	    <ul class="forminfo">
+		    <li>
+		    	<label class="labelModi">标签名:</label>
+		    	<input type="text" placeholder="请输入标签名"  name="name"  class="dfinput" />
+		    </li>
+		    <li>
+		    	<label class="labelModi">标签分类</label>
+		    	<select name="main_label">
+		    		<option th:each="l:${lts}" th:value="${l.id}" th:text="${l.name}">职位标签</option>
+		    	</select>
+		    </li>
+		    <li>
+		    	<label class="labelModi">描述:</label>
+		    	<textarea  style="height:300px" name="description" class="dfinput" ></textarea>
+		    </li>
+		    
+		    <li class="ml130 mt20 tc" style="width:200px;">
+		    	<input name="saveButton"  id="saveButton" type="button"  class="btn" value="确认保存"/>
+		    	<!-- <input name="id" type="hidden" th:if="${user != null}" th:value="${user.id}"/> -->
+		    	<!-- <input name="add" type="hidden" value="1"/> -->
+		    	<div class="clr"></div>
+		    </li>
+		</ul>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	
+	//校验表单
+	$("#saveButton").click(function(){
+		
+		var name = $('input[name=name]').val();
+		if(name.length==0){
+			alert('请输入标签名称！');
+			return;
+		}
+		
+		$("#saveForm").submit();
+	});
+	
+});
+
+
+/*]]>*/
+</script>
+</html>

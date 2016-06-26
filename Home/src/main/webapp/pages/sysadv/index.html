@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head th:include="fragment/common :: header"></head>
+	<script th:src="@{/assets/js/select-ui.min.js}"></script>
+	<script type="text/javascript" th:src="@{/assets/ueditor/ueditor.config.js}"></script>
+    <script type="text/javascript" th:src="@{/assets/ueditor/ueditor.all.js}"></script>
+   	<script type="text/javascript" th:src="@{/assets/js/push.js}" ></script>
+	
+	<link rel="stylesheet" th:href="@{/assets/css/activety-style.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/userManage/manage.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/userManage/basic.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/userManage/footer.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/userManage/right.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/userManage/details.css}" />
+	
+	<style type="text/css">
+		.container table td{height: 40px;}
+		
+		.tds{ width: 136px;}
+		.container .son{margin-top: 10px; height: 538px;}
+		.container .son table{ width: 480px; margin-top: 20px;}
+		.container .son table td{ 70px;}
+		.container .son table input{ width: 20px; height: 16px;}
+		.container .son table thead{ color: #b9b9b9; text-align: center;height: 27px; line-height: 27px; background: #e5e5e5;}
+		.container .son table tbody{ height: 40px; line-height: 40px; color: #b9b9b9; background: #ffffff;}
+
+		.rightcontainer{ overflow: hidden;}
+		.rightimgs{ width: 120px; height: auto; overflow: hidden; float: left; margin:0 10px 10px;}
+		.rightimgs span{ display: block; }
+		.rightimgs span a{ float: right; color: red;}
+		
+		
+		.tditems{ text-align: left; padding-left: 10px;}
+		#trs span{ float: left; display: block;}
+		#trs .shangchuan{ color: white; background-color: #17A9FF;cursor: pointer; 
+		 height: 30px; width:80px; text-align: center; line-height: 30px; margin: 5px 0px;}
+	</style>
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+		           
+            //只能输入数字96(0) 105(9)  48(0) 57(9)
+			function isNumber(event){
+				if(event.keyCode < 48 || event.keyCode > 57){ 
+					if(event.keyCode == 8){ //BackSpace 退格
+						return true;
+					}
+					if(event.keyCode >= 96 && event.keyCode <= 105){
+						return true;
+					}
+					return false;
+				}
+			}
+		
+			window.onload=function(){
+				var tr=document.getElementById('trs');
+				var spans=tr.getElementsByTagName('span');
+				for (var i=0; i<spans.length;i++) {
+					spans[1].style.color="#151515";
+				}
+				var inputs=document.getElementsByClassName('cheacks');
+				for (var j=0; j<inputs.length;j++) {
+					if(inputs[j].checked==true){
+						inputs[j].style.background="#cfd3da";
+					}
+					if(inputs[j].checked==false){
+						inputs[j].style.background='#ffffff';
+					}
+				}
+			}
+		
+			function checkToRedio(obj){
+				var name = $(obj).attr("name");
+				$.each($("input[name='"+name+"']"),function(){
+					this.checked = false;
+				});
+				obj.checked = true;
+			}
+			
+			
+			function checkCommit(){
+				var content = $("#content");
+				
+				/* if($.trim($("input[type='file']").val()) == ""){
+					alert("请选择一个封面");
+					return false;
+				}
+			 */
+				/* if(content.css("display") != "none"){
+					var ue = UE.getEditor('container');
+		       		var txt = ue.getContent();
+		       		if($.trim(txt) == ""){
+		       			alert("请输入咨询广告相关内容");
+		       			return false;
+		       		}
+				} */
+				return true;
+			}
+			
+			$(function(){
+				
+				var ue = UE.getEditor('container');
+		        
+				//初始化编辑器的宽和高
+		       	ue.ready(function(){
+		        	$("#edui1").css("width", "530px");
+		        	$("#edui1_iframeholder").css("height", "330px");
+		        	
+		        	$.each($(".edui-box"),function(){
+		        		$(this).css("height","20px");
+		        	});
+		        	$.each($(".edui-combox-body"),function(){
+		        		$(this).css("height","18px");
+		        	});
+		        });
+
+				var image_content = $("#image_content");
+				var text_content = $("#text_content");
+				
+				$("#upload").click(function(){
+					$("input[type='file']").click();
+				});
+				
+				$("#activity").click(function(){
+					image_content.css("display","block");
+					text_content.css("display","none");
+				});
+
+				$("#consult").click(function(){
+					image_content.css("display","none");
+					text_content.css("display","block");
+				});
+			});
+		/*]]>*/
+	</script>
+	
+	<body>
+		<div class="wrapper">
+			<!--header-->
+			<div class="header">
+				<div class="mainnav">
+					<span style="border-left: 4px solid #e5004f; display: block; font-size: 16px">广告管理  <label style="color: red;" th:text="${msg}"></label></span>
+				</div>
+			</div>
+			<div class="left left-one" style="margin-top: -40px;background-color: white;margin-left: 5px;">
+				<!--left table-->
+				<div class="container lettable" style="margin: 10px -5px">
+					<form th:action="@{/sysadv/save}" method="post" enctype="multipart/form-data">
+						<table border="1px">
+							<tbody>
+								<tr>
+									<td>推送标题（仅有安卓端有）</td>
+									<td class="tditems" colspan="9" height="40px">
+									<input type="text" name="push_title"/>
+									</td>
+								</tr>
+								<tr>
+									<td>推送内容</td>
+									<td class="tditems" colspan="9" height="40px">
+									<input type="text" name="push_content"/>
+									</td>
+								</tr>
+								<tr>
+									<td>推送人群</td>
+									<td class="tditems" colspan="9" height="40px">
+									<input type="radio" name="push_type" value="0"/>玩家
+									<input type="radio" name="push_type" value="1"/>商户
+									</td>
+								</tr>
+								<tr>
+									<td>公告类型</td>
+									<td class="tditems" colspan="9" height="40px">
+									<input id="activity" type="checkbox" onclick="checkToRedio(this)" name="type" value="0" style="width: 20px; height: 16px;" checked="checked" class="cheacks"/>图片公告
+									<input id="consult" type="checkbox" onclick="checkToRedio(this)" name="type" value="1" style="width: 20px; height: 16px;" class="cheacks"/>文字公告</td>
+								</tr>
+								<tr id="image_content">
+									<td>上传图片</td>
+									<td class="tditems" colspan="9" height="40px" style="text-align: left;">
+									<span class="shangchuan" id="upload">点击上传</span>
+									<input type="file" name="file2" style="display: none" />
+									<span>底图大小尺寸：5:2,logo放图下方，支持jpg/png文件格式，RGB图片模式</span></td>
+								</tr>
+								<tr id="text_content">
+									<td>文字内容：</td>
+									<td class="tditems" colspan="9" height="40px">
+										<input  name="text_content" type="text" style="height:80%;background:none;color:black;border-color: gray;padding-left:5px" />
+									</td>
+								</tr>
+								<tr rowspan="7">
+									<td valign="top">公告内容</td>
+									<td class="tditem" colspan="9">
+											<!-- ueditor -->
+											<div style="margin-top: 5px;" id="content">
+												<div style="width:530px;">
+												    <script id="container" name="content" type="text/plain">
+					
+    												</script>
+												</div>
+											</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="last lastinput" colspan="9" style="border: none;padding-top: 20px">
+										<input type="submit" value="确认" onclick="return checkCommit()"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+</html>

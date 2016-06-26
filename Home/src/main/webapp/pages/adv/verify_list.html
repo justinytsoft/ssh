@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+<style type="text/css">
+.blueBtn {
+	padding: 5px 20px;
+	background: #6dcff6;
+	color: #fff;
+	border-radius: 2px;
+	cursor: pointer
+}
+
+.yellowBtn {
+	padding: 5px 20px;
+	background: #f1d826;
+	color: #fff;
+	border-radius: 2px;
+}
+/* .blueBtn:hover ,.yellowBtn:hover {color:red} */
+.tablelist tbody tr:hover {
+	background: none;
+}
+
+.tablelist tbody tr:nth-child(2n-1) {
+	background: #f9f9f9;
+	height: 40px
+}
+
+.tablelist tbody tr:nth-child(2n) {
+	background: #fff;
+	height: 40px
+}
+
+.tablelist th {
+	background: none;
+	height: 45px;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.tablelist th, .tablelist td {
+	border: 1px solid #e3eaf2;
+}
+
+.tablelist tr td a {
+	padding: 0 11px;
+}
+
+.tablelist tr td a:nth-of-type(2) {
+	background: #D9534F;
+	border: 1px solid #D43F3A;
+	border-radius: 5px;
+}
+
+.tablelist tr td a {
+	line-height: 25px;
+	padding: 0 11px;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
+	text-decoration: none;
+	display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+}
+
+.scbtn {
+	line-height: 25px;
+	padding: 0 11px;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
+	text-decoration: none;
+	display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+}
+
+.search ul li input {
+	height: 27px;
+	font-weight: normal;
+	font-size: 13px;
+}
+</style>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+function verify(obj, id, status){
+	cConfirm("确认操作吗",function(f){
+		if(f){ //确认
+			if(status!=1){//未通过
+				cPrompt('请输入未通过的理由：', function(r){
+	                if (typeof r == "string"){ //确认
+	                	if($.trim(r)==""){ //判断是否输入
+	                		cAlert("操作失败，未输入理由");
+	                	}else{
+		                	$.post([[@{/adv/save_verify}]],{id:id,verify_status:status,reason:r},function(data){
+		    			        if(data.flag){
+		    			        	$(obj).parent().prev().prev().prev().prev().prev().prev().prev().prev().text(status==1?"通过":"未通过");
+		    			        	$(obj).parent().html("");
+		    			        }
+		    			        cAlert(data.msg);
+		    			    });
+	                	}
+	                }
+	            });
+			}else{//通过
+				$.post([[@{/adv/save_verify}]],{id:id,verify_status:status},function(data){
+			        if(data.flag){
+			        	$(obj).parent().prev().prev().prev().prev().prev().prev().prev().prev().text(status==1?"通过":"未通过");
+			        	$(obj).parent().html("");
+			        }
+			        cAlert(data.msg);
+			    });
+			}
+		}
+	});
+	return false;
+} 
+/*]]>*/
+</script>
+
+<body style="background: #f1f1f1">
+	<div class="place">
+		<span>位置：广告管理</span>
+		<!-- <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>广告管理 </li>
+	    	<li>广告审核：</li>
+	    </ul> -->
+	</div>
+	<div class="webPage">
+		<form id="searchForm" th:action="@{/adv/verify_list}" method="post"
+			class="formbody" style="width: 80%">
+			<!-- <div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<ul class="seachform mauto">
+		
+		    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+		    
+		</ul> -->
+
+			<div class="search">
+				<ul>
+					<li style="margin-left: 15px">搜索：</li>
+					<li style="margin-left: 15px"><select name="verify_status" style="height:34px;border-color: rgb(167, 181, 188) rgb(206, 217, 223) rgb(206, 217, 223) rgb(167, 181, 188);">
+							<option value="0" th:selected="${verify_status==0}">未审核</option>
+							<option value="2" th:selected="${verify_status==2}">全部</option>
+							<option value="1" th:selected="${verify_status==1}">已通过</option>
+							<option value="-1" th:selected="${verify_status==-1}">不通过</option>
+					</select></li>
+					<li style="margin-left: 15px"><input type="submit"
+						class="scbtn" value="查询" /></li>
+				</ul>
+			</div>
+			<div>
+				<span th:unless="${advList!=null and not #lists.isEmpty(advList)}"
+					th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"
+					th:if="${advList!=null and not #lists.isEmpty(advList)}">
+					<thead>
+						<tr>
+							<th width="2">状态</th>
+							<th width="3">店铺名称</th>
+							<th width="3">联系人电话</th>
+							<th width="3">发放时间</th>
+							<th width="3">发放金额</th>
+							<th width="3">发放数量</th>
+							<th width="3">主标题</th>
+							<th width="2">详情</th>
+							<th width="3">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="adv:${advList}">
+							<td
+								th:text="${adv.verify_status==0?'未审核':adv.verify_status==1?'通过':'未通过'}">商铺名称</td>
+							<td th:text="${adv.company_name}">商铺类型</td>
+							<td th:text="${adv.phone_num}"></td>
+							<td
+								th:text="${#dates.format(adv.adv_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+							<td th:text="${adv.amount}"></td>
+							<td th:text="${adv.number}"></td>
+							<td th:text="${adv.title}"></td>
+							<td>
+ 								<a class="yellowBtn" th:href="@{/adv/detail(id=${adv.id})}">查看详情</a> 
+							</td>
+							<td><a class="yellowBtn" th:if="${adv.verify_status==0}"
+								onclick="return verify(this,this.name,1)" th:name="${adv.id}">认证通过</a>
+								<a class="yellowBtn" th:if="${adv.verify_status==0}"
+								onclick="return verify(this,this.name,-1)" th:name="${adv.id}">不通过</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10"
+					th:if="${advList!=null and not #lists.isEmpty(advList)}"
+					th:include="fragment/paginationbar :: paginationbar"></div>
+				<div
+					style="width: 400px; height: 800px; position: fixed; left: 1800px; top: 50px">
+					<div class="iframeBox1">
+
+						<iframe id="iframe_preview" style="width: 400px; height: 600px;"></iframe>
+					</div>
+				</div>
+				<div class="clr"></div>
+			</div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	           
+	$(".select1").uedSelect({
+		width : 202
+	});
+	function scan(url) {
+
+		$("#iframe_preview").attr("src", url);
+		//$("#iframe_preview").reload();
+	}
+	/*]]>*/
+</script>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+	
+	<style>
+		*{
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+	
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			var rootPath = [[@{/}]];
+			var iRight;
+			var iTop;
+			
+			$(function(){
+				//右边内容对象
+				iRight = $("#right");
+				//上边内容对象
+				iTop = $("#top");
+			});
+			
+			//top部分更新     
+		    function updateMessage(){
+				//消息
+				$.get([[@{/merchant/message/getMessages}]],{"_":Math.random(),"looked":false},function(data){
+					var ms = data.rows; //返回的新消息
+					var dot = $("#messageDot"); //消息上的红点
+					var newNum = $("#newMessageNumber"); //消息的数量
+					if(ms.length <= 0){
+						dot.hide();
+						newNum.text("0");
+					}else{
+						dot.show();
+						newNum.text(ms.length);
+					}
+				});
+				
+				//用户信息
+				$.get([[@{/merchant/user/getUserInfo}]],{"_":Math.random()},function(data){
+					if(data.flag){
+						$("#merGoldCount").text("黄金币:"+data.userDetail.gold_count); //top 部分显示的余额
+						$("#userGoldBalance").text("黄金币余额:￥"+data.userDetail.gold_count); //点击充值时，弹出框上的余额
+					}else{ //session失效
+						window.location.href = [[@{/merchant/login}]];
+					}
+				});
+			}
+			
+		  	//切换左侧菜单 下标从0开始
+			function selMenu(index){
+				$('.left-menu>div:eq('+index+')').trigger("click");
+			}
+		  	
+		  	//加载面时显示的提示
+		    function loadingMsg() {  
+
+		    }  
+		/*]]>*/
+	</script>
+	
+	<body class="easyui-layout">
+	    <div id="top" data-options="region:'north', href:'top', border:false" style="height:80px;background-color: #2d2d2d"></div>
+	    <div id="left" data-options="region:'west', href:'left', split:false, border:false" style="width:90px;overflow:hidden;background-color: #2d2d2d;"></div>
+	    <div id="right" data-options="region:'center', border:false, onBeforeLoad:loadingMsg" style="background:#eee;"></div>
+	    <!-- <div id="bottom" data-options="region:'south', border:false" style="background:#eee;text-align:center;">苏ICP备16024499号-1</div> -->
+	</body>
+</html>

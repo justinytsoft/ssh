@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.IMessageDao">
+
+	<!-- 保存消息 -->
+	<insert id="insertMessage" parameterType="com.goldCityWeb.domain.Message">
+		INSERT INTO message 
+		<set>
+			<if test="uid!=null">uid=#{uid},</if>
+			<if test="mid!=null">mid=#{mid},</if>
+			<if test="content!=null">content=#{content},</if>
+			<if test="type!=null">type=#{type},</if>
+			create_time = now()
+		</set>
+	</insert>
+
+	<!-- 删除消息 -->
+	<delete id="delMessageById">
+		DELETE FROM message WHERE uid = #{uid} AND id = #{id}
+	</delete>
+
+	<!-- 当用户查看消息列表时，把所有消息更新为已查看 -->
+	<update id="updateMessagesToLooked">
+		UPDATE message SET looked = 1 WHERE uid = #{id}
+	</update>
+
+	<!-- 查看所有消息 -->
+	<select id="queryMessages" resultType="com.goldCityWeb.domain.Message">
+		SELECT *, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i') AS str_create_time FROM message
+		<where>
+			uid = #{param.uid}
+			<if test="param.looked!=null">AND looked = #{param.looked}</if>
+			<if test="param.type!=null">AND type = #{param.type}</if>
+			<if test="param.sdate!=null">AND create_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND create_time <= #{param.edate}]]></if>
+		</where>
+		ORDER BY create_time DESC
+		<if test="param.page!=null and param.rows!=null">
+			LIMIT #{param.page}, #{param.rows}
+		</if>
+	</select>
+
+	<!-- 查看所有消息总数 -->
+	<select id="queryMessagesTotal" resultType="int">
+		SELECT COUNT(1) FROM message
+		<where>
+			uid = #{param.uid}
+			<if test="param.looked!=null">AND looked = #{param.looked}</if>
+			<if test="param.type!=null">AND type = #{param.type}</if>
+			<if test="param.sdate!=null">AND create_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND create_time <= #{param.edate}]]></if>
+		</where>
+	</select>
+	
+</mapper>

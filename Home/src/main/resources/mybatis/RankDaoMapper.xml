@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.IRankDao">
+	
+	<select id="queryUserRankById" resultType="com.goldCityWeb.domain.UserDetail">
+		SELECT a.* FROM (
+		SELECT @counter:=@counter+1  AS  rank,i.uid AS id,i.create_time,u.nick_name,u.age,u.sex,u.experience,sum(i.gold_count) as gold_count,u.head as head,u.level as level
+		from income i,sys_users u,(SELECT @counter:=0) q
+		where u.type=2 and i.uid=u.id
+		<if test="type==0">
+			 and TO_DAYS(NOW())-TO_DAYS(i.create_time) &lt;=1
+		</if>
+		<if test="type==1">
+			 and TO_DAYS(NOW())-TO_DAYS(i.create_time) &lt;=7
+		</if>
+		<if test="type==2">
+			 and TO_DAYS(NOW())-TO_DAYS(i.create_time) &lt;=30
+		</if>
+		group by i.uid
+		ORDER BY gold_count DESC
+		) a where a.id=#{id}
+	</select>
+	
+	
+	<!-- 金币达人排行榜 -->
+	<select id="queryGoldMaster" resultType="com.goldCityWeb.domain.UserDetail">
+		SELECT i.uid AS id,i.create_time,u.nick_name,u.age,u.sex,u.experience,sum(i.gold_count) as gold_count,u.head as head,u.level as level
+		from income i,sys_users u
+		where u.type=2 and i.uid=u.id
+		<if test="type==0">
+			 and TO_DAYS(NOW())-TO_DAYS(i.create_time) &lt;=1
+		</if>
+		<if test="type==1">
+			 and TO_DAYS(NOW())-TO_DAYS(i.create_time) &lt;=7
+		</if>
+		<if test="type==2">
+			 and TO_DAYS(NOW())-TO_DAYS(i.create_time) &lt;=30
+		</if>
+		group by i.uid
+		ORDER BY gold_count DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCompanyRankById" resultType="com.goldCityWeb.domain.Company">
+		SELECT a.* FROM (
+		SELECT @counter:=@counter+1  AS  rank,c.id,c.user_id, c.logo,c.`company_name`,SUM(adv.amount) AS gold_count, u.`head` AS head,u.`level` AS LEVEL, c.`company_phone`,c.`grant_count`,c.`web_link`, ct.`type_name` AS 'type_name', CONCAT(pv.`name`, ci.`name`, pt.`name`, c.`address`) AS address 
+		FROM company c, company_type ct, city ci,`position` pt, province pv ,sys_users u ,(SELECT @counter:=0) q,adv
+		WHERE c.id=adv.company_id AND u.id=c.user_id AND c.`company_type` = ct.`id` AND u.type=3  AND c.`city_id` = ci.`id` AND c.`position_id` = pt.`id` AND c.`province_id` = pv.`id`
+		<if test="type==0">
+			 and TO_DAYS(NOW())-TO_DAYS(adv.create_time) &lt;=1
+		</if>
+		<if test="type==1">
+			 and TO_DAYS(NOW())-TO_DAYS(adv.create_time) &lt;=7
+		</if>
+		<if test="type==2">
+			 and TO_DAYS(NOW())-TO_DAYS(adv.create_time) &lt;=30
+		</if>
+		 group by adv.company_id
+		 ORDER BY gold_count DESC
+		) a where a.user_id=#{id}
+	</select>
+	
+	
+	<!-- 公司土豪排行榜 -->
+	<select id="queryCompanyMaster" resultType="com.goldCityWeb.domain.Company">
+		SELECT c.id,c.logo, c.`company_name`,SUM(adv.amount) AS gold_count, u.`head` AS head,u.`level` AS `level`,u.nick_name, c.`company_phone`,c.`grant_count`,c.`web_link`, ct.`type_name` AS 'type_name', CONCAT(pv.`name`, ci.`name`, pt.`name`, c.`address`) AS address 
+		FROM company c, company_type ct, city ci,`position` pt, province pv ,sys_users u ,adv
+		WHERE c.id=adv.company_id AND u.id=c.user_id AND c.`company_type` = ct.`id` AND u.type=3  AND c.`city_id` = ci.`id` AND c.`position_id` = pt.`id` AND c.`province_id` = pv.`id`
+		<if test="type==0">
+			 and TO_DAYS(NOW())-TO_DAYS(adv.create_time) &lt;=1
+		</if>
+		<if test="type==1">
+			 and TO_DAYS(NOW())-TO_DAYS(adv.create_time) &lt;=7
+		</if>
+		<if test="type==2">
+			 and TO_DAYS(NOW())-TO_DAYS(adv.create_time) &lt;=30
+		</if>
+		 group by adv.company_id
+		 ORDER BY gold_count DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+		
+		
+	</select>
+	
+
+	<select id="querySysCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM sys_users WHERE `type`=#{type} AND `delete`!=1
+		
+		
+	</select>
+
+</mapper>

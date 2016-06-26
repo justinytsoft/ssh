@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="resource-config.properties" />
+	
+	<settings>
+	  <setting name="cacheEnabled" value="true"/>
+	  <setting name="callSettersOnNulls" value="true"/>
+	</settings>
+    
+    <environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}"/>
+				<property name="username" value="${jdbc.user}" />
+				<property name="password" value="${jdbc.password}" />
+                <property name="poolPingEnabled" value="true"/>
+				<property name="poolPingQuery" value="SELECT id FROM resource WHERE id=1" />
+		    	<property name="poolPingConnectionsNotUsedFor" value="7200000"/> 
+			</dataSource>
+		</environment>
+	</environments>
+    <mappers>
+    	<mapper resource="mybatis/RemindDaoMapper.xml" />
+    	<mapper resource="mybatis/RedbagDaoMapper.xml" />
+    	<mapper resource="mybatis/MessageDaoMapper.xml" />
+    	<mapper resource="mybatis/RankDaoMapper.xml" />
+    	<mapper resource="mybatis/ProductDaoMapper.xml" />
+    	<mapper resource="mybatis/SysUsersDaoMapper.xml" />
+    	<mapper resource="mybatis/SysRolesDaoMapper.xml" />
+    	<mapper resource="mybatis/BaseDaoMapper.xml" />
+    	<mapper resource="mybatis/UpgradeDaoMapper.xml"/>
+    	<mapper resource="mybatis/CompanyDaoMapper.xml"/>
+    	<mapper resource="mybatis/AdvDaoMapper.xml"/>
+    	<mapper resource="mybatis/SysAdvDaoMapper.xml"/>
+    	<mapper resource="mybatis/CommodityDaoMapper.xml"/>
+    	<mapper resource="mybatis/HorseMessageDaoMapper.xml"/>
+    	<mapper resource="mybatis/FeedbackDaoMapper.xml"/>
+    	
+     </mappers>
+</configuration>

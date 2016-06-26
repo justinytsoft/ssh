@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/base.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/swiper3.08.min.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/swiper3.08.jquery.min.js}"></script>
+<title>发布职位</title>
+</head>
+
+<body style="background:#fff;">
+	<section class="webPage">
+    	<form class="fabu-form" id="saveform" th:action="@{/services/job/save}" method="post">
+            <ul>
+                <li>
+                    <label>职位类型</label>
+                    <input id="zhiye" name="jobType" readonly="readonly" type="text" th:value="${job.jobType}"/>
+                </li>
+                <li>
+                    <label>职位名称</label>
+                    <input id="zhiwei" type="text" name="jobName" readonly="readonly"  th:value="${job.jobName}"/>
+                </li>
+                <li>
+                    <label>薪资范围</label>
+                    <input type="text" name="salary" readonly="readonly" th:value="${job.salary}"/>
+                </li>
+                <li>
+                    <label>经验要求</label>
+                    <input id="exp" name="experience" readonly="readonly" type="text" th:value="${job.experience}"/>
+                </li>
+                <li>
+                    <label>学历要求</label>
+                    <input id="edu" name="education" readonly="readonly" type="text" th:value="${job.education}"/>
+                </li>
+                <li>
+                    <label>专业要求</label>
+					<input id="maj" name="major" readonly="readonly" type="text" th:value="${job.major}"/>
+                </li>
+                <li>
+                    <label>工作地域</label>
+					<input id="place" name="district" readonly="readonly" type="text" th:value="${job.district}"/>
+                </li>
+                <li>
+                    <label>工作地点</label>
+                    <input name="city" type="text" th:value="${job.city}"/>
+                    <input name="province" type="hidden" th:value="${job.province}"/>
+                </li>
+                <li>
+                    <label>招聘人数</label>
+                    <input name="number" type="text" th:value="${job.number}"/>
+                </li>
+                <li style="height:80px;">
+                    <label>职位描述</label>
+                    <textarea name="description" th:text="${job.description}"></textarea>
+                    <input type="hidden" name="id" th:value="${job.id}"/>
+                </li>
+            </ul>
+        	<div class="fabu-button" id="fabubut">发布</div>
+        </form>
+    </section>
+    <!-- 职位类型 -->
+    <div class="zhiye1 xinzi-box" style="display:none;">
+    	<div class="swiper-container zw1" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide" th:each="i:${industry}" th:id="${'z_'+i.id}" th:text="${i.name}">销售</div>
+        	</div>
+    	</div>
+    	
+    </div>
+    
+    
+    <!-- 占位 -->
+    <div class="zhiye0 xinzi-box" style="display:none;"></div>
+    <!-- 职位类型 -->
+    <form class="zhiye2 xinzi-box" style="display:none;">
+    	<ul>
+        	<li>
+            	<label>下限</label>
+                <input type="number" name="salary_down" placeholder="请输入您的薪资下限" />
+            </li>
+            <li>
+            	<label>上限</label>
+                <input type="number" name="salary_up" placeholder="请输入您的薪资上限" />
+            </li>
+        </ul>
+        <div class="fabu-button" id="salary_save">保存</div>
+    </form>
+    <!-- 经验要求 -->
+    
+    <div class="zhiye3 xinzi-box" style="display:none;">
+    	<div class="swiper-container jy" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide" th:each="exp:${experience}" th:text="${exp.name}"></div>
+        	</div>
+    	</div>
+    </div>
+    
+    <!-- 学历要求 -->
+    <div class="zhiye4 xinzi-box" style="display:none;">
+    	<div class="swiper-container xl" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide" th:each="edu:${education}" th:text="${edu.name}"></div>
+        	</div>
+    	</div>
+    </div>
+    
+    
+    <!-- 专业要求 -->
+    <div class="zhiye5 xinzi-box" style="display:none;">
+    	<div class="add-biaoqian">
+            <input id="searchTxt" type="text" />
+            <input id="search" type="button" value="搜索" />
+        </div>
+        <div class="swiper-container zy" style="height:100%;top:80px">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide" th:each="maj:${major}" th:text="${maj.name}"></div>
+        	</div>
+    	</div>
+    </div>
+    <!-- 工作地点 -->
+    <div class="zhiye6 zhiye xinzi-box" style="display:none;">
+    	<div class="swiper-container dy1" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide" th:each="p:${province}" th:id="${'d_'+p.id}" th:text="${p.name}"></div>
+        	</div>
+    	</div>
+    </div>
+    
+    <div class="zhiye7 zhiye xinzi-box" style="display:none;">
+    	<div class="swiper-container dy2" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	
+        	</div>
+    	</div>
+    </div>
+    
+    <div class="erji zhiye xinzi-box" style="display:none;">
+    	<div class="swiper-container zw2" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	
+        	</div>
+    	</div>
+    </div>
+    
+    <div class="sanji zhiye xinzi-box" style="display:none;">
+    	<div class="swiper-container zw3" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	
+        	</div>
+    	</div>
+    </div>
+    
+    
+    <input type="hidden" name="exp1"/>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	$(document).ready(function() {
+		var msg = [[${msg}]]
+		if(msg != null && msg.length > 0) {
+			alert(decodeURIComponent(msg));
+		}
+		
+		
+		
+		var winW = $(window).width();
+		var winH = $(window).height()-50;
+		var zw1 = new Swiper('.zw1',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var zw2 = new Swiper('.zw2',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var zw3 = new Swiper('.zw3',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var xl = new Swiper('.xl',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var jy = new Swiper('.jy',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var dy1 = new Swiper('.dy1',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var dy2 = new Swiper('.dy2',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH
+				})
+		var zy = new Swiper('.zy',{
+				direction : 'vertical',
+				freeMode : true,
+				freeModeSticky : true,
+				slidesPerView : 10,
+				loop : false,
+				height : winH-200
+				})
+		//期望职业选择
+        $('#zhiye').click(function(){
+        	$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('.zhiye1').show();	
+		})
+        $('#zhiwei').click(function(){
+        	$('#zhiye').click();	
+		})
+		$('.zw1 .swiper-slide').click(function(){
+			$('.zhiye1').animate({'marginLeft':winW+'px'});
+			$('input[name=exp1]').val($(this).text());
+			var in_id=parseInt($(this).attr("id").split("_")[1]);
+			$.ajax({
+	   			url : [[@{/services/resume/getCareer}]],
+	   			data : {
+	   				'industry_id': in_id
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				//$('.erji').find("div").empty();
+	   				zw2.removeAllSlides();
+	   				if (data.length > 0) {
+	   					var options='';
+	   					
+	   					for (var i = 0; data.length > i; i++) {
+	   						zw2.appendSlide("<div class='swiper-slide' id='z2_"+data[i].id+"'>" + data[i].name + "</div>");
+	   	   				}
+	   					//$('.erji').find("div.swiper-wrapper").append(options);
+	   				}
+	   				
+	   				$('.erji').find("div.swiper-slide").each(function(){
+	   					$(this).click(function(){
+	   						$('#zhiye').val($('input[name=exp1]').val() +"_"+ $(this).text());
+	   						$('.erji').animate({'marginLeft':winW+'px'});
+	   						$('.sanji').animate({'marginLeft':'0'});
+	   						$('.sanji').show(); 
+	   						var in_id=parseInt($(this).attr("id").split("_")[1]);
+	   						$.ajax({
+	   				   			url : [[@{/services/resume/getPosition}]],
+	   				   			data : {
+	   				   				'career_id': in_id
+	   				   			},
+	   				   			dataType: 'json',
+	   				   			type: 'post',
+	   				   			async: false,
+	   				   			success : function(data, textStatus, jqXHR) {
+	   				   				//$('.erji').find("div").empty();
+	   				   				zw3.removeAllSlides();
+	   				   				if (data.data.Positions.length > 0) {
+	   				   					var options='';
+	   				   					
+	   				   					for (var i = 0; data.data.Positions.length > i; i++) {
+	   				   						zw3.appendSlide("<div class='swiper-slide'>" + data.data.Positions[i].jobName + "</div>");
+	   				   	   				}
+	   				   					//$('.erji').find("div.swiper-wrapper").append(options);
+	   				   				}
+	   				   				
+	   				   				$('.sanji').find("div.swiper-slide").each(function(){
+	   				   					$(this).click(function(){
+	   				   						$('#zhiwei').val($(this).text());
+	   				   						$('.sanji').animate({'marginLeft':winW+'px'});
+	   				   						$('body').css('overflow','scroll');
+	   				   					});
+	   				   				});
+	   				   			},error:function(res){
+	   				   				alert(res);
+	   				   			}
+	   				   		});
+	   					});
+	   				});
+	   			},error:function(res){
+	   				alert(res);
+	   			}
+	   		});
+			
+			$('.erji').animate({'marginLeft':'0'});
+			$('.erji').show();
+			//$('.zhiye').eq(1).show();	
+		}) 
+		
+		
+		
+		$('#exp').click(function(){
+			$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('.zhiye3').show();	
+		})
+		$('.jy .swiper-slide').click(function(){
+			$('.zhiye3').animate({'marginLeft':winW+'px'});
+			$('input[name=experience]').val($(this).text());
+			$('body').css('overflow','scroll');
+		});
+		
+        $('#edu').click(function(){
+        	$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('.zhiye4').show();	
+		})
+		$('.xl .swiper-slide').click(function(){
+			$('.zhiye4').animate({'marginLeft':winW+'px'});
+			$('input[name=education]').val($(this).text());
+			$('body').css('overflow','scroll');
+		});
+        
+        $("#search").click(function() {
+        	
+        	var searchTxt = $("#searchTxt").val();
+        	
+        	$.ajax({
+				url : [[@{/services/resume/getAllMajor}]],
+	   			data : {
+	   				'search_name': searchTxt
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				zy.removeAllSlides();
+	   				if (data.length > 0) {
+	   					var options='';
+	   					
+	   					for (var i = 0; data.length > i; i++) {
+	   						zy.appendSlide("<div class='swiper-slide'>" + data[i].name + "</div>");
+	   	   				}
+	   					//$('#majList').append(options);
+	   				}
+	   				$('.zy').find(".swiper-slide").each(function(){
+	   					$(this).click(function(){
+	   						//$('.zhiye5').animate({'marginLeft':winW+'px'});
+	   						
+	   						$('.zhiye5').hide();
+	   						$('input[name=major]').val($(this).text());
+	   						$('body').css('overflow','scroll');
+	   					});
+	   				});
+	   			},error:function(res){
+	   				alert(res);
+	   			}
+	   		});
+        });
+        
+        $('#maj').click(function() {
+        	$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+        	$('.zhiye5').show();	
+		})
+		$('.zy .swiper-slide').click(function(){
+			$('.zhiye5').animate({'marginLeft':winW+'px'});
+			$('input[name=major]').val($(this).text());
+			$('body').css('overflow','scroll');
+		});
+        
+        $("input[name=salary]").click(function() {
+        	$('.zhiye2').show();
+        })
+        
+        $("#salary_save").click(function() {
+        	var salary_down = $("input[name=salary_down]").val();
+        	var salary_up = $("input[name=salary_up]").val();
+        	var exp = /^\d+$/;
+        	
+        	if(!salary_down.match(exp) || salary_down==''){
+        		alert('请输入数字');
+        		return false;
+        	}
+        	if(!salary_up.match(exp) || salary_up==''){
+        		alert('请输入数字');
+        		return false;
+        	}
+        	
+        	if(parseInt(salary_down) > parseInt(salary_up)){
+        		alert('薪资最低值不可高于最高值');
+        		return false;
+        	}
+        	var str1 = parseInt((parseInt(salary_down)+500)/1000);
+        	var str2 = parseInt((parseInt(salary_up)+500)/1000);
+        	$("#zhiye2").animate({'marginLeft':winW+'px'});
+        	$('.xinzi-box').eq(2).animate({'marginLeft':winW+'px'});
+        	$('input[name=salary]').val(str1 + 'K ~ ' + str2 + 'K');
+        });
+        
+        
+        //地区选择
+        $('#place').click(function(){
+			$('.zhiye6').show();
+			$('.zhiye6').animate({'marginLeft':'0'});
+		})
+		$('.zhiye6 .swiper-slide').click(function(){
+			$('.zhiye6').animate({'marginLeft':winW+'px'});
+			$('input[name=province]').val($(this).text());
+			var in_id=parseInt($(this).attr("id").split("_")[1]);
+			$.ajax({
+				url : [[@{/services/resume/getCity}]],
+	   			data : {
+	   				'provinceId': in_id
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				dy2.removeAllSlides();
+	   				if (data.length > 0) {
+	   					var options='';
+	   					
+	   					for (var i = 0; data.length > i; i++) {
+	   						dy2.appendSlide("<div class='swiper-slide'>" + data[i].name + "</div>");
+	   						
+	   	   				}
+	   					
+	   				}
+	   				$('.dy2').find(".swiper-slide").each(function(){
+	   					$(this).click(function(){
+	   						//$('input[name=district]').val($(this).text());
+	   						$('#place').val($('input[name=province]').val() + $(this).text());
+	   						$('.zhiye7').animate({'marginLeft':winW+'px'});
+	   					});
+	   				});
+	   			},error:function(res){
+	   				alert(res);
+	   			}
+	   		});
+
+			$('.zhiye7').animate({'marginLeft':'0'});
+			$('.zhiye7').show();	
+		}) 
+        
+        
+        $("#fabubut").click(function() {
+        	
+			var exp = /^\d+$/;
+			var number = $('input[name=number]').val();
+        	if(!number.match(exp) || number==''){
+        		alert('招聘人数必须是数字');
+        		return false;
+        	}
+        	var city = $('input[name=city]').val();
+        	if(city==''){
+        		alert('地址不可为空');
+        		return false;
+        	}
+        	var city = $('input[name=city]').val();
+        	if(city==''){
+        		alert('地址不可为空');
+        		return false;
+        	}
+        	var description = $("textarea[name=description]").val();
+        	if(description==''){
+        		alert('描述不可为空');
+        		return false;
+        	}
+        	if(description.length > 800){
+        		alert('描述不可超过800字');
+        		return false;
+        	}
+        	$("#saveform").submit();
+        });
+		
+		$('.xinzi-box').css({'marginLeft':winW+'px'});
+        $('.fabu-form li').each(function(index){
+			$(this).click(function(){
+				if(index!=1&& index!=6 && index!=7){
+					$('.xinzi-box').eq(index).animate({'marginLeft':'0'});
+				}
+				
+			})
+		}) 
+		/* $('.xinzi-box').each(function(index){
+			$(this).find('a').click(function(){
+				$('.xinzi-box').eq(index).animate({'marginLeft':winW+'px'});	
+			})	
+			
+		}) */
+		/* $('.xinzi-box').find('.fabu-button').click(function(){
+			$('.xinzi-box').eq(2).animate({'marginLeft':winW+'px'});	
+		}) */
+		
+    });
+	/*]]>*/
+	</script>
+</html>

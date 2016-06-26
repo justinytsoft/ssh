@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+
+	<body style="background-color: #f4f4f4;">
+		
+		<link rel="stylesheet" th:href="@{/merchant/assets/css/style1.css}" />
+		<style>
+			.giveMoneyTable tr th {text-align: right;}
+			.giveMoneyTable tr td {text-align: left;padding-left: 15px;}
+		</style>
+		
+		<script type="text/javascript" th:src="@{/assets/js/ajaxfileupload.js}"></script>	
+		<script type="text/javascript" th:src="@{/assets/js/common.js}"></script>	
+			
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			$('.giveMoneyGb').css({'height':$(window).height()-120,});
+
+			$(function(){
+				
+				//初始化日期框
+				$('#redbagSendTime').datetimebox({
+				    height: 37,
+				    width:173,
+				    showSeconds: false, //是否显示秒
+				    editable: false, //是否开启键盘输入
+				    required:true, //是否必须输入
+				    validateOnCreate:false, // 相当于 onblur 事件
+					onHidePanel:function(){ //关闭面板是触发
+						var nowDate = new Date();
+						var selDate = new Date(($('#redbagSendTime').datetimebox("getText").replace(/-/g,"/")));
+						
+						var sel = Date.UTC(selDate.getFullYear(),(selDate.getMonth()+1),selDate.getDate()); //选择的时间 毫秒数
+						var now = Date.UTC(nowDate.getFullYear(),(nowDate.getMonth()+1),nowDate.getDate()); //当前时间 毫秒数
+						var later = now + 24 * 7 * 60 * 60 * 1000; //当前时间 7 天后的时间 毫秒数
+						
+						if(now > sel || sel > later){ //当前时间大于选择时间    或  选择时间超过当前时间7天  就要不得
+							$('#redbagSendTime').datetimebox("clear");
+							cAlert("发放时间只能大于当前时间且最多延迟七天");
+						}
+					}
+				});
+				
+				//初始化下拉列表
+				$("#redbagSection").combobox({
+					url:[[@{/merchant/getSections}]],
+					valueField:"id",
+					textField:"name",
+					width:173,
+					height:35,
+					editable:false,
+					required:true,
+				    validateOnCreate:false
+				});
+
+				//上传按钮点击事件
+				$("#redbagUpload").click(function(){
+					$("#redbagFile").trigger("click");
+				});
+				
+				//表单提交
+				$("#redbagSubmit").click(function(){
+					var form = $("#redbagForm");
+					var model = $("input[type=radio][name=model]:checked").val();
+
+					if(model==0){
+						if($("#redbagCover").val()==""){
+							cAlert("请选择广告封面");
+							return;
+						}
+					}
+					
+					if(form.form("validate")){ //表单验证
+						form.form("submit",{ //表单提交
+							url:form.attr("action"),
+							success: function(data){
+								data = eval('(' + data + ')');  // change the JSON string to javascript object
+								if(data.flag){
+									updateMessage();
+									iRight.panel("refresh"); //刷新页面
+								}	
+								cAlert(data.msg);
+							}
+						});
+					}
+				});
+				
+				//再次发布时加载数据
+				var m = [[${m}]];
+				if(m!=null){
+					console.info(m);
+					var form = $("#redbagForm");
+					form.form("load",{
+						id:m.id,
+						section_id:m.section_id,
+						//send_time:new Date(m.adv_time).format("yyyy-MM-dd HH:mm"),
+						adv_play_time:m.adv_play_time,
+						money:m.amount,
+						count:m.number,
+						title:m.title,
+						sub_title:m.sub_title,
+						type:m.type
+					});
+					if(m.title==null || m.title==""){
+						$("input[name=model]:first").trigger("click");
+						$("#redbagPre").attr("src",(imgPre+m.adv_img)).show();
+						$("#redbagCover").val(m.adv_img);
+					}else{
+						$("input[name=model]:last").trigger("click");
+					}
+				} else{
+					$("input[type=radio][name=model]:first").trigger("click");
+				}
+				
+			});
+		
+			//发放金额改变时触发 n 新值 o 旧值
+			function setSendCount(n, o){
+	            if(/^\d+$/.test(n) && n>=500){
+					$("#redbagCount").textbox("setText",n*2);
+	            }else{
+	            	$("#redbagMoney").textbox("clear");
+	            	$("#redbagCount").textbox("clear");
+	            }
+			}
+			
+			//file元素发生改变时触发
+			function redbagUploadCover(obj){
+				$.ajaxFileUpload({
+                    url: [[@{/services/upload/uploadImage}]], //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: "redbagFile", //文件上传域的ID
+                    dataType: 'json', //返回值类型 一般设置为json
+                    success: function (data, status)  //服务器成功响应处理函数
+                    {
+                    	$("#redbagPre").attr("src",data.data.path).show();
+                    	$("#redbagCover").val(data.data.fileName);
+                    },
+                    error: function (data, status, e)//服务器响应失败处理函数
+                    {
+                    	cAlert(e);
+                    }
+	        	});
+				$(obj).val("");
+			}
+			
+			//模版选择
+			function modelSel(val){
+				var cus = $("tr[name=cus]");
+				var sys = $("tr[name=sys]");
+				if(val==0){
+					$.each(cus,function(){
+						$(this).show();
+					});
+					$.each(sys,function(){
+						$(this).hide();
+					});
+					$("#redbagTitle").textbox({required:false});
+					$("#redbagSubTitle").textbox({required:false});
+				}else{
+					$.each(cus,function(){
+						$(this).hide();
+					});
+					$.each(sys,function(){
+						$(this).show();
+					});
+					$("#redbagTitle").textbox({required:true});
+					$("#redbagSubTitle").textbox({required:true});
+				}
+			}
+		/*]]>*/
+		</script>
+		
+		<div class="contain giveMoney">
+			<!--<p>注：*每次发放红包平台要收取黄金币xx</p>-->
+			<!--table-->
+			<div class="giveMoneyGb">
+				<form id="redbagForm" th:action="@{/merchant/redbag/save}" method="post">
+					<input type="hidden" name="id"/>	
+					<table class="giveMoneyTable">
+						<tr class="p">
+							<th>注：</th>
+							<td>*每次发放红包平台要收取黄金币xx</td>
+						</tr>
+						<tr>
+							<th width="110px">发放地区：</th>
+							<td>
+								<select name="section_id" id="redbagSection" disabled="disabled"></select>
+							</td>
+						</tr>
+						<tr>
+							<th>发放时间：</th>
+							<td>
+								<input id="redbagSendTime" type="text" disabled="disabled" name="send_time" th:value="${beans.dateFormatter.formatDateToStr(m.adv_time,'yyyy-MM-dd HH:mm')}"/>
+							</td>
+						</tr>
+						<tr>
+							<th>播放时间：</th>
+							<td>
+								<input class="easyui-textbox" type="text" disabled="disabled" name="adv_play_time" data-options="width:173,height:35,required:true,validateOnCreate:false,missingMessage:'只能输入整数',validType:'isNumber'"/>
+								<span style="font-size: 16px;padding-left: 15px;">秒</span>
+							</td>
+						</tr>
+						<tr>
+							<th>发放金额：</th>
+							<td>
+								<input class="easyui-textbox" type="text" disabled="disabled" id="redbagMoney" name="money" data-options="width:173,height:35,required:true,validateOnCreate:false,onChange:setSendCount,missingMessage:'只能输入整数,且金额最少为500'"/>
+								<span style="font-size: 16px;padding-left: 15px;">黄金币(最低500)</span>
+							</td>
+						</tr>
+						<tr>
+							<th>发放数量：</th>
+							<td>
+								<input class="easyui-textbox" type="text" disabled="disabled" id="redbagCount" name="count" data-options="width:173,height:35,readonly:true"/>
+								<span style="font-size: 16px;padding-left: 15px;">个</span>
+							</td>
+						</tr>
+						<tr>
+							<th>模版选择：</th>
+							<td>
+								<p th:if="${m.title==null OR m.title==''}">自定义模版</p>
+								<p th:if="${m.title!=null AND m.title!=''}">系统模版</p>
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>主标题：</th>
+							<td>
+								<input class="easyui-textbox" disabled="disabled" type="text" id="redbagTitle" name="title" data-options="width:173,height:35,validateOnCreate:false"/>
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>次标题：</th>
+							<td>
+								<input class="easyui-textbox" disabled="disabled" type="text" id="redbagSubTitle" name="sub_title" data-options="width:173,height:35,validateOnCreate:false"/>
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>模版：</th>
+							<td style="padding:10px">
+								<img alt="模版" th:src="${application.baseImageUrl + m.adv_img}" style="width: 200px;height: 250px" />
+								
+							</td>
+						</tr>
+						<td>
+								<a class="yellowBtn" th:if="${m.verify_status==0}" th:href="@{/adv/save_verify(id=${m.id},verify_status=1)}">认证通过</a>
+								<a class="yellowBtn" th:if="${m.verify_status==0}" th:href="@{/adv/save_verify(id=${m.id},verify_status=-1)}">不通过</a>
+						</td>
+					</table>
+				</form>
+			</div>
+		</div>
+	</body>
+
+</html>

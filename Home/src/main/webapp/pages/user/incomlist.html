@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<style>
+.tablelist tr:nth-of-type(even) {
+	background: #f8f8f8;
+}
+
+.tablelist tr:nth-child(odd) {
+	background: #fefefe;
+}
+
+.tablelist tr th {
+	text-align: center;
+	font-size: 14px;
+	border: 1px solid #e3eaf2;
+	background: #F8F8F8;
+	height: 50px;
+	font-weight: normal;
+}
+
+.tablelist tr td {
+	text-align: center;
+	font-size: 14px;
+	border: 1px solid #e3eaf2;
+}
+
+</style>
+<body>
+	
+    <div class="webPage">
+	    <form id="searchForm" method="post" class="formbody">
+			<div style="width:1200px">
+				<span th:unless="${incomes!=null and not #lists.isEmpty(incomes)}" th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"  th:if="${incomes!=null and not #lists.isEmpty(incomes)}">
+					<thead>
+						<tr>
+							<th width="150">商家名称</th>
+							<th width="100">收益描述</th>
+							<th width="200">获得时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u:${incomes}">
+							<td th:text="${u.merchant_name}">商家名称</td>
+							<td th:text="${u.desc}"></td>
+							<td th:text="${#dates.format(u.create_time, 'yyyy-MM-dd')}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${incomes!=null and not #lists.isEmpty(incomes)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
+</html>

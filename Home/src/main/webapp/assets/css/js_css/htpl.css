@@ -1,0 +1,316 @@
+*{
+	margin:0;
+	padding:0;
+}
+
+body{
+	font-family:"simhei";
+background: #ebebeb;	
+}
+
+
+
+.ht_htpl{
+border: solid 1px #8DB6CD;
+background: #FFF;
+border-radius:5px;
+padding:3px;
+line-height:21px;
+}
+.ht_top{
+padding: 0px 10px 0px 10px;
+border-top: solid 1px #8DB6CD;
+}
+.ht_content{
+padding:5px;
+border: solid 1px #F2F2F2;
+border-radius:5px;
+margin-top:10px;
+margin-bottom:20px;
+background: #FFF;
+}
+
+.ht_t_t_t{
+padding:5px;
+margin-top:1px;
+margin-bottom:1px;
+background: #2a8fd5;
+}
+
+
+
+.ht_t_t{
+
+padding:5px;
+border: solid 1px #F2F2F2;
+border-radius:5px 5px 0px 0px;
+margin-top:20px;
+margin-bottom:1px;
+background: #fff;
+
+}
+
+
+.ht_t_t_l{
+float:left;
+margin-right:10px;
+}
+
+.ht_t_t_l_i{
+	margin:5px 10px 5px 10px;
+	border-radius:5px;
+	float:left;
+}
+
+.ht_t_t_r{
+float:left;
+margin-left:10px;
+margin-top:10px;
+font-size:24px;
+color:#fff;
+}
+
+.ht_t_t_r_t{
+	float:left;
+	font-size:12px;
+	color:#888;
+	bottom:10px;
+	position:relative;
+}
+
+.ht_t_t_r_l{
+margin-top:5px;	
+float:left;
+width:80px;
+font-size:16px;
+color:#000;
+}
+.ht_t_t_r_r{
+margin:7px 10px 0px 0px;	
+font-size:20px;
+float:right;
+width:30%;
+color:#4090c0;
+word-break: break-all; 
+word-wrap:break-word;
+
+}
+.ht_t_c{
+padding:5px;
+border: solid 1px #F2F2F2;
+
+margin-bottom:1px;
+background: #FFF;
+font-style:normal;
+
+}
+
+.ht_t_d{
+padding:5px;
+border: solid 1px #F2F2F2;
+border-radius:0px 0px 5px 5px;
+margin-top:1px;
+margin-bottom:5px;
+background: #FFF;
+font-style:normal;
+word-break: break-all; 
+word-wrap:break-word;
+
+}
+.ht_t_d_t{
+	margin:5px 0px 0px 20px;
+	font-size:14px;
+	
+}
+
+.ht_t_d_r{
+	font-size:14px;
+	color:#888;
+}
+
+.ht_t_d_m{
+	font-size:20px;
+	margin:0px 0px 5px 20px;
+	color:#4090c0;
+}
+
+.ht_t_e{
+	padding:5px;
+	font-size:14px;
+	color:#888;
+	word-break: break-all; 
+	word-wrap:break-word;
+}
+
+.ht_t_see{
+	float:left;
+	margin-left:30px;
+	text-decoration:none;
+	font-size:12px;
+	color:#444;
+}
+.ht_t_b{
+text-align:center;
+margin-top:10px;
+line-height:21px;
+}
+.ht_t_b_z{
+	
+	float:right;
+	font-size:12px;
+	color:#444;
+}
+
+.ht_t_b_z_r{
+	float:right;
+	margin-right:10px;
+	cursor:pointer;
+}
+
+.ht_t_b_z_d{
+	float:right;
+	margin-right:20px;
+	cursor:pointer;
+}
+
+
+
+.ht_dh{
+text-align:center;
+line-height:21px;
+position:fixed;
+padding:0px;
+right:0px;
+bottom:0px;
+width:100%;
+background: #f0f0f0;
+}
+.ht_dh_a{
+	float:left;
+	padding:10px 0px 10px 0px;
+	width:20%;
+	background:#fff;
+	color:#4090c0;
+}
+.ht_dh_b{
+	position:fixed;
+	padding:10px 0px 10px 0px;
+	width:58%;
+	color:#fff;
+	background:#4090c0;
+	bottom:0;
+	left:21%;
+}
+
+.ht_dh_c{
+	float:right;
+	font-size:8px;
+	color:#4090c0;
+	padding:10px 0px 10px 0px;
+	width:20%;
+	background:#fff;
+}
+
+.ht_d_back{
+float:left;
+width:33.3%;
+}
+.ht_d_ans{
+float:left;
+width:33.3%;
+margin:
+}
+.ht_d_more{
+float: right;
+width:33.3%;
+}
+.ht_dh i{
+width:4px;height:4px;font-style:normal;font-size:11px;
+}
+.sideBar{
+width:50%;
+min-height:70%;
+background:#FFFFFF;
+
+}
+.ht_ul{
+height:250px;
+}
+.ht_ul li{
+padding:5px;
+font-size:14px;
+list-style:none;
+margin-left:10px;
+margin-right:10px;
+border-bottom: solid 1px #ccc;
+margin-top:10px;
+}
+.ht_s_b{
+border-top:solid 1px #ccc;
+position:absolute;	
+bottom:5px;
+left:10px;
+right:10px;
+}
+.ht_s_b font{
+margin-left:20px;
+font-size:18px;
+position:absolute;
+bottom:3px;
+}
+.popLayer{
+background:#FFFFFF;
+margin-left:7%;
+border-radius:5px;
+}
+.sendBorder{
+  padding:5px;
+  background: #fff;
+  border-radius: 5px;
+}
+
+.h_bottom{
+	padding:10px;
+}
+
+
+.operBtn{
+text-align:center;
+padding:10px 10px 0px 0px;
+}
+
+.operBtn_s{
+float:right;
+border: solid 2px #4090c0;
+width:50px;
+margin-right:10px;
+padding:3px;
+font-size:16px;
+background:#4090c0;
+color:#fff;
+}
+
+.operBtn_c{
+float:right;
+border: solid 2px #4090c0;
+width:50px;
+margin-right:10px;
+padding:3px;
+font-size:16px;
+color:#4090c0;
+}
+
+.operBtn a{
+text-decoration:none;
+color:#000000;
+}
+
+.sInput{
+	width: 100%;
+	font-size: 14px;
+	line-height: 21px;
+	resize:none;
+	border:0;
+	color:#888;
+
+}

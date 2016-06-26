@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.CompanyDao">
+	
+	<!-- 更新商户已发放金额总数 -->
+	<update id="updateCompanyGrant_count" parameterType="com.goldCityWeb.domain.Company">
+		UPDATE company SET grant_count = #{grant_count} WHERE id = #{id}
+	</update>
+	
+	<!-- 查询最新的未付款的充值记录    废了 -->
+	<select id="queryNewestMerChargeRecord" resultType="com.goldCityWeb.domain.ChargeRecord">
+		SELECT cr.*, DATE_FORMAT(cr.charge_time,'%Y-%m-%d %H:%i') AS str_charge_time,(SELECT ct.name FROM charge_type ct WHERE ct.id = cr.`charge_type`) AS charge_type_name
+		FROM charge_record cr
+		<where>
+			AND cr.company_id = #{id}
+		</where>
+		ORDER BY charge_time DESC
+		LIMIT 0,1;
+	</select>
+	
+	<!-- 查询申请提现的商家 -->
+	<select id="queryStatementCompanyList" resultType="com.goldCityWeb.domain.Company">
+		SELECT 
+			c.*,
+			(SELECT SUM(fr.real_fee) FROM fee_record fr WHERE fr.record_type=1 AND c.id = fr.mid <if test="status!=null">AND fr.status = #{status}</if>) AS statement_money,
+			(SELECT COUNT(1) FROM fee_record fr WHERE fr.record_type=1 AND c.id = fr.mid <if test="status!=null">AND fr.status = #{status}</if>) AS statement_num
+		FROM company c
+		<where>
+			(SELECT COUNT(1) FROM fee_record fr WHERE fr.record_type=1 AND c.id = fr.mid <if test="status!=null">AND fr.status = #{status}</if>) != 0
+			<if test="phone!=null">
+				AND c.company_phone = #{phone}
+			</if>
+		</where>
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<!-- 查询申请提现的商家总数 -->
+	<select id="queryStatementCompanyList_count" resultType="int">
+		SELECT COUNT(1) FROM (SELECT 
+			c.*,
+			(SELECT SUM(fr.real_fee) FROM fee_record fr WHERE fr.record_type=1 AND c.id = fr.mid <if test="status!=null">AND fr.status = #{status}</if>) AS statement_money,
+			(SELECT COUNT(1) FROM fee_record fr WHERE fr.record_type=1 AND c.id = fr.mid <if test="status!=null">AND fr.status = #{status}</if>) AS statement_num
+		FROM company c
+		<where>
+			(SELECT COUNT(1) FROM fee_record fr WHERE fr.record_type=1 AND c.id = fr.mid <if test="status!=null">AND fr.status = #{status}</if>) != 0
+			<if test="phone!=null">
+				AND c.company_phone = #{phone}
+			</if>
+			) a
+		</where>
+	</select>
+	
+	<!-- 查询消费列表 -->
+	<select id="queryMerChargeRecord" resultType="com.goldCityWeb.domain.ChargeRecord">
+		SELECT cr.*, DATE_FORMAT(cr.charge_time,'%Y-%m-%d %H:%i') AS str_charge_time,(SELECT ct.name FROM charge_type ct WHERE ct.id = cr.`charge_type`) AS charge_type_name
+		FROM charge_record cr
+		<where>
+			cr.company_id  = ${param.mid}
+			<if test="param.from!=null">AND charge_type = #{param.from}</if>
+			<if test="param.sdate!=null">AND charge_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND charge_time <= #{param.edate}]]></if>
+			<if test="param.status!=null">AND status = #{param.status}</if>
+		</where>
+		ORDER BY cr.charge_time DESC
+		<if test="param.page!=null and param.rows!=null">
+			LIMIT #{param.page}, #{param.rows}		
+		</if> 
+	</select>
+	
+	<!-- 查询消费列表总数 -->
+	<select id="queryMerChargeRecordTotal" resultType="int">
+		SELECT COUNT(1)
+		FROM charge_record cr 
+		<where>
+			cr.company_id = ${param.mid}
+			<if test="param.from!=null">AND charge_type = #{param.from}</if>
+			<if test="param.sdate!=null">AND charge_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND charge_time <= #{param.edate}]]></if>
+			<if test="param.status!=null">AND status = #{param.status}</if>
+		</where>
+	</select>
+	
+	<select id="queryAllCompanyType" resultType="com.goldCityWeb.domain.CompanyType">
+		select * from company_type
+	</select>
+	
+	<insert id="addCompany" parameterType="com.goldCityWeb.domain.Company"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO  company
+		<set>
+			`user_id` = #{user_id}, 
+			`company_name` = #{company_name}, 
+			`company_phone` = #{company_phone}, 
+			`link_man` = #{link_man}, 
+			`province_id` = #{province_id}, 
+			`city_id` = #{city_id}, 
+			`position_id` = #{position_id}, 
+			`address` = #{address}, 
+			`phone_num` = #{phone_num}, 
+			`web_link` = #{web_link}, 
+			`company_type` = #{company_type}, 
+			`licence` = #{licence}, 
+			`trade_license` = #{trade_license},
+			description = #{description},
+			logo = #{logo},
+			bank_card_num = #{bank_card_num},
+			bank_name = #{bank_name},
+			bank_phone = #{bank_phone},
+			real_auth = #{real_auth},
+			latitude = #{latitude},
+			longitude = #{longitude}
+		</set>
+		<!-- INSERT INTO `company` (`user_id`, `company_name`, `company_phone`, `province_id`, `city_id`, `position_id`, `address`, `phone_num`, `web_link`, `company_type`, `licence`, `trade_license`) 
+		VALUES(#{user_id},#{company_name},#{company_phone},#{province_id},#{city_id},#{position_id},#{address},#{phone_num},#{web_link},#{company_type},#{licence},#{trade_license}) -->
+	</insert>
+	
+	<select id="queryCompanyByName" resultType="com.goldCityWeb.domain.Company">
+		select * from company where company_name = #{company_name}
+	</select>
+	
+	<select id="queryCompanyByUserId" resultType="com.goldCityWeb.domain.Company">
+		select * from company where user_id = #{user_id}
+	</select>
+	
+	<select id="queryCompanyById" resultType="com.goldCityWeb.domain.Company">
+		SELECT CONCAT(c.`address`) AS address ,c.*, ct.`type_name` AS 'type_name', p.name AS provinceName,
+		ci.name AS cityName, po.name AS positionName
+		FROM company c, company_type ct, province p, city ci, position po
+		WHERE c.`company_type` = ct.`id`  AND c.id = #{id} AND c.province_id = p.id AND c.city_id = ci.id AND c.position_id = po.id
+	</select>
+	
+	<select id="queryCompanyList" resultType="com.goldCityWeb.domain.Company">
+		SELECT c.id, c.`company_name`, c.`phone_num`, c.`company_phone`, c.`verify_status`, ct.`type_name` AS 'type_name', CONCAT(c.`address`) AS address 
+		FROM company c, company_type ct
+		WHERE c.`company_type` = ct.`id` 
+		<if test="verify_status!=null">
+			AND c.verify_status = #{verify_status}
+		</if>
+ 		ORDER BY c.`id` DESC
+ 		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCompanyChargeList" resultType="com.goldCityWeb.domain.CompanyCharge">
+		select cr.*,ct.name as name,city.name as city_name,c.company_name 
+		from charge_record cr,company c,charge_type ct,city
+		where cr.company_id=c.id and cr.charge_type=ct.id and city.id=c.city_id
+		<if test="date1 != null">
+			and cr.charge_time between #{date1} and #{date2}
+		</if> 
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+		
+	<select id="queryCompanyChargeList_count" resultType="java.lang.Integer">
+		select count(1) FROM charge_record  where 1=1
+		<if test="date1 != null">
+			and charge_time between #{date1} and #{date2}
+		</if> 
+	</select>
+	
+	
+	<select id="queryHotCompanyList" resultType="com.goldCityWeb.domain.Company">
+		SELECT c.id, c.logo,c.description,c.`company_name`, u.`head` AS head, c.`company_phone`,c.`grant_count`,c.`web_link`, ct.`type_name` AS 'type_name', c.`address`
+		FROM sys_users u, company c LEFT JOIN company_type ct ON c.`company_type` = ct.`id` LEFT JOIN  city ci ON c.`city_id` = ci.`id` LEFT JOIN `position` pt ON c.`position_id` = pt.`id` LEFT JOIN province pv ON c.`province_id` = pv.`id`
+		WHERE u.id=c.user_id
+		<if test="verify_status!=null">
+			AND c.verify_status = #{verify_status}
+		</if>
+		<if test="name != null">
+			AND (c.`company_name` LIKE CONCAT('%',#{name} ,'%') OR c.description LIKE CONCAT('%',#{name} ,'%'))
+		</if>
+		<if test="type != null">
+			AND c.`company_type` = #{type}
+		</if>
+ 		ORDER BY c.`grant_count` DESC
+ 		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryCompanyList_count" resultType="java.lang.Integer">
+		select count(1) FROM company where 1=1
+		<if test="verify_status!=null">
+			AND verify_status = #{verify_status}
+		</if>
+	</select>
+	
+	<select id="queryChargeRecord" resultType="com.goldCityWeb.domain.ChargeRecord">
+		SELECT cr.*, DATE_FORMAT(cr.charge_time,'%Y-%m-%d %H:%i') AS str_charge_time,(SELECT ct.name FROM charge_type ct WHERE ct.id = cr.`charge_type`) AS charge_type_name
+		FROM charge_record cr
+		WHERE
+			cr.status=#{status} AND company_id = #{mid}
+		ORDER BY cr.charge_time DESC
+ 		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryChargeRecord_count" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM charge_record cr 
+		WHERE
+			cr.status=#{status} AND company_id = #{mid}
+		
+	</select>
+	
+	 <update id="updateCompanyStatus" parameterType="com.goldCityWeb.domain.Company" >
+	    UPDATE company
+	    <set>
+		    verify_status=#{verify_status},
+		    verify_date=now(),
+		     <if test="verify_desc!=null">
+	  			verify_desc=#{verify_desc}
+	 		 </if>
+	    </set>
+	    WHERE id=#{id}
+  </update>
+	
+	<select id="queryChargeRecordByUser" resultType="com.goldCityWeb.domain.ChargeRecord">
+		SELECT cr.*, (SELECT ct.name FROM charge_type ct WHERE ct.id = cr.`charge_type`) AS charge_type_name
+		FROM charge_record cr,company c WHERE company_id = c.`id` AND c.`user_id` = ${user_id}
+	</select>
+	
+	<select id="queryChargeRecordByUser_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM charge_record cr,company c WHERE company_id = c.`id` AND c.`user_id` = ${user_id}
+	</select>
+  
+  	<update id="updateCompany">
+  		UPDATE 
+		  `company` 
+		<set>
+		  <if test="user_id!=null">`user_id` = #{user_id},</if>
+		  <if test="company_name!=null">`company_name` = #{company_name},</if>
+		  <if test="company_phone!=null">`company_phone` = #{company_phone},</if>
+		  <if test="link_man!=null">`link_man` = #{link_man},</if> 
+		  <if test="province_id!=null">`province_id` = #{province_id},</if>
+		  <if test="city_id!=null">`city_id` = #{city_id},</if>
+		  <if test="position_id!=null">`position_id` = #{position_id},</if>
+		  <if test="address!=null">`address` = #{address},</if>
+		  <if test="phone_num!=null">`phone_num` = #{phone_num},</if>
+		  <if test="web_link!=null">`web_link` = #{web_link},</if>
+		  <if test="company_type!=null">`company_type` = #{company_type},</if>
+		  <if test="licence!=null">`licence` = #{licence},</if>
+		  <if test="trade_license!=null">`trade_license` = #{trade_license},</if>
+		  <if test="grant_count!=null">`grant_count` = #{grant_count},</if>
+		  `verify_status` = 0,
+		  <if test="description!=null">description = #{description},</if>
+		  <if test="logo!=null">logo = #{logo},</if>
+		  <if test="bank_card_num!=null">bank_card_num = #{bank_card_num},</if>
+		  <if test="bank_name!=null">bank_name = #{bank_name},</if>
+	      <if test="bank_phone!=null">bank_phone = #{bank_phone},</if>
+		  <if test="real_auth!=null">real_auth = #{real_auth},</if>
+		  <if test="longitude!=null">longitude = #{longitude},</if>
+		  <if test="latitude!=null">latitude = #{latitude}</if>
+		</set>
+		WHERE `id` = #{id}
+  	</update>
+</mapper>

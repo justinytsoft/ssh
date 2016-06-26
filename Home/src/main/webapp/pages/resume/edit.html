@@ -1,0 +1,1336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/swiper3.08.min.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/swiper3.08.jquery.min.js}"></script>
+<title>编辑简历</title>
+</head>
+
+<body style="background:#eee;">
+	<section class="webPage" style="margin-bottom:50px;">
+    	<form style="background:#eee;" th:action="@{/services/resume/save}" method="post" id="saveForm">
+            <section class="bjjl bjjlfile">
+            	<div class="bjjl-img-box">
+            		<img th:src="${resume.head != null? application.baseImageUrl+resume.head:'/recruitment/assets/images/test.jpg'}" />
+            	</div>
+            	<span th:text="${su.name}">名字</span>
+            	<input type="button" onclick="document.location = 'gallery:open';" />
+            </section>
+            
+            <section class="bjjl">
+                <ul>
+                    <li>
+                        <label>姓名</label>
+                        <!-- <a id="zhiye" href="javascript:void(0);"></a> -->
+                        <input  name="name"  type="text"  th:value="${su.name}"/>
+                    	
+                    </li>
+                    <li>
+                        <label>性别</label>
+                        <input id="sex1" name="sex" type="radio" th:checked="${su.sex==1}" value="1"/>
+                        <label for="sex1">男</label>
+                        <input id="sex2" name="sex" type="radio"  th:checked="${su.sex!=1}" value="0"/>
+                        <label for="sex2">女</label>
+                    </li>
+                    <li>
+                        <label>出生日期</label>
+                        <!-- <a id="addr" href="javascript:void(0);"></a> -->
+                        <input type="date" name="birthday" th:value="${su.birthday}"/>
+                    </li>
+                </ul>
+            </section>
+            
+            <section class="bjjl">
+                <ul>
+                	<li>
+                        <label>职业性质</label>
+                        <!-- <a id="zhiye" href="javascript:void(0);"></a> -->
+                       <input id="workType1" name="workType" type="radio" th:checked="${resume.workType=='兼职'}" value="兼职"/>
+                        <label for="workType1">兼职</label>
+                        <input id="workType2" name="workType" type="radio"  th:checked="${resume.workType!='兼职'}" value="全职"/>
+                        <label for="workType2">全职</label>
+                    </li>
+                    <li>
+                        <label>期望职位</label>
+                        <!-- <a id="zhiye" href="javascript:void(0);"></a> -->
+                        <input id="zhiye" name="expectPosts" readonly="readonly" type="text"  th:value="${resume.expectPosts}"/>
+                    	<img src="/recruitment/assets/images/arr-right.jpg" />
+                    </li>
+                    <li>
+                        <label>期望薪资</label>
+                        <input name="expectSalary" type="text" id="expectSalary" th:value="${resume.expectSalary}"/>
+                    </li>
+                    <li>
+                        <label>工作地点</label>
+                        <!-- <a id="addr" href="javascript:void(0);"></a> -->
+                        <input id="addr" name="area" readonly="readonly" type="text"  th:value="${resume.area}"/>
+                    	<img src="/recruitment/assets/images/arr-right.jpg" />
+                    </li>
+                    <li>
+                        <label>联系电话</label>
+                        <input placeholder="" name="phone" type="text"  th:value="${resume.phone}"/>
+                    	<img src="/recruitment/assets/images/arr-right.jpg" />
+                    </li>
+                </ul>
+            </section>
+            <section class="bjjl">
+                <ul>
+                    <!-- <li>
+                        <label>毕业学校</label>
+                        <input id="biye_xuexiao" name="college" th:value="${resume.college}" readonly="readonly" type="text" />
+                    	<img src="/recruitment/assets/images/arr-right.jpg" />
+                    </li> -->
+                    <li>
+                        <label>所学专业</label>
+                        <input id="biye_zhuanye" name="major" th:value="${resume.major}" readonly="readonly" type="text" />
+                    	<img src="/recruitment/assets/images/arr-right.jpg" />
+                    </li>
+                </ul>
+                
+                
+            </section>
+            
+            <section class="bjjl">
+            	<ul>
+                	<li>
+                    	<label style="border:none;">教育经历</label>
+                    </li>
+                </ul>
+                <ul class="bjjl-select" id="tjjy-box">
+                	
+                		
+                </ul>
+                <a id="add-jiaoyu" href="javascript:void(0);" class="add-work">
+                			<img style="width:20px; height:20px; margin-top:12px;float:left;" src="/recruitment/assets/images/add-work.jpg" />
+                			<div class="fl">添加教育经历</div>
+                		</a>
+            </section>
+            <section class="bjjl">
+            	<ul>
+                	<li>
+                    	<label style="border:none;">工作经历</label>
+                    </li>
+                </ul>
+                <ul class="bjjl-select" id="bjjl-select1">
+                	
+                		
+                	
+                </ul>
+                <a id="add-work" href="javascript:void(0);" class="add-work">
+                			<img style="width:20px; height:20px; margin-top:12px;float:left;" src="/recruitment/assets/images/add-work.jpg" />
+                			<div class="fl">添加工作经历</div>
+                		</a>
+            </section>
+            <section class="bjjl">
+            	<ul>
+                	<li style="border:0;">
+                    	<label style="float:left;">工作状态</label>
+                    	<div class="bjjl-select" style="float:left;">
+			                <select name="status">
+			                	<option value="1" th:selected="${resume.status==1}">在职</option>
+			                	<option value="0" th:selected="${resume.status==0}">离职</option>
+			                	<option value="2" th:selected="${resume.status==2}">在校</option>
+			                </select>
+                		</div>
+                    </li>
+                    
+                </ul>
+                
+                <ul class="bjjl-select lzzz">
+                	
+                	<!-- <li id="workstate">
+                		<span>在职</span>
+                		<img style="display:none;" src="/recruitment/assets/images/selected.jpg" />
+                	</li>
+                	<li>
+                		<span>离职</span>
+                		<img src="/recruitment/assets/images/selected.jpg" />
+                	</li> -->
+                </ul>
+            </section>
+            
+            <section class="bjjl2">
+                <ul>
+                    <li>
+                    	<a style="width:100%;" href="javascript:void(0);" id="jinengbiaoqian">
+                        	<label style="width:70px;">技能标签</label>
+                        	<div class="biaoqian3" id="jn_biaoqian"></div>
+                    		<img src="/recruitment/assets/images/arr-right.jpg" />
+                    	</a>
+                    </li>
+                </ul>
+            </section>
+            <section class="bjjl2">
+                <ul>
+                    <li>
+                    	<a style="width:100%;" href="javascript:void(0);" id="aihaobiaoqian">
+                        	<label>爱好标签</label>
+                        	<div class="biaoqian3" id="ah_biaoqian"></div>
+                    		<img src="/recruitment/assets/images/arr-right.jpg" />
+                    	</a>
+                    </li>
+                </ul>
+            </section>
+            
+            <section class="bjjl">
+            	<ul>
+                	<li style=" border:none;">
+                    	<label style=" border:none;">自我评价</label>
+                    </li>
+                </ul>
+                <textarea style="padding:4px;" placeholder="评价一下自己" name="selfEvaluate" th:text="${resume.selfEvaluate}"></textarea>
+            </section>
+            <section class="bjjl">
+            	<!-- <ul>
+                	<li style="height:100px;">
+                    	<label>自我评价</label>
+                        <textarea style="padding:4px;" placeholder="评价一下自己" name="selfEvaluate" th:text="${resume.selfEvaluate}"></textarea>
+                    </li>
+                </ul> -->
+                
+                
+                <div class="clr"></div>
+                <input type="hidden" name="hobby"/>
+                <input type="hidden" name="tags"/>
+                <input type="hidden" name="userId" th:value="${userId}"/>
+                <input type="hidden" name="id" th:value="${resume.id}"/>
+                <input type="hidden" name="exp1"/>
+                <input type="hidden" name="pc1"/>
+                
+                <input type="hidden" name="exstate"/>
+                <input type="hidden" name="edstate"/>
+                <!-- <input class="sub-but" type="button" value="提交" /> -->
+                <div class="sub-but" id="sub-but" style="width:80%;">提交</div>
+            </section>
+            
+        </form>
+    </section>
+    <div class="zhiye1 zhiye" style="display:none;">
+    	<div class="swiper-container zw1" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide" th:each="i:${industry}" th:id="${'z_'+i.id}" th:text="${i.name}">销售</div>
+        	</div>
+    	</div>
+    </div>
+    
+    <div class="zhiye2 zhiye" style="display:none;">
+    	<div class="swiper-container zw2" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	
+        	</div>
+    	</div>
+    </div>
+    
+    
+    
+    <div class="zhiye3 zhiye" style="display:none;">
+    	<div class="swiper-container dq1" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide"  th:each="i:${province}" th:id="${'p_'+i.id}" th:text="${i.name}">四川</div>
+        	</div>
+    	</div>
+    	<!-- <div>
+            <a href="javascript:void(0)" th:each="i:${province}" th:id="${'p_'+i.id}" th:text="${i.name}">四川</a>
+        </div> -->
+    </div>
+    <div class="zhiye5 zhiye" style="display:none;">
+    	<div class="swiper-container dq2" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	
+        	</div>
+    	</div>
+    	<!-- <div>
+            <a href="#">成都</a>
+            
+        </div> -->
+    </div>
+    
+    <div class="zhiye5 zhiye" style="display:none;" id="coll">
+    <div class="add-biaoqian">
+            <input id="searchTxt" type="text" />
+            <input id="search" type="button" value="搜索" />
+        </div>
+        <div  class="swiper-container sc1" style="height:100%; top:80px;">
+    		<div id="coll_list" class="swiper-wrapper" >
+            	
+        	</div>
+    	</div>
+    	<!-- <div id="coll_list">
+            
+            
+        </div> -->
+    </div>
+    <div class="zhiye5 zhiye" style="display:none;"  id="maj">
+    	<div class="add-biaoqian">
+            <input id="searchTxt1" type="text" />
+            <input id="search1" type="button" value="搜索" />
+            <input id="colid" type="hidden"  />
+        </div>
+        <div class="swiper-container sc2" style="height:100%; top:80px;">
+    		<div  id="maj_list" class="swiper-wrapper" >
+            	
+        	</div>
+        	<!-- <div class="loading" id="nomoreresults" style="bottom:20px;position:relative;text-align: center;padding-top: -20px;">没有更多数据了.</div> -->
+    	</div>
+    </div>
+    
+    <div class="zhiye zhiye-add" style="display:none;">
+    	<div class="swiper-container zw3" style="height:100%;">
+    		<div class="swiper-wrapper" >
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div> 
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+            	<div class="swiper-slide">职位1</div>
+        	</div>
+    	</div>
+    </div>
+    
+    <div class="zhiye5 zhiye" id="bianji"  style="display:none;">
+    	<div class="add-biaoqian">
+        	<label>技能标签</label>
+            <input id="addTxt" style="width:135px;"  type="text" />
+            <input id="add" type="button" value="添加" />
+            <input id="tijiao" type="button" style="margin-left:10px;" value="提交" />
+        </div>
+        <div class="add-box" style="margin-top:70px;">
+        	<div class="biaoqian2" id="jn_b">
+            	
+            </div>
+        </div>
+        <div class="tj-biaoqian">
+        	<h4>推荐标签：</h4>
+            <div class="biaoqian2" id="tj_b">
+            	<a th:each="l:${tags_j}" onclick="tj_click(this)" href="javascript:void(0);" th:text="${l.name}">测试测试</a>
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    
+    <div class="zhiye5 zhiye" id="bianji2"  style="display:none;">
+    	<div class="add-biaoqian">
+        	<label>爱好标签</label>
+            <input id="addTxt2" type="text" style="width:135px" />
+            <input id="add2" type="button" value="添加" />
+            <input id="tijiao2" type="button" style="margin-left:10px;" value="提交" />
+        </div>
+        <div class="add-box" style="margin-top:70px;">
+        	<div class="biaoqian2" id="ah_b">
+            	
+            </div>
+        </div>
+        <div class="tj-biaoqian">
+        	<h4>推荐标签：</h4>
+            <div class="biaoqian2" id="tj_b2">
+            	<a th:each="l:${tags_a}" href="javascript:void(0);" onclick="tj_click2(this)" th:text="${l.name}">测试测试</a>
+                
+            </div>
+        </div>
+    </div>
+    <!-- 自我评价 -->
+    <div class="zwpj-box" style="display:none;">
+    		<textarea placeholder="请填写自我评价"></textarea>
+    		<div style=" width:80%;" class="sub-but">确认</div>
+    </div>
+    <!-- 工作经历 -->
+    <div class="gzjl-box" style="display:none;">
+    		<ul>
+    			<li>
+    				<label>开始时间:</label>
+    				<input id="time1" type="date" />
+    			</li>
+    			<li>
+    				<label>结束时间:</label>
+    				<input id="time2" type="date" />
+    			</li>
+    			<li>
+    				<textarea id="textarea1" placeholder="请添加工作经历"></textarea>
+    			</li>
+    		</ul>
+    		<div id="tjgzjl" style=" width:80%;" class="sub-but">确认</div>
+    </div>
+    <!-- 教育经历 -->
+    <div class="gzjl-box" style="display:none;">
+    		<ul>
+    			<li>
+    				<label>开始时间:</label>
+    				<input id="time3" type="date" />
+    			</li>
+    			<li>
+    				<label>结束时间:</label>
+    				<input id="time4" type="date" />
+    			</li>
+    			<li>
+    				<textarea id="textarea2" placeholder="请添加教育经历"></textarea>
+    			</li>
+    		</ul>
+    		<div style=" width:80%;" id="querenjy" class="sub-but">确认</div>
+    </div>
+    
+    
+    
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+    var msg = [[${msg}]];
+	if(msg != null){
+		alert(msg);
+	}
+           
+	
+	function isHidden(){
+		/* $('.gzjl-box').hide();
+		$('.zhiye').hide();
+		$('body').css('overflow','scroll');
+		$('.webPage').show(); */
+		if($('.webPage').is(":hidden")){
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	function showMain(){
+		$('.gzjl-box').hide();
+		$('.zhiye').hide();
+		$('body').css('overflow','scroll');
+		$('.webPage').show();
+	}
+	/* var expectSalary1 = [[${resume.expectSalary}]];
+	if(expectSalary1 != null){
+		var expects = expectSalary1.split("K");
+		$("#expectSalary").val(expects[0] * 1000);
+	} */
+	
+    var hobbys = [[${resume.hobby}]];
+	if(hobbys != null){
+		var hobs = hobbys.split(",");
+		var ah_content = "";
+		var ah_bq_content = "";
+		for (var i=0; i<hobs.length; i++)
+		  {
+			ah_content += '<a href="javascript:void(0);" style="line-height:25px;margin-top:5px">'+hobs[i]+'</a>'
+			ah_bq_content += '<a href="javascript:void(0);" onclick="ah_click2(this)">'+hobs[i]+'</a>';
+			$("#tj_b2 a").each(function(){
+				if($(this).text()==hobs[i]){
+					$(this).remove();
+				}
+			});
+		  }
+		$('#ah_biaoqian').append(ah_content);
+		$('#ah_b').append(ah_bq_content);
+	}
+    
+	var tagses = [[${resume.tags}]];
+	if(tagses != null){
+		var tag = tagses.split(",");
+		var jn_content = "";
+		var jn_bq_content = "";
+		for (var i=0; i<tag.length; i++)
+		  {
+			jn_content += '<a href="javascript:void(0);" style="line-height:25px;margin-top:5px">'+tag[i]+'</a>';
+			jn_bq_content += '<a href="javascript:void(0);" onclick="jn_click(this)">'+tag[i]+'</a>';
+			$("#tj_b a").each(function(){
+				if($(this).text()==tag[i]){
+					$(this).remove();
+				}
+			});
+		  }
+		$('#jn_biaoqian').append(jn_content);
+		$('#jn_b').append(jn_bq_content);
+	}
+	
+	var edstate1 = [[${resume.edstate}]];
+	if(edstate1!=null && edstate1!='' ){
+		var eds = edstate1.split(",");
+		var ed_content = "";
+		for(var i=0;i<eds.length;i++){
+			ed_content += '<li style="height:50px;">';
+			ed_content += '<div class="fl">';
+			ed_content += '<h4 style="border:1px solid #fff;">'+eds[i].split("\n")[0]+'</h4>';
+			ed_content += '<h4 style="border:1px solid #fff;">'+eds[i].substring(eds[i].indexOf("\n")+1)+'</h4>';
+			ed_content += '</div>';
+			ed_content += '<img onclick="removeLi(this)" style="width:20px; height:20px; margin-top:14px;" src="/recruitment/assets/images/jian.jpg" />'; 
+			ed_content += '</li>';
+		}
+		$('#tjjy-box').append(ed_content);
+	}
+	
+	var exstate1 = [[${resume.exstate}]];
+	if(exstate1!=null && exstate1!=''){
+		var exs = exstate1.split(",");
+		var ex_content = "";
+		for(var i=0;i<exs.length;i++){
+			ex_content += '<li style="height:50px;">';
+			ex_content += '<div class="fl">';
+			ex_content += '<h4 style="border:1px solid #fff;">'+exs[i].split("\n")[0]+'</h4>';
+			ex_content += '<h4 style="border:1px solid #fff;">'+exs[i].substring(exs[i].indexOf("\n")+1)+'</h4>';
+			ex_content += '</div>';
+			ex_content += '<img onclick="removeLi(this)" style="width:20px; height:20px; margin-top:14px;" src="/recruitment/assets/images/jian.jpg" />'; 
+			ex_content += '</li>';
+		}
+		$('#bjjl-select1').append(ex_content);
+	}
+	
+	var status1 = [[${resume.status}]];
+	if(status1!=null){
+		if(status1==1){
+			$('#workstate').next().find('img').hide();
+			$('#workstate img').show()
+		} else {
+			$('#workstate img').hide();
+		}
+	}
+	
+	$('.bjjl-img-box img').load(function(){
+		var imgW = $('.bjjl-img-box img').width();
+		var boxW = $('.bjjl-img-box').width();
+		$('.bjjl-img-box img').css('marginLeft',((boxW-imgW)/2)+'px');
+	})
+	$(document).ready(function(e) {
+		//var start=0;
+		var winH0 = $(window).height();
+		//alert(winH0);
+		var winH = $(window).height()-50;
+		//alert(winH);
+		//swiper
+		var zw1 = new Swiper('.zw1',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH
+			})
+		var zw2 = new Swiper('.zw2',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH
+			})
+		var zw3 = new Swiper('.zw3',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH
+			})
+		var dq1 = new Swiper('.dq1',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH
+			})
+		var dq2 = new Swiper('.dq2',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH
+			})
+		var sc1 = new Swiper('.sc1',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH-150
+			})
+		var sc2 = new Swiper('.sc2',{
+			direction : 'vertical',
+			freeMode : true,
+			freeModeSticky : true,
+			slidesPerView : 10,
+			loop : false,
+			height : winH-150
+			})
+		
+		$('.biaoqian2 a').css('color','#fff');
+		$("#sub-but").click(function(){
+			var name = $("input[name=name]").val();
+			if(name==""){
+				alert("请输入姓名!");
+				return false;
+			}
+			var birthday = $("input[name=birthday]").val();
+			if(birthday==""){
+				alert("请输入出生日期!");
+				return false;
+			}
+			var expectPosts = $("input[name=expectPosts]").val();
+			if(expectPosts==""){
+				alert("请选择职位!");
+				return false;
+			}
+			var expectSalary = $("input[name=expectSalary]").val();
+			if(expectSalary==""){
+				alert("请填写期望薪资!");
+				return false;
+			}
+			var exp = /^\d+$/;
+        	if(!expectSalary.match(exp)){
+        		alert('期望薪资只能为数字');
+        		return false;
+        	}
+        	/* var exps = ($("#expectSalary").val()/1000)+"K";
+        	$("#expectSalary").val(exps); */
+			var area = $("input[name=area]").val();
+			if(area==""){
+				alert("请选择地区!");
+				return false;
+			}
+			var phone = $("input[name=phone]").val();
+
+			if(phone==""){
+				alert("请填写电话号码!");
+				return false;
+			}
+			/* var college = $("input[name=college]").val();
+			if(college==""){
+				alert("请选择学校!");
+				return false;
+			} */
+			var major = $("input[name=major]").val();
+			if(major==""){
+				alert("请选择专业!");
+				return false;
+			}
+			var tags = "";
+			$("#jn_biaoqian a").each(function(index){
+				if(index==0){
+					tags = tags + $(this).text();
+				} else {
+					tags = tags+","+$(this).text();
+				}
+			});
+			if(tags==""){
+				alert("请选择技能标签!");
+				return false;
+			}
+			$("input[name=tags]").val(tags);
+			
+			
+			var selfEvaluate = $("textarea[name=selfEvaluate]").val();
+			if(selfEvaluate==""){
+				alert("请填写个人简介!");
+				return false;
+			}
+			
+			var hobby = "";
+			$("#ah_biaoqian a").each(function(index){
+				if(index==0){
+					hobby = hobby + $(this).text();
+				} else {
+					hobby = hobby+","+$(this).text();
+				}
+			});
+			if(hobby==""){
+				alert("请选择爱好标签!");
+				return false;
+			}
+			$("input[name=hobby]").val(hobby);
+			
+			/* if($('#workstate img').css('display')=='none'){
+				$('input[name=status]').val(0);
+			} else {
+				$('input[name=status]').val(1);
+			} */
+			var content1 = '';
+			$('#tjjy-box li').each(function(index){
+				if($(this).find('h4').eq(0).text()=='')return;
+				if(index==0){
+					content1 += $(this).find('h4').eq(0).text().split("\n")[0]+"\n"+$(this).find('h4').eq(1).text();
+				}else {
+					content1 += ','+$(this).find('h4').eq(0).text().split("\n")[0]+"\n"+$(this).find('h4').eq(1).text();
+				}
+				
+			});
+			$('input[name=edstate]').val(content1);
+			//alert(content1)
+			var content2 = '';
+			$('#bjjl-select1 li').each(function(index){
+				if($(this).find('h4').eq(0).text()=='')return;
+				if(index==0){
+					content2 += $(this).find('h4').eq(0).text().split("\n")[0]+"\n"+$(this).find('h4').eq(1).text();
+				}else {
+					content2 += ','+$(this).find('h4').eq(0).text().split("\n")[0]+"\n"+$(this).find('h4').eq(1).text();
+				}
+				
+			});
+			$('input[name=exstate]').val(content2);
+			$("#saveForm").submit();
+			
+		});
+		
+		
+		//期望职业选择
+		var winW = $(window).width();
+		var winH = $(window).height()-100;
+        $('#zhiye').click(function(){
+        	$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+        	$('.webPage').hide();
+			$('.zhiye1').show();
+			
+			
+		})
+		
+		$('.zhiye1 .swiper-slide').click(function(){
+			$('.zhiye').hide();
+			//$('webPage').show();
+			$('body').css('overflow','scroll');
+			$('input[name=exp1]').val($(this).text());
+			var in_id=parseInt($(this).attr("id").split("_")[1]);
+			$('.zhiye').eq(1).show();
+			
+			$.ajax({
+	   			url : [[@{/services/resume/getCareer}]],
+	   			data : {
+	   				'industry_id': in_id
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				//$('.zhiye').eq(1).find("div.swiper-wrapper").empty();
+	   				zw2.removeAllSlides();
+	   				if (data.length > 0) {
+	   					var options='';
+	   					
+	   					for (var i = 0; data.length > i; i++) {
+//	   						options += "<div class='swiper-slide' value='" + data[i].id +"'>" + data[i].name + "</div>";
+	   						zw2.appendSlide("<div class='swiper-slide' value='" + data[i].id +"'>" + data[i].name + "</div>");
+	   	   				}
+	   					//$('.zhiye').eq(1).find("div.swiper-wrapper").append(options);
+	   				}
+	   				/* var mySwiper = new Swiper('.swiper-container',{
+	   					direction : 'vertical',
+	   					freeMode : true,
+	   					freeModeSticky : true,
+	   					slidesPerView : 10,
+	   					loop : false,
+	   					height : winH
+	   					}) */
+	   				$('.zhiye').eq(1).find("div.swiper-slide").each(function(index){
+	   					$(this).click(function(){
+	   						
+	   						$('.zhiye').hide();
+	   						//$('.zhiye-add').show();
+	   						$('#zhiye').val($('input[name=exp1]').val() +"_"+ $(this).text());
+	   						$('.zhiye-add').show();
+	   						$.ajax({
+	   				   			url : [[@{/services/resume/getPosition}]],
+	   				   			data : {
+	   				   				'career_id': $(this).attr("value")
+	   				   			},
+	   				   			dataType: 'json',
+	   				   			type: 'post',
+	   				   			async: false,
+	   				   			success : function(data, textStatus, jqXHR) {
+	   				   				//alert(data.data.Positions.length());
+	   				   				//$('.zhiye-add').find(".swiper-wrapper").empty();
+	   				   				zw3.removeAllSlides();
+	   				   				if (data.data.Positions.length > 0) {
+	   				   					var options='';
+	   				   				
+	   				   					for (var i = 0; data.data.Positions.length > i; i++) {
+	   				   						//options += "<div class='swiper-slide'>" + data.data.Positions[i].jobName + "</div>";
+	   				   					zw3.appendSlide("<div class='swiper-slide'>" + data.data.Positions[i].jobName + "</div>");
+	   				   	   				}
+	   				   					//$('.zhiye-add').find(".swiper-wrapper").append(options);
+	   				   				}
+	   				   				/* var mySwiper = new Swiper('.swiper-container',{
+	   				   					direction : 'vertical',
+	   				   					freeMode : true,
+	   				   					freeModeSticky : true,
+	   				   					slidesPerView : 10,
+	   				   					loop : false,
+	   				   					height : winH
+	   				   					}) */
+	   				   				$('.zhiye-add').find("div.swiper-slide").each(function(index){
+	   				   					$(this).click(function(){
+	   				   						
+	   				   						$('.zhiye').hide();
+	   				   						//$('.zhiye-add').show();
+	   				   						$('#zhiye').val($('#zhiye').val() +"_"+ $(this).text());
+	   				   						
+	   				   						
+	   				   						//$('.zhiye').hide();
+	   				   						//$('.zhiye-add').show();
+	   				   					});
+	   				   				});
+	   				   			},error:function(res){
+	   				   				alert(res);
+	   				   			}
+	   				   		});
+	   						
+	   						//$('.zhiye').hide();
+	   						
+	   					});
+	   				});
+	   			},error:function(res){
+	   				alert(res);
+	   			}
+	   		});
+			
+			//$('.zhiye-add').show();	
+		}) 
+		$('.zhiye-add').find('.swiper-slide').click(function(){
+			$('.zhiye-add').hide();
+			
+		})
+		/* $('.zhiye').eq(1).find('a').click(function(){
+			$('.zhiye').hide();
+		}) */
+		
+		//工作地点选择
+		$('#addr').click(function(){
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+        	$('.webPage').hide();
+			$('.zhiye').eq(2).show();	
+		})
+		$('.zhiye').eq(2).find('.swiper-slide').click(function(){
+			$('.zhiye').hide();
+			/* $('.webPage').show();
+			$('body').css('overflow','hidden'); */
+			$('input[name=pc1]').val($(this).text());
+			var in_id=parseInt($(this).attr("id").split("_")[1]);
+			$('.zhiye').eq(3).show();
+			$.ajax({
+	   			url : [[@{/services/resume/getCity}]],
+	   			data : {
+	   				'provinceId': in_id
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				//$('.zhiye').eq(3).find("div.swiper-wrapper").empty();
+	   				dq2.removeAllSlides();
+	   				
+	   				
+	   				
+	   				
+	   				if (data.length > 0) {
+	   					var options='';
+	   					
+	   					for (var i = 0; data.length > i; i++) {
+	   						//options += "<div class='swiper-slide'>" + data[i].name + "</div>";
+	   						dq2.appendSlide("<div class='swiper-slide'>" + data[i].name + "</div>");
+	   	   				}
+	   					//$('.zhiye').eq(3).find("div.swiper-wrapper").append(options);
+	   				}
+	   				/* var mySwiper = new Swiper('.swiper-container',{
+	   					direction : 'vertical',
+	   					freeMode : true,
+	   					freeModeSticky : true,
+	   					slidesPerView : 10,
+	   					loop : false,
+	   					height : winH
+	   					}) */
+	   				
+	   				$('.zhiye').eq(3).find(".swiper-slide").each(function(){
+	   					$(this).click(function(){
+	   						$('#addr').val($('input[name=pc1]').val() +"_"+ $(this).text());
+	   						$('.zhiye').hide();
+	   						$('body').css('overflow','scroll');
+	   					});
+	   				});
+	   				$('.webPage').show();
+	   			},error:function(res){
+	   				alert(res);
+	   			}
+	   			
+	   		});
+				
+		})
+		$('.zhiye').eq(3).find('.swiper-slide').click(function(){
+			
+			$('.webPage').show();
+			$('body').css('overflow','scroll');
+				
+		});
+        
+		
+		
+		
+		//学校专业选择
+		$("input[name=major]").click(function(){
+			$("#search").click();
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('.webPage').hide();
+			$("#coll").show();
+			//$("input[name=college]").click();
+		});
+		
+		/* $("input[name=college]").click(function(){
+			$("#search").click();
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('.webPage').hide();
+			$('body').css({'width':winW+'px','winH':winH+'px','overflow':'hidden'});
+			//$("#coll").css('height',(winH-80)+'px');
+			//alert($("#coll").css('height'));
+			$("#coll").show();
+		}); */
+		
+		$("#search").click(function(){
+			var search_name = $("#searchTxt").val();
+			var col_id = [[${resume.college_id}]];
+			
+			//alert(col_id)
+			$.ajax({
+				url : [[@{/services/resume/getPsMajor}]],
+		   		data : {
+		   				'college_id': col_id,
+		   				'search_name': search_name
+		   		},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				//$('#coll_list').empty();
+	   				sc1.removeAllSlides();
+	   				/* var mySwiper = new Swiper('.sc1',{
+	   					direction : 'vertical',
+	   					freeMode : true,
+	   					freeModeSticky : true,
+	   					slidesPerView : 10,
+	   					loop : false,
+	   					height : winH
+	   					}) */
+	   				if (data.length > 0) {
+	   					var options='';
+	   					
+	   					for (var i = 0; data.length > i; i++) {
+	   						//options += "<div class='swiper-slide' id='x_"+data[i].id+"'>" + data[i].name + "</div>";
+	   						sc1.appendSlide("<div class='swiper-slide' id='x_"+data[i].id+"'>" + data[i].name + "</div>");
+	   	   				}
+	   					//start=1;
+	   					//$('#coll_list').append(options);
+	   					
+	   					$('#coll_list').find('.swiper-slide').each(function(){
+	   						$(this).click(function(){
+	   							//只选专业
+	   							$('#biye_zhuanye').val($(this).text());
+			   					$('.zhiye').hide();
+			   					$('body').css('overflow','scroll');
+			   					$('.webPage').show();
+	   							//--------------
+	   							/* $("#biye_xuexiao").val($(this).text());
+	   							$('.zhiye').hide();
+	   							$('.webPage').show();
+	   							var college_id = parseInt($(this).attr("id").split("_")[1]);
+	   							$("#colid").val(college_id);
+	   							$("#maj").show();
+	   							var search_name2 = $("#searchTxt1").val();
+	   							$.ajax({
+	   					   			url : [[@{/services/resume/getMajor}]],
+	   					   			data : {
+	   					   				'college_id': college_id,
+	   					   				'search_name': search_name2
+	   					   			},
+	   					   			dataType: 'json',
+	   					   			type: 'post',
+	   					   			async: false,
+	   					   			success : function(data, textStatus, jqXHR) {
+	   					   				//$('#maj_list').empty();
+	   					   			sc2.removeAllSlides(); */
+	   					   			/* var mySwiper = new Swiper('.sc2',{
+	   				   					direction : 'vertical',
+	   				   					freeMode : true,
+	   				   					freeModeSticky : true,
+	   				   					slidesPerView : 10,
+	   				   					loop : false,
+	   				   					height : winH
+	   				   					}) */
+	   					   				/* if (data.length > 0) {
+	   					   					var options='';
+	   					   					
+	   					   					for (var i = 0; data.length > i; i++) {
+	   					   						//options += "<div class='swiper-slide'>" + data[i].name + "</div>";
+	   					   					sc2.appendSlide("<div class='swiper-slide'>" + data[i].name + "</div>");
+	   					   	   				}
+	   					   					//$('#maj_list').append(options);
+	   					   				}
+	   					   			
+	   					   			$('#maj_list').find('.swiper-slide').each(function(){
+	   					   					$(this).click(function(){
+	   					   						$('#biye_zhuanye').val($(this).text());
+	   					   						$('.zhiye').hide();
+	   					   					$('body').css('overflow','scroll');
+	   					   					});
+	   					   				});
+	   					   			},error:function(res){
+	   					   				alert(res);
+	   					   			}
+	   					   		});*/
+	   							
+	   						}); 
+	   					});
+	   				}
+	   				
+	   			},error:function(res){
+	   				alert(res);
+	   			}
+	   		});
+		});
+		
+		
+		//var totalheight = 0;   
+	    //var main = $("div#datalist");//主体元素 
+	    //var totalPage = [[${page}]];
+	    //totalPage = parseInt(totalPage);
+	    /* var currentPage = 1;
+	    var flag = false;
+	    function loadNextPage(){
+	        if(flag)return false;
+	        if($(document).height() <= totalheight) {
+	        	
+	        	flag=true;
+	        	
+	        	//$("#loading").css("visibility", "visible");
+	        	var search_name = $("#searchTxt").val();
+				var col_id = [[${resume.college_id}]];
+	        	currentPage++;
+	        	$.ajax({
+	        		url : [[@{/services/resume/getPsMajor}]],
+	       			data : {
+	       				'college_id': col_id,
+		   				'search_name': search_name,
+		   				'pageOffset' : (currentPage*20)
+	       			},
+	       			dataType: 'html',
+	       			type:	'post',
+	       			async: false,
+	       			success : function(data, textStatus, jqXHR) {
+	       			if(data.length != 0){
+	       				for (var i = 0; data.length > i; i++) {
+	   						//options += "<div class='swiper-slide' id='x_"+data[i].id+"'>" + data[i].name + "</div>";
+	   						sc1.appendSlide("<div class='swiper-slide' id='x_"+data[i].id+"'>" + data[i].name + "</div>");
+	   	   				}
+	       			} else {
+	       					$("#nomoreresults").show();
+	    					//$('html, body').animate({
+	    	                  //  scrollTop: $("#nomoreresults").offset().top
+	    	                //}, 1000);
+	    	   				$("#nomoreresults").fadeOut(4000);
+	       				}
+	       				flage=false;
+	       			}
+	       		});
+					
+	        }  
+	    } */
+		
+		
+		$("#search1").click(function(){
+				
+				var college_id = $("#colid").val();
+				var search_name2 = $("#searchTxt1").val();
+				
+				$.ajax({
+		   			url : [[@{/services/resume/getMajor}]],
+		   			data : {
+		   				'college_id': college_id,
+		   				'search_name': search_name2
+		   			},
+		   			dataType: 'json',
+		   			type: 'post',
+		   			async: false,
+		   			success : function(data, textStatus, jqXHR) {
+		   				//$('#maj_list').empty();
+		   				sc2.removeAllSlides();
+		   			/* var mySwiper = new Swiper('.sc2',{
+	   					direction : 'vertical',
+	   					freeMode : true,
+	   					freeModeSticky : true,
+	   					slidesPerView : 10,
+	   					loop : false,
+	   					height : winH
+	   					}) */
+		   				if (data.length > 0) {
+		   					var options='';
+		   					
+		   					for (var i = 0; data.length > i; i++) {
+		   						//options += "<div class='swiper-slide'>" + data[i].name + "</div>";
+		   					sc2.appendSlide("<div class='swiper-slide'>" + data[i].name + "</div>");
+		   	   				}
+		   					//$('#maj_list').append(options);
+		   				}
+		   			
+		   			$('#maj_list').find('.swiper-slide').each(function(){
+		   					$(this).click(function(){
+		   						$('#biye_zhuanye').val($(this).text());
+		   						$('.zhiye').hide();
+		   						$('body').css('overflow','scroll');
+		   					});
+		   				});
+		   			},error:function(res,e,t){
+		   				alert(res+e+t);
+		   			}
+		   		});
+				
+			});
+		
+		//技能标签选择
+		$('#jinengbiaoqian').click(function(){
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('#bianji').css({'left':'0','top':'0'});
+			$('#bianji').show();
+			$('.webPage').hide();
+		});
+		
+		$('#add').click(function(){
+			var at = $("#addTxt").val();
+			if(at.length==0){
+				alert("请输入要添加的内容");
+				return;
+			}
+			$('#jn_b').append('<a href="javascript:void(0);" onclick="jn_click(this)">'+at+'</a>');
+			$("#addTxt").val('');
+		});
+		
+		$("#tijiao").click(function(){
+			$('#jn_biaoqian').empty();
+			$('#jn_b a').each(function(){
+				$('#jn_biaoqian').append('<a href="javascript:void(0);" style="line-height:25px;margin-top:5px">'+$(this).text()+'</a>');
+			});
+			$('.zhiye').hide();
+			$('body').css('overflow','scroll');
+			$('.webPage').show();
+		});
+		
+		
+		//爱好标签选择
+		$('#aihaobiaoqian').click(function(){
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('body').eq(1).css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('#bianji2').css({'left':'0','top':'0'});
+			$('#bianji2').show();
+			$('.webPage').hide();
+			
+		});
+		
+		$('#add2').click(function(){
+			var at = $("#addTxt2").val();
+			if(at.length==0){
+				alert("请输入要添加的内容");
+				return;
+			}
+			$('#ah_b').append('<a href="javascript:void(0);" onclick="ah_click(this)">'+at+'</a>');
+			$("#addTxt2").val('');
+			$('.biaoqian2 a').css('color','#fff');
+		});
+		
+		$("#tijiao2").click(function(){
+			$('#ah_biaoqian').empty();
+			$('#ah_b a').each(function(){
+				$('#ah_biaoqian').append('<a href="javascript:void(0);" style="line-height:25px;margin-top:5px">'+$(this).text()+'</a>');
+			});
+			$('.zhiye').hide();
+			$('body').css('overflow','scroll');
+			$('.webPage').show();
+		});
+		//添加工作经历
+		$('.bjjl-select div').each(function(){
+			var divH = $(this).height();
+			$(this).next().css('marginTop',((divH-20)/2)+'px');
+		})
+		$('#add-work').click(function(){
+			if($("#bjjl-select1 li").length > 3){
+				alert("最多添加4条数据");
+				return false;
+			}
+			$('.gzjl-box').eq(0).show();
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('.webPage').hide();
+		})
+		$('#tjgzjl').click(function(){
+			var time1Val = $('#time1').val();
+			var time2Val = $('#time2').val();
+			var text1Val = $('#textarea1').val();
+			var str1 = time1Val.substring(0,4);
+			var str2 = time1Val.substring(5,7);
+			var str3 = time1Val.substring(8,10);
+			var str01 = time2Val.substring(0,4);
+			var str02 = time2Val.substring(5,7);
+			var str03 = time2Val.substring(8,10);
+			if(time1Val.length==0){
+				alert('请选择开始时间');
+				return;
+			}
+			if(time2Val.length==0){
+				alert("请选择结束时间");
+				return;
+			}
+			if(text1Val.length==0){
+				alert('请添加工作经历');
+				return;
+			} 
+			if(text1Val.length > 500){
+				alert('工作经历最多500字');
+				return;
+			} 
+			
+			
+			if(new Date(str01,str02,str03) < new Date(str1,str2,str3)){
+				alert("开始时间必须小于结束时间");
+				return false;
+			}
+			/* if(str1>str01||(str1<=str01&&str2>str02)||(str1<=str01&&str2<=str02&&str3>str03)){
+				alert('开始时间必须小于结束时间');
+				return;
+			} */
+			
+			//alert(time2Val);
+			
+			var text = '<li style="height:50px;"><div class="fl"><h4>'+ time1Val +'~'+time2Val+'</h4><h4>'+ text1Val +'</h4></div><img style="width:20px; height:20px; margin-top:14px;" onclick="removeLi(this)" src="/recruitment/assets/images/jian.jpg" /></li>';
+			$('.gzjl-box').eq(0).hide();
+			$('#bjjl-select1').append(text);
+			$('#time1').val('');
+			$('#time2').val('');
+			$('#textarea1').val('');
+			$('#bjjl-select1 div').each(function(){
+				var divH = $(this).height();
+				$(this).next().css('marginTop',((divH-20)/2)+'px');
+				
+			})
+			$(body).css('overflow','scroll');
+			$('.webPage').show();
+		})
+		
+		
+		//添加教育经历
+		$('#add-jiaoyu').click(function(){
+			if($("#tjjy-box li").length > 3){
+				alert("最多添加4条数据");
+				return false;
+			}
+			$('.gzjl-box').eq(1).show();
+			var winW = $(window).width();
+			var winH = $(window).height()-50;
+			$('body').css({'width':winW+'px','height':winH+'px','overflow':'hidden'});
+			$('.webPage').hide();
+		})
+		$('#querenjy').click(function(){
+			/* var val3 = $('#time3').val();
+			var val4 = $('#time4').val();
+			var textarea2 = $('#textarea2').val(); */
+			var time1Val = $('#time3').val();
+			var time2Val = $('#time4').val();
+			var text1Val = $('#textarea2').val();
+			var str1 = time1Val.substring(0,4);
+			var str2 = time1Val.substring(5,7);
+			var str3 = time1Val.substring(8,10);
+			var str01 = time2Val.substring(0,4);
+			var str02 = time2Val.substring(5,7);
+			var str03 = time2Val.substring(8,10);
+			if(time1Val.length==0){
+				alert('请选择开始时间');
+				return;
+			}
+			if(time2Val.length==0){
+				alert("请选择结束时间");
+				return;
+			}
+			if(text1Val.length==0){
+				alert('请添加教育经历');
+				return;
+			} 
+			if(text1Val.length > 500){
+				alert('教育经历最多500字');
+				return;
+			} 
+			if(new Date(str01,str02,str03) < new Date(str1,str2,str3)){
+				alert("开始时间必须小于结束时间");
+				return false;
+			}
+			
+			
+			var text2 = '<li style="height:50px;"><div class="fl"><h4>'+ time1Val +'~'+ time2Val +'</h4><h4>'+text1Val+'</h4></div><img style="width:20px; height:20px; margin-top:14px;" onclick="removeLi(this)" src="/recruitment/assets/images/jian.jpg" />';
+			$('#tjjy-box').append(text2);
+			$('.gzjl-box').eq(1).hide();
+			$('#time3').val('');
+			$('#time4').val('');
+			$('#textarea2').val('');
+			$('#tjjy-box div').each(function(){
+				var divH = $(this).height();
+				$(this).next().css('marginTop',((divH-20)/2)+'px');
+				
+			})
+			$('body').css('overflow','scroll');
+			$('.webPage').show();
+		})
+		//工作状态
+		/* $('.lzzz li').each(function(index){
+			$(this).click(function(){
+				//alert(index);
+				//$('.lzzz').find('img').hidden();
+				$('.lzzz').find('img').hide();
+				$(this).find('img').show();
+			})
+			
+		}) */
+		
+		
+		
+    });
+	function removeLi(this_t){
+		var flag = confirm("确认删除？");
+		if(flag){
+			$(this_t).parent().remove();
+		}
+		//alert(22);
+	}
+	function tj_click(this_t){
+		$('#jn_b').append('<a href="javascript:void(0);" onclick="jn_click(this)">'+$(this_t).text()+'</a>');
+		
+		$(this_t).remove();
+	}
+	function jn_click(this_t){
+		$('#tj_b').append('<a href="javascript:void(0);" onclick="tj_click(this)">'+$(this_t).text()+'</a>');
+		
+		$(this_t).remove();
+	}
+	
+	
+	function tj_click2(this_t){
+		$('#ah_b').append('<a href="javascript:void(0);" onclick="ah_click2(this)">'+$(this_t).text()+'</a>');
+		
+		$(this_t).remove();
+	}
+	function ah_click2(this_t){
+		$('#tj_b2').append('<a href="javascript:void(0);" onclick="tj_click2(this)">'+$(this_t).text()+'</a>');
+		
+		$(this_t).remove();
+	}
+	/*]]>*/
+</script>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+<script th:src="@{/assets/js/ajaxfileupload.js}"></script>
+<script th:src="@{/assets/js/jquery.ui.plupload/jquery.ui.plupload.min.js}"></script>
+<link th:href="@{/assets/js/jquery.ui.plupload/css/jquery.ui.plupload.css}" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<style type="text/css">
+	.blueBtn {padding:5px 20px;background:#6dcff6;color:#fff;border-radius:2px;cursor:pointer}
+	.tablelist tbody tr:hover {background:none;}
+	.tablelist tbody tr:nth-child(2n-1){background:#f9f9f9;height:40px}
+	.tablelist tbody tr:nth-child(2n){background:#fff;height:40px}
+	.tablelist th {background:none;height:45px;font-size:14px;font-weight:normal;}
+	.tablelist th,.tablelist td {border:1px solid #e3eaf2;text-indent:0px}
+	.tablelist td>a {padding:5px 10px;background:#6dcff6;color:#fff;border-radius:2px;cursor:pointer}
+</style>
+<body>
+	<div class="place">
+    	<span>位置：商品查看</span>
+	    <!-- <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>商品管理 </li>
+	    	<li>商品查看：</li>
+	    </ul> -->
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" th:action="@{/notice/list}" method="post" class="formbody" style="width:960px">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<ul class="seachform mauto">
+			    <li>
+			    	<label style="color:red;font-size:18px">公告类型：</label>
+			    	<select name="type" class="select1">
+			    		<option value="-1">全部</option>
+			    		<option value="0" th:selected="${type==0}">系统</option>
+			    		<option value="1" th:selected="${type==1}">公告</option>
+			    	</select>
+			    </li>
+			    <li>
+					<a th:href="@{/notice/add}" class="scbtn">添加</a>
+			    </li>
+			    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+			</ul>
+			
+			
+			<div>
+				<span th:unless="${hmList!=null and not #lists.isEmpty(hmList)}" th:utext="暂无数据！"></span>
+				<table  class="tablelist mauto" th:if="${hmList!=null and not #lists.isEmpty(hmList)}">
+					<thead>
+						<tr>
+							<th width="40">序号</th>
+							<th width="100">类型</th>
+							<th width="500">内容</th>
+							<th width="100">创建时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="hm,status:${hmList}">
+							<td><p th:text="${status.count}"/></td>
+							<td>
+								<p th:text="${hm.type==1?'公告':'系统'}"></p>
+							</td>
+							<td>
+								<p th:text="${hm.message}"></p>
+							</td>
+							<td th:text="${beans.dateFormatter.formatDateToStr(hm.create_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${hmList!=null and not #lists.isEmpty(hmList)}" th:include="fragment/paginationbar :: paginationbar"></div>
+				
+				<div class="clr"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+var imageurl = [[${application.baseImageUrl}]]
+
+$(document).ready(function() {
+
+	$(".select1").uedSelect({
+		width : 160
+	});
+	function scan(url){
+	    $("#iframe_preview").attr("src", url);
+	    //$("#iframe_preview").reload();
+	}
+	
+
+});
+
+/*]]>*/
+</script>
+</html>

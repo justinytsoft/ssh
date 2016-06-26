@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>帖子管理 </li>
+	    	<li>招聘查询：</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" th:action="@{/admin/job/list}" method="post" class="formbody" style="width:960px">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<ul class="seachform mauto">
+			<li class="mr20">
+				<label>职业类型：</label>
+				<input type="text" name="jobType" th:value="${jobType}" class="dfinput" style="width:150px"/>
+			</li>
+			<li class="mr20">
+				<label>职业名字：</label>
+				<input type="text" name="jobName" th:value="${jobName}" class="dfinput" style="width:150px"/>
+			</li>
+			<!-- <li class="mr20">
+				<label>标题和内容：</label>
+				<input type="text" name="tac" th:value="${tac}" class="dfinput" style="width:150px"/>
+			</li>
+			<li class="mr20">
+				<label>主标签：</label>
+				<input type="text" name="tagsMain" th:value="${tagsMain}" class="dfinput" style="width:150px"/>
+			</li> -->
+			
+		    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+		    
+		</ul>
+			
+			
+			<div>
+				<span th:unless="${jobs!=null and not #lists.isEmpty(jobs)}" th:utext="暂无数据！"></span>
+				<table  class="tablelist mauto" th:if="${jobs!=null and not #lists.isEmpty(jobs)}">
+					<thead>
+						<tr>
+							<th width="60">序号</th>
+							<th width="200">职业类型</th>
+							<th width="100">职业名称</th>
+							<th width="100">工资</th>
+							<th width="100">经验</th>
+							<th width="100">学历</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="j,status:${jobs}">
+							<td th:text="${status.count}">序号</td>
+							<td th:text="${j.jobType}">名称</td>
+							<td th:text="${j.jobName}"></td>
+							<td th:text="${j.salary}"></td>
+							<td th:text="${j.experience}"></td>
+							<td th:text="${j.education}"></td>
+							<td>
+								<a th:onclick="'scan('+'\''+@{/services/job/detail(id=${j.id},first=1,from=1)}+'\''+')'" href="javasript:void(0)">查看</a>
+								<a onclick="return confirm('是否确认删除?')" th:href="@{/admin/job/delete(id=${j.id})}">删除</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${jobs!=null and not #lists.isEmpty(jobs)}" th:include="fragment/paginationbar :: paginationbar"></div>
+				<div style="width:400px;height:800px;position:fixed;left:1000px;top:50px">
+					<div class="iframeBox1">
+						
+						<iframe id="iframe_preview" style="width:400px;height:600px;"></iframe>
+					</div>
+				</div>
+				<div class="clr"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+           $(".select1").uedSelect({
+		width : 202
+	});
+           function scan(url){
+       		
+               $("#iframe_preview").attr("src", url);
+               //$("#iframe_preview").reload();
+    	}
+/*]]>*/
+</script>
+</html>

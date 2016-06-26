@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:task="http://www.springframework.org/schema/task"  
+    xsi:schemaLocation="  
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+          http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.goldCityWeb.dao" />
+	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 以字节为单位的最大上传文件的大小 -->
+		<property name="maxUploadSize" value="${upload.maxSize}" />
+		<property name="defaultEncoding" value="utf-8" />
+	</bean>
+	
+	<bean id="reminderProcessor" class="com.goldCityWeb.timer.AutoTimer">  
+        
+    </bean>  
+  
+    <!-- 配置任务线性池 -->  
+    <task:executor id="executor" pool-size="3" />  
+    <task:scheduler id="scheduler" pool-size="3" />  
+    <!-- 启用annotation方式 -->  
+    <task:annotation-driven scheduler="scheduler"  
+        executor="executor" proxy-target-class="true" />  
+  
+    <task:scheduled-tasks scheduler="scheduler">  
+        <task:scheduled ref="reminderProcessor" method="run"  
+            cron="0 */1 * * * ?" />
+             
+    </task:scheduled-tasks> 
+	
+</beans>

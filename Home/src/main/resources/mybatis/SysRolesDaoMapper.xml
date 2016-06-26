@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.SysRolesDao">
+	<insert id="insertRoleUser">
+		insert into sys_roles_users (role_id,user_id) values (#{role_id}, #{user_id}) 
+	</insert>
+	
+	<delete id="deleteRoleUser">
+		DELETE FROM sys_roles_users WHERE user_id = #{user_id}
+		<if test="role_id!=null">
+			 AND role_id = #{role_id} 
+		</if>
+	</delete>
+	
+	<select id="queryRoleByUser" resultType="java.lang.Integer">
+		SELECT role_id FROM sys_roles_users WHERE user_id = #{user_id} 
+	</select>
+</mapper>

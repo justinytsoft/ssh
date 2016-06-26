@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>信息管理系统</title>
+</head>
+  <frameset cols="180,*" frameborder="no" border="0" framespacing="0">
+ 	 <frame th:src="@{/left}" name="leftFrame" scrolling="auto" noresize="noresize" id="leftFrame" title="leftFrame" />
+  	<frameset rows="45,*" cols="*" frameborder="no" border="0" framespacing="0">
+  		<frame th:src="top" name="topFrame" noresize="noresize" id="topFrame" title="topFrame" />
+  		<frame th:src="@{/welcome}" name="rightFrame" id="rightFrame" title="rightFrame" />
+  	</frameset>
+  </frameset>
+<noframes>
+<body onload="">
+</body>
+</noframes>
+</html>

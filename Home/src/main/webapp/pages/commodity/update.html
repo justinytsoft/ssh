@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+<script th:src="@{/assets/js/ajaxfileupload.js}"></script>
+<script
+	th:src="@{/assets/js/jquery.ui.plupload/jquery.ui.plupload.min.js}"></script>
+<link
+	th:href="@{/assets/js/jquery.ui.plupload/css/jquery.ui.plupload.css}"
+	rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<style>
+li>label {
+	font-size: 16px;
+	text-align: left;
+}
+
+.formtext { /* text-align:center; */
+	
+}
+
+.formtext b {
+	line-height: 45px;
+	font-size: 16px;
+	padding-left: 20px
+}
+</style>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/				
+
+           $(function(){
+        	  $("#file").change(function(){  	      
+        		            	
+        		  $.ajaxFileUpload({
+	  			        url: [[@{/upload/uploadImage}]],
+	  			        secureuri: true,
+	  			        fileElementId: "file",
+	  			        type: 'POST',
+	  			        dataType: 'json',
+	  			        success: function (result) {
+	  			        	//图片上传成功
+			  			    var img = $("#pre");
+			 	  		      	img.attr("src",result.data.path);
+			 	  		        img.show();
+	  			        	result=$(result).text();
+	  		          		strs= result.replace('"', '').split(";");
+	  		            	saveFileName = strs[0];//获取图片名
+	  		            	alert("上传成功"+saveFileName); 
+	  		            	 $("#image").val(saveFileName);
+	  		            	
+	  		        	},
+	  		        	error:function(){
+	  		        		alert("上传失败");
+	  		        		//window.location.href="/goldCity/login";
+	  		        	}
+  		      	   });
+        		  //$("#file").val("");
+        	  }) ;
+           });
+           
+
+/*]]>*/
+</script>
+<body style="background: #f1f1f1">
+	<div class="place">
+		<span>位置：商品修改</span>
+		<!-- <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>商品管理</li>
+	    	<li>添加商品</li>
+	    </ul> -->
+	</div>
+
+	<div class="webPage">
+		<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?	'':msg}"></b>
+		</div>
+		<form class="formbody mauto" th:action="@{/commodity/save}"
+			name="saveForm" id="saveForm" method="post"
+			enctype="multipart/form-data">
+			<ul class="forminfo">
+				<li><label>商品名:</label> <input type="text" placeholder="请输入商品名"
+					name="name" th:value="${com.name}" class="dfinput" /></li>
+
+				<li><label>图片:</label> <a
+					th:if="${com.covers != null and not #lists.isEmpty(com.covers)}"
+					th:value="${com.covers[0].cover}" name="show_img"> <img
+						id="pre" th:src="${com.covers[0].cover}"
+						th:style="'width:100px;height:120px;border:1px solid gray;margin-top: 5px;'" />
+				</a> <input type="file" name="file" class="dfinput" id="file"
+					style="width: 200px" /> <input type="hidden" name="image"
+					id="image" value="" /></li>
+
+
+				<li><label>商品类型：</label> <select name="category">
+
+						<option value="1">物品类</option>
+						<option value="0">道具类</option>
+
+				</select></li>
+				<li><label>详情:</label> <input type="text" name="desc"
+					class="dfinput" th:value="${com.desc}" /></li>
+				<li><label>价格:</label> <input type="text" name="price"
+					class="dfinput" th:value="${com.price}" /></li>
+				<li><label>库存:</label> <input type="text" name="stock"
+					class="dfinput" th:value="${com.stock}" /></li>
+				<li><label>提货类型（仅有实物商品有次选项）:</label> <select
+					name="receive_type">
+						<option value="1">自提</option>
+						<option value="2">快递</option>
+				</select></li>
+				<li><label>自提地址:</label> <input type="text"
+					name="receive_address" class="dfinput"
+					th:value="${com.receive_address}" /></li>
+				<li><label>限制等级:</label> <input type="text" name="limit_level"
+					class="dfinput" th:value="${com.limit_level}" /></li>
+				<li><label>使用方法:</label> <input type="text" name="use_way"
+					class="dfinput" th:value="${com.use_way}" /></li>
+				<li><label>特殊效果:</label> <input type="text" name="special_work"
+					class="dfinput" th:value="${com.special_work}" /></li>
+				<li><label>功能描述:</label> <input type="text"
+					name="work_description" class="dfinput"
+					th:value="${com.work_description}" /></li>
+				<li><label>使用说明:</label> <input type="text"
+					name="use_description" class="dfinput"
+					th:value="${com.use_description}" /></li>
+				<li class="ml130 mt20 tc" style="width: 200px;"><input
+					type="hidden" name="id" th:value="${com.id}" /> <input
+					type="submit" th:value="提交" />
+					<div class="clr"></div></li>
+			</ul>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+
+</html>

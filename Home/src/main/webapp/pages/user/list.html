@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>账户管理 </li>
+	    	<li>学生列表：</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" method="post" class="formbody">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<ul class="seachform mauto">
+			<li>
+				<label>电话号码:</label>
+				<input type="text" name="phone" th:value="${phone}" class="dfinput" style="width:200px" />
+			</li>
+			<li>
+				<label>姓名:</label>
+				<input type="text" name="name" th:value="${name}" class="dfinput" style="width:200px"/>
+			</li>
+		    <li class="fr mr0"><label>&nbsp;</label><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+		</ul>
+			<div style="width:1200px">
+				<span th:unless="${users!=null and not #lists.isEmpty(users)}" th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"  th:if="${users!=null and not #lists.isEmpty(users)}">
+					<thead>
+						<tr>
+							<th width="60">序号</th>
+							<th width="150">登录名</th>
+							<th width="100">姓名</th>
+							<th width="200">学校</th>
+							<th width="200">专业</th>
+							<th width="50">姓别</th>
+							<th width="50">状态</th>
+							<th width="100">签名</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u,status:${users}">
+							<td th:text="${status.count}">序号</td>
+							<td th:text="${u.username}">名称</td>
+							<td th:text="${u.name}"></td>
+							<td th:text="${u.college}"></td>
+							<td th:text="${u.major}"></td>
+							<td th:text="${u.sex==1?'男':'女'}"></td>
+							<td th:text="${u.enabled?'正常':'已冻结'}"></td>
+							<td th:text="${u.sign}"></td>
+							<td>
+								<a th:href="@{/admin/user/company/update(id=${u.id},enabled=${u.enabled})}" th:text="${u.enabled?'冻结':'解除冻结'}"></a>
+								<a th:href="@{/admin/user/student/delete(id=${u.id})}" onclick="return confirm('是否确认删除？');">删除</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${users!=null and not #lists.isEmpty(users)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
+</html>

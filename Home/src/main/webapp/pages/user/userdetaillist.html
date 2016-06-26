@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<style>
+.tablelist tr:nth-of-type(even) {
+	background: #f8f8f8;
+}
+
+.tablelist tr:nth-child(odd) {
+	background: #fefefe;
+}
+
+.tablelist tr th {
+	text-align: center;
+	font-size: 14px;
+	border: 1px solid #e3eaf2;
+	background: #F8F8F8;
+	height: 50px;
+	font-weight: normal;
+}
+
+.tablelist tr td {
+	text-align: center;
+	font-size: 14px;
+	border: 1px solid #e3eaf2;
+}
+
+.scbtn {
+    margin-top: 2px;
+	height: 27px;
+    line-height: 26px;
+	padding: 0 11px;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
+	text-decoration: none;
+	display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+	font-weight: normal;
+}
+
+table tr td a:nth-of-type(1) {
+	background: #DF6B68;
+}
+
+</style>
+<body>
+	<div class="place">
+		<span>位置：玩家列表</span>
+	</div>
+	<div class="webPage">
+		<form id="searchForm" method="post" class="formbody">
+		<div class="search">
+			<ul class="seachform mauto">
+				<li><label style="line-height:60px;margin-left:10px">姓名:</label> <input type="text" name="name"
+					th:value="${name}" class="dfinput" style="width: 200px" /></li>
+				<li class="fr mr0"><label>&nbsp;</label><input
+					id="searchButton" name="searchButton" type="submit" class="scbtn"
+					value="查询" /></li>
+			</ul>
+		</div>
+			<div style="width: 1200px">
+				<span th:unless="${users!=null and not #lists.isEmpty(users)}"
+					th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"
+					th:if="${users!=null and not #lists.isEmpty(users)}">
+					<thead>
+						<tr>
+							<th width="60">id</th>
+							<th width="150">昵称</th>
+							<th width="80">经验</th>
+							<th width="100">金币数</th>
+							<th width="50">年龄</th>
+							<th width="50">姓别</th>
+							<th width="400">地址</th>
+							<th width="200">工作</th>
+							<th width="400">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u:${users}">
+							<td th:text="${u.id}">id</td>
+							<td th:text="${u.nick_name}">名称</td>
+							<td th:text="${u.experience}"></td>
+							<td th:text="${u.gold_count}"></td>
+							<td th:text="${u.age}"></td>
+							<td th:text="${u.sex==1?'男':'女'}"></td>
+							<td th:text="${u.address}"></td>
+							<td th:text="${u.work}"></td>
+							<td><a
+								th:href="@{/admin/user/company/update(id=${u.id},enabled=${u.enabled})}"
+								th:text="${u.enabled==1?'冻结':'解除冻结'}"
+								onclick="return confirm('是否确认?')"></a> <a
+								th:href="@{/admin/user/listincom(uid=${u.id})}">收益纪录</a> <a
+								th:href="@{/admin/user/listcost(uid=${u.id})}">消费纪录</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10"
+					th:if="${users!=null and not #lists.isEmpty(users)}"
+					th:include="fragment/paginationbar :: paginationbar"></div>
+			</div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	/*]]>*/
+</script>
+</html>

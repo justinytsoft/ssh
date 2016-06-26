@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" ></head>
+
+<body style="background:url(' + @{/assets/images/bodyBg.png} + ');">
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>帖子管理</li>
+	    	<li>修改帖子</li>
+	    </ul>
+    </div>
+    
+    <div class="webPage">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?	'':msg}"></b>
+		</div>
+	    <form class="formbody mauto" th:action="@{/admin/topic/save_topic}" name="saveForm" id="saveForm" method="post" enctype="multipart/form-data" >
+	    <ul class="forminfo">
+		    <li>
+		    	<label style="color:red;font-size:18px">标题名:</label>
+		    	<input type="text" placeholder="请输入标题名"  name="title" th:value="${posts.title}"  class="dfinput" />
+		    </li>
+		    <li>
+		    	<label style="color:red;font-size:18px">主标签:</label>
+		    	<select name="tagsMain_id">
+		    		<option th:each="l:${labels}" th:value="${l.id}" th:text="${l.name}" th:selected="${posts.tagsMain_id==l.id}">职位标签</option>
+		    	</select>
+		    </li>
+		    <li>
+		    	<label style="color:red;font-size:18px">子标签:</label>
+		    	<select name="tagsSub_id">
+		    		<option th:each="l:${labels}" th:value="${l.id}" th:text="${l.name}" th:selected="${posts.tagsSub==l.name}">职位标签</option>
+		    	</select>
+		    </li>
+		    <li>
+		    	<label style="color:red;font-size:18px">专业标签:</label>
+		    	<table>
+		    		<tr>
+		    			<td colspan="3">
+		    				<div class="usercity" style="margin-bottom:10px; overflow:hidden;">
+					    		
+					            <div class="cityright">
+						            <input type="text" name="search_name" class="dfinput" style="width:200px"/>
+					            	<a href="javascript:void(0);" class="ibtn ml10" style="margin-left:10px; margin-top:5px;" id="searchButton">[查询]</a>
+					            </div>
+					        </div>
+		    				
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+		    				<select class="pl10" name="allUser" multiple="multiple" style="opacity:1; width: 148px; height: 150px; border-color: #a7b5bc #ced9df #ced9df #a7b5bc; border-style: solid; border-width: 1px;">
+		    					<option th:each="u:${majors}" th:value="${u.id}" th:text="${u.name}">用户名称</option>
+		    				</select>
+		    			</td>
+		    			<td style="text-align:center">
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0" id="addUser">[添加]</a>
+		    				
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0"  id="addAllUser">[全部添加]</a>
+		    				
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0" id="removeUser">[移除]</a>
+		    				
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0" id="removeAllUser">[全部移除]</a>
+		    			</td>
+		    			<td>
+		    				<select class="pl10" name="checkedUser" multiple="multiple" style="opacity:1; width: 168px; height: 150px; border-color: #a7b5bc #ced9df #ced9df #a7b5bc; border-style: solid; border-width: 1px;">
+		    					<!-- <option th:each="u:${receivers}" th:value="${u.user_id}" th:text="${u.receiver}">用户名称</option>  -->
+		    				</select>
+		    			</td>
+		    		</tr>
+		    	</table>
+		    	<div class="clr"></div>
+		    	<label style="color:red;font-size:18px">原标签:</label>
+		    	<label id="or_major" th:text="${posts.tagsMajor}" style="width:400px"></label>
+		    </li>
+		    
+		    <li>
+		    	<label style="color:red;font-size:18px">职位标签:</label>
+		    	<table>
+		    		<tr>
+		    			<td colspan="3">
+		    				<div class="usercity">
+					    		
+					            <div class="cityright fl" style=" margin-bottom:10px; overflow:hidden;">
+						            <input type="text" name="search_name1" class="dfinput" style="width:200px;"/>
+					            	<a href="javascript:void(0);" class="ibtn ml10 fl" style="margin-left:10px; margin-top:5px;" id="searchButton1">[查询]</a>
+					            </div>
+					        </div>
+		    				
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>
+		    				<select class="pl10" name="allUser1" multiple="multiple" style="opacity:1; width: 148px; height: 150px; border-color: #a7b5bc #ced9df #ced9df #a7b5bc; border-style: solid; border-width: 1px;">
+		    					<option th:each="u:${careers}" th:value="${u.id}" th:text="${u.name}">用户名称</option>
+		    				</select>
+		    			</td>
+		    			<td style="text-align:center">
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0" id="addUser1">[添加]</a>
+		    				
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0"  id="addAllUser1">[全部添加]</a>
+		    				
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0" id="removeUser1">[移除]</a>
+		    				
+		    				<a href="javascript:void(0);" style="display:block;margin:10px 0 10px 0" id="removeAllUser1">[全部移除]</a>
+		    			</td>
+		    			<td>
+		    				<select class="pl10" name="checkedUser1" multiple="multiple" style="opacity:1; width: 168px; height: 150px; border-color: #a7b5bc #ced9df #ced9df #a7b5bc; border-style: solid; border-width: 1px;">
+		    					<!-- <option th:each="u:${receivers}" th:value="${u.user_id}" th:text="${u.receiver}">用户名称</option>  -->
+		    				</select>
+		    			</td>
+		    		</tr>
+		    	</table>
+		    	<div class="clr"></div>
+		    	<label style="color:red;font-size:18px">原标签:</label>
+		    	<label id="or_careers" th:text="${posts.tagsCareer}" style="width:400px;"></label>
+		    </li>
+		    
+		    <li>
+		    	<label style="color:red;font-size:18px">帖子状态</label>
+		    	<select class="select1" name="state">
+		    		<option value="1" th:selected="${posts.state==1}">开启</option>
+		    		<option value="2" th:selected="${posts.state==2}">关闭回复</option>
+		    		<option value="3" th:selected="${posts.state==3}">关闭</option>
+		    	</select>
+		    </li>
+		    <li>
+		    	<label style="line-height:30px;color:red;font-size:18px">封面图:</label>
+		    	<input style="line-height:30px" type="file" name="file"/>
+		    	
+		    </li>
+		    <li>
+		    	<label style="line-height:30px;color:red;font-size:18px">现有封面图:</label>
+		    	<img th:if="${posts.previewUrl!=null and posts.previewUrl!=''}" th:src="${application.baseImageUrl + posts.previewUrl}" width="200px"/>
+		    	
+		    </li>
+		    
+		    <li>
+		    	<label style="line-height:30px;color:red;font-size:18px">内容图:</label>
+		    	<input style="line-height:30px" type="file" name="file"/>
+		    	<input style="line-height:30px" type="file" name="file"/>
+		    	<input style="line-height:30px" type="file" name="file"/>
+		    </li>
+		    <li>
+		    	<label style="line-height:30px;color:red;font-size:18px">现有内容图:</label>
+		    	<img th:if="${pis!=null}" th:each="p:${pis}" th:src="${application.baseImageUrl + p.img_src}" width="200px"/>
+		    	
+		    </li>
+		    
+		    <li>
+		    	<label style="color:red;font-size:18px">内容:</label>
+		    	<div class="dfinput" style="float:left;">
+		    		<textarea width="500" height="340" id="editor1" name="content" th:text="${posts.content}" placeholder="请输入内容"></textarea>
+		    	</div>
+		    </li>
+		    
+		    <li class="ml130 mt20 tc">
+		    	<label>&nbsp;</label>
+		    	<input name="saveButton"  id="saveButton" type="button"  class="btn" value="确认保存"/>
+		    	<input name="careers" type="hidden" />
+		    	<input name="posterId" type="hidden" th:value="${posts.posterId}"/>
+		    	<input name="id" type="hidden" th:value="${posts.id}"/>
+		    	<input name="majors" type="hidden" />
+		    	<input name="tagsMain" type="hidden" />
+		    	<input name="tagsSub" type="hidden" />
+		    	<div class="clr"></div>
+		    </li>
+		</ul>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	//文本编辑器
+	$('#editor1').ckeditor();
+	
+	//校验表单
+	$("#saveButton").click(function(){
+		
+		var name = $('input[name=title]').val();
+		if(name.length==0){
+			alert('请输入标题！');
+			return;
+		}
+		var checkUser = new Array();
+		$("select[name=checkedUser] option").each(function() {
+			checkUser.push($(this).text());
+		});
+		
+		$("input[name=majors]").val(checkUser);
+		//alert(checkUser);
+		
+		var checkUser1 = new Array();
+		$("select[name=checkedUser1] option").each(function() {
+			checkUser1.push($(this).text());
+		});
+		/* if(checkUser.length==0 && checkUser1.length==0){
+			alert("职业标签和专业标签必须填写其中一个!")
+			return;
+		} */
+		$("input[name=careers]").val(checkUser1);
+		//alert(checkUser1);
+		
+		var content = $('textarea[name=content]').val();
+		if(content.length==0){
+			alert('请输入内容！');
+			return;
+		}
+		if(content.length > 8000){
+			alert('输入内容最多8000字！');
+			return;
+		}
+		$("input[name=tagsMain]").val($('select[name=tagsMain_id]').find("option:selected").text());
+		$("input[name=tagsSub]").val($('select[name=tagsSub_id]').find("option:selected").text());
+		$("#saveForm").submit();
+	});
+	
+	$("#removeUser").click(function() {
+		var ua = $("select[name=checkedUser]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				$(this).remove();
+				$("select[name=checkedUser1]").empty();
+			});
+		}
+	});
+	$("#removeAllUser").click(function(){
+		var checkedOption=$("select[name=checkedUser]").find("option");
+		if(checkedOption.size()>0){
+			$("select[name=checkedUser]").empty();
+		}		
+	})
+	
+	
+	
+	$("#addUser").click(function() {
+		var checkUserArr = new Array();
+		$("select[name=checkedUser] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				var exists = false;
+				for (var i = 0; i < checkUserArr.length; i++) {
+					if (checkUserArr[i] == $(this).val()) {
+						exists = true;
+					}
+				}
+				if (!exists) {
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
+				}
+				$(this).prop("selected", false);
+			});
+			$("select[name=checkedUser]").append(options);
+			//alert(11111);
+			//alert("新添加了一个22222");
+			getPosition();
+		}
+	});
+	$("#addAllUser").click(function(){
+		var checkUserArr = new Array();
+		$("select[name=checkedUser] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser]").find("option");
+		var options='';
+		ua.each(function(){
+			var exists = false;
+			for (var i=0; i <checkUserArr.length; i++){
+				if(checkUserArr[i]==$(this).val()){
+					exists = true;
+				}
+			}
+			if(!exists){
+				options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+			}			
+		});
+		$("select[name=checkedUser]").append(options);
+		alert("添加了一个");
+		getPosition();
+	})
+	
+	
+	var addDbl=$("select[name=allUser] option");	
+	addDbl.each(function(){		
+		$(this).dblclick(function(){
+			
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+				}
+			});
+			$("select[name=checkedUser]").append(options);
+			//alert(333333333);
+			getPosition();
+		});
+	});
+	
+	var addDbl=$("select[name=allUser]");	
+	addDbl.change(function(){
+		$("select[name=allUser] option").each(function(){
+		$(this).dblclick(function(){
+			//alert(this.value)
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				//alert(exists)
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+					//alert(options)
+				}
+			});
+			$("select[name=checkedUser]").append(options);
+			getPosition();
+		});
+		});
+	});
+	
+	var removeDbl=$("select[name=checkedUser]");
+	removeDbl.dblclick(function(){
+			//alert(11);
+			var rem=$("select[name=checkedUser]").find("option:selected");
+			rem.remove();
+			$("select[name=checkedUser1]").empty();
+	});
+	
+	
+	$("#searchButton").click(function() {
+		
+		var search_name = $("input[name=search_name]").val();
+		
+		$.ajax({
+   			url : [[@{/admin/getMajor}]],
+   			data : {
+   				'search_name': search_name
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data, textStatus, jqXHR) {
+ 				$("select[name=allUser]").empty();
+ 				$("select[name=allUser]").trigger("change");
+   				if (data.length > 0) {
+   					var options='';
+   					
+   					for (var i = 0; data.length > i; i++) {
+   						options += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+   	   				}
+   					$("select[name=allUser]").append(options);
+   				}
+   				$("select[name=allUser]").trigger("change");
+   			},error:function(){
+   				window.location.href="/recruitment/login";
+   			}
+   		});
+	});
+	
+	
+	
+	$("#removeUser1").click(function() {
+		var ua = $("select[name=checkedUser1]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				$(this).remove();
+			});
+		}
+	});
+	$("#removeAllUser1").click(function(){
+		var checkedOption=$("select[name=checkedUser1]").find("option");
+		if(checkedOption.size()>0){
+			$("select[name=checkedUser1]").empty();
+		}		
+	})
+	
+	
+	
+	$("#addUser1").click(function() {
+		var checkUserArr = new Array();
+		$("select[name=checkedUser1] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser1]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				var exists = false;
+				for (var i = 0; i < checkUserArr.length; i++) {
+					if (checkUserArr[i] == $(this).val()) {
+						exists = true;
+					}
+				}
+				if (!exists) {
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
+				}
+				$(this).prop("selected", false);
+			});
+			$("select[name=checkedUser1]").append(options);
+		}
+	});
+	$("#addAllUser1").click(function(){
+		var checkUserArr = new Array();
+		$("select[name=checkedUser1] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser1]").find("option");
+		var options='';
+		ua.each(function(){
+			var exists = false;
+			for (var i=0; i <checkUserArr.length; i++){
+				if(checkUserArr[i]==$(this).val()){
+					exists = true;
+				}
+			}
+			if(!exists){
+				options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+			}			
+		});
+		$("select[name=checkedUser1]").append(options);
+	})
+	
+	
+	var addDbl=$("select[name=allUser1] option");	
+	addDbl.each(function(){		
+		$(this).dblclick(function(){
+			
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser1] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser1]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+				}
+			});
+			$("select[name=checkedUser1]").append(options);
+		});
+	});
+	
+	var removeDbl=$("select[name=checkedUser1]");
+	removeDbl.dblclick(function(){
+			//alert(11);
+			var rem=$("select[name=checkedUser1]").find("option:selected");
+			rem.remove();
+	});
+	
+	var addDbl=$("select[name=allUser1]");	
+	addDbl.change(function(){
+		$("select[name=allUser1] option").each(function(){
+		$(this).dblclick(function(){
+			//alert(this.value)
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser1] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser1]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				//alert(exists)
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+					//alert(options)
+				}
+			});
+			$("select[name=checkedUser1]").append(options);
+		});
+		});
+	});
+	
+	$("#searchButton1").click(function() {
+		
+		var search_name = $("input[name=search_name1]").val();
+		getPosition();
+		/* $.ajax({
+   			url : [[@{/admin/getCareer}]],
+   			data : {
+   				'search_name': search_name
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data, textStatus, jqXHR) {
+ 				$("select[name=allUser1]").empty();
+ 				$("select[name=allUser1]").trigger("change");
+   				if (data.length > 0) {
+   					var options='';
+   					
+   					for (var i = 0; data.length > i; i++) {
+   						options += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+   	   				}
+   					$("select[name=allUser1]").append(options);
+   				}
+   				$("select[name=allUser1]").trigger("change");
+   			},error:function(){
+   				window.location.href="/recruitment/login";
+   			}
+   		}); */
+	});
+	
+	function getPosition() {
+		var positionName = $("input[name=search_name1]").val();
+		var majorName = "";
+		$("select[name=checkedUser] option").each(function() {
+			majorName += $(this).text() + ',';
+		});
+		
+		$.ajax({
+			url : [[@{/admin/relation/getpositionbymajor}]],
+			data : {
+				'majorName': majorName,
+				'positionName':positionName
+			},
+			dataType: 'json',
+			type: 'post',
+			async: false,
+			success : function(data) {
+				$("select[name=allUser1]").empty();
+				$("select[name=checkedUser1]").empty();
+				if (data.data.length > 0) {
+					var options='';
+					for (var i = 0; data.data.length > i; i++) {
+						options += "<option value='" + data.data[i].id + "'>" + data.data[i].jobName + "</option>";
+	  				}
+					$("select[name=allUser1]").append(options);
+				}
+				//$("select[name=allUser1]").trigger("change");
+			},error:function(){
+				window.location.href="/recruitment/login";
+			}
+		});
+	}
+	
+});
+
+
+/*]]>*/
+</script>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		$("input[type=text]").each(function(){
+			$(this).val($.trim($(this).val()));
+		})
+		var version = $("#version").val();
+		if(version.length==0){
+			alert("请输入更新版本号！");
+			return;
+		}
+		
+		$("#saveForm").submit();
+		
+		
+	});
+	
+	
+});
+/*]]>*/
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>其它管理 </li>
+	    	<li>检查更新设置</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<div class=" saveformModi addtableModify0">
+		<form  class="formbody" th:action="@{/admin/update/save}" name="saveForm" id="saveForm" method="post">
+		   <ul class="forminfoModi0 mauto" style="width:450px;">
+			    <li>
+			    	<label class="labelModi">当前版本号:</label>
+			    	<input type="text" readonly="readonly" class="dfinput" th:value="${version!=null?version.version:''}"/>
+			    </li>
+			    <li>
+			    	<label class="labelModi">修改版本号为:</label>
+			    	<input type="text" name="version" id="version" class="dfinput" />
+			    </li>
+			     <li class="tc mt20">
+		    	<input name="saveButton" id="saveButton" type="button"  class="btn" value="确认修改"/>
+		    </li>
+		    </ul>
+		    </form>
+	    </div>
+    </div>
+    <div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+</html>

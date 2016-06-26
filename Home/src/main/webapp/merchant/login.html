@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html style="height: 100%;" xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>黄金之城</title>
+		<link rel="stylesheet" th:href="@{/merchant/assets/css/style.css}" />
+		<script type="text/javascript" th:src="@{/merchant/assets/js/jquery-1.10.1.min.js}"></script>
+		<script type="text/javascript" th:src="@{/assets/js/jquery.cookie.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			$(function(){
+				$(document.body).css("overflow","hidden");
+				
+				//阻止登录后的用户后退
+				if($.cookie("isLogin") == "true"){
+					window.history.forward(1);
+				}
+			});
+		/*]]>*/
+		</script>
+		
+		<style type="text/css">
+			.back a{border-radius: 5px; text-align: center; color: #E5E5E5;font-size: 16px; border: 1px solid #00B7EE;display: inline-block;width: 150px;padding-bottom: 8px;padding-top: 8px;}
+			.back {width: 100%;position: absolute;bottom: 15px;}
+			.reg {float: left;margin-left: 34px;}
+			.fog {float: right;margin-right: 34px;}
+			.note {position: absolute;top: 78px;display: block; text-align: center; width: 100%;}
+		</style>
+	</head>
+	
+	<body style="background: url( '/goldCityWeb/merchant/assets/img/bg.jpg'); background-repeat:no-repeat;background-size: 100% 100%;width: 100%;height: 100%;">
+		<div class="Login">
+			<div class="Login_Top">
+				<p id="p1">黄金之城-</p>
+				<p id="p2">商户端登陆</p>
+			</div>
+			<form th:action="@{/authentication}" method="post" id="Login">
+				<input type="text" placeholder="请输入您的账号" name="j_username" required="required" value="18380426135"/>	
+				<input type="password" placeholder="请输入密码" name="j_password" required="required" value="111111"/>
+				<input type="submit" id="submit_Login" form="Login" value="登陆" style="font-family: '微软雅黑';cursor: pointer;" />
+			</form>
+			
+			<span class="note" th:if="${error!=null}" style="color: red;">用户名或密码错误！</span>
+			<p class="back">
+				<a th:href="@{/merchant/user/reg}" class="reg">注册</a>
+				<a th:href="@{/merchant/user/forget}" class="fog">忘记密码</a>
+			</p>
+		</div>
+	</body>
+	
+</html>

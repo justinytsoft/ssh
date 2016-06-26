@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.BaseDao">
+	
+	<select id="queryCityById" resultType="com.goldCityWeb.domain.City">
+		SELECT * FROM city WHERE id = #{id}
+	</select>
+	
+	<select id="queryPositionById" resultType="com.goldCityWeb.domain.Position">
+		SELECT * FROM position WHERE id = #{id}
+	</select>
+	
+	<select id="queryChargeType" resultType="com.goldCityWeb.domain.ChargeType">
+		SELECT * FROM charge_type
+	</select>
+	
+	<select id="queryLevelByLevel" resultType="com.goldCityWeb.domain.Level">
+		SELECT * FROM level_list WHERE `level`=#{level}
+	</select>
+	
+	<select id="queryCollegeById" resultType="com.goldCityWeb.domain.College">
+		SELECT * FROM college WHERE id=#{id}
+	</select>
+	
+	<select id="queryMajorById" resultType="com.goldCityWeb.domain.Major">
+		SELECT * FROM major WHERE id=#{id}
+	</select>
+	
+	
+	<select id="querySection" resultType="com.goldCityWeb.domain.Section">
+		SELECT * FROM section 
+	</select>
+	
+	<insert id="saveLocation" >
+INSERT INTO location 
+	(
+	user_id, 
+	latitude, 
+	longitude, 
+	create_time
+	)
+	VALUES
+	( 
+	#{user_id}, 
+	#{latitude}, 
+	#{longitude}, 
+	now()
+	);
+		
+	</insert>
+	
+	
+	<insert id="saveChargeRecord" >
+INSERT INTO `charge_record`
+            (
+             `company_id`,
+             `charge_time`,
+             `charge_count`,
+             `charge_type`,
+             `receipt`,
+             `fee_num`,
+             `status`,
+             `name`,
+             phone,
+             address)
+VALUES (
+        #{company_id},
+        now(),
+        #{charge_count},
+        #{charge_type},
+        #{receipt},
+        #{fee_num},
+        #{status},
+             #{name},
+             #{phone},
+             #{address})
+		
+	</insert>
+	
+	<update id="updateChargeRecordStatus">
+		update charge_record set status=2,pay_num=#{pay_num} WHERE fee_num=#{fee_num}
+	</update>
+	
+	
+	<insert id="saveFeeRecord" >
+INSERT INTO `fee_record`
+            (
+             `uid`,
+             `mid`,
+             `fee_number`,
+             `merchant_name`,
+             `fee_price`,
+             `use_gold`,
+             `real_fee`,
+             `create_time`,
+             `pay_number`,
+             `pay_status`,
+             `fee_type`)
+VALUES (
+        #{uid},
+        #{mid},
+        #{fee_number},
+        #{merchant_name},
+        #{fee_price},
+        #{use_gold},
+        #{real_fee},
+        now(),
+        #{pay_number},
+        #{pay_status},
+        #{fee_type});
+	</insert>
+	
+	<update id="updateFeeRecordPayStatus">
+		update fee_record set pay_status=2,pay_number=#{pay_number} WHERE fee_number=#{fee_number}
+	</update>
+	
+	<update id="updateUserGold">
+		update sys_users set freeze_gold_count = freeze_gold_count - #{gold} WHERE id=#{user_id}
+	</update>
+	
+	<update id="updateUserFreezeGold">
+		update sys_users set gold_count = gold_count - #{gold},freeze_gold_count = freeze_gold_count + #{gold} WHERE id=#{user_id}
+	</update>
+	
+	<update id="updateGoldCount">
+		update sys_users set gold_count = gold_count + #{gold} WHERE id=#{user_id}
+	</update>
+	
+	
+	<select id="queryFeeRecordByFeeNumber" resultType="com.goldCityWeb.domain.FeeRecord">
+		SELECT * FROM fee_record WHERE fee_number = #{fee_number}
+	</select>
+	
+	<select id="queryChargeRecordByFeeNum" resultType="com.goldCityWeb.domain.ChargeRecord">
+		SELECT * FROM charge_record WHERE fee_num = #{fee_num}
+	</select>
+	
+	
+	<select id="queryHeadList" resultType="com.goldCityWeb.domain.HeadList">
+		SELECT * FROM headlist 
+	</select>
+	
+	<select id="queryCollege" resultType="com.goldCityWeb.domain.College">
+		SELECT * FROM college WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryAllOldLevel" resultType="com.goldCityWeb.domain.OldLevel">
+		SELECT * FROM old_level 
+	</select>
+	
+	<select id="queryCollege_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM college WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		 
+	</select>
+	
+	<select id="queryMajor" resultType="com.goldCityWeb.domain.Major">
+		SELECT m.* FROM major m,college c, college_major cm WHERE c.id=#{college_id} AND c.id=cm.college_id AND m.id=cm.major_id
+		<if test="search_name != null">
+			AND m.name LIKE '%${search_name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryMajor_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM major m,college c, college_major cm WHERE c.id=#{college_id} AND c.id=cm.college_id AND m.id=cm.major_id
+		<if test="search_name != null">
+			AND m.name LIKE '%${search_name}%'
+		</if>
+	</select>
+	
+	<select id="queryAllMajor" resultType="com.goldCityWeb.domain.Major">
+		SELECT * FROM major WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryAllMajor_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM major WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+	</select>
+		
+	<select id="queryAllCareer" resultType="com.goldCityWeb.domain.Career">
+		SELECT * FROM `career` WHERE 1=1
+		<if test="search_name != null">
+			AND `name` LIKE '%${search_name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryAllCareer_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM `career` WHERE 1=1
+		<if test="search_name != null">
+			AND `name` LIKE '%${search_name}%'
+		</if>
+		 
+	</select>
+	
+	
+	<select id="queryAllIndustry" resultType="com.goldCityWeb.domain.Industry">
+		SELECT DISTINCT m.* FROM industry m, career c,career_position cp WHERE m.id = c.industry_id AND c.industry_id IS NOT NULL AND c.id = cp.careerId GROUP BY m.id
+		<if test="search_name != null">
+			AND m.name LIKE '%${search_name}%'
+		</if>
+		ORDER BY id DESC 
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryAllIndustry_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM industry WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		 
+	</select>
+	
+	<select id="queryCareerByIndustryId" resultType="com.goldCityWeb.domain.Career">
+		SELECT DISTINCT c.* FROM career c, career_position cp WHERE c.id = cp.careerId AND cp.id IS NOT NULL
+		<if test="industry_id!=null">
+			AND c.industry_id=#{industry_id} 
+		</if>
+		<if test="search_name != null">
+			AND c.`name` LIKE '%${search_name}%'
+		</if>
+		GROUP BY c.id 
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryCareerByIndustryId_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT DISTINCT c.* FROM career c, career_position cp WHERE c.id = cp.careerId AND cp.id IS NOT NULL
+		<if test="industry_id!=null">
+			AND c.industry_id=#{industry_id} 
+		</if>
+		<if test="search_name != null">
+			AND c.`name` LIKE '%${search_name}%'
+		</if>
+		 GROUP BY id ) a 
+	</select>
+	
+	<select id="queryAllProvince" resultType="com.goldCityWeb.domain.Province">
+		SELECT * FROM province WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryAllProvince_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM province WHERE 1=1
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		 
+	</select>
+	
+	<select id="queryCityByProvince" resultType="com.goldCityWeb.domain.City">
+		SELECT * FROM city WHERE provinceId=#{provinceId}
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryCityByProvince_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM city WHERE provinceId=#{provinceId}
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+	</select>
+	
+	<select id="queryPositionByCity" resultType="com.goldCityWeb.domain.Position">
+		SELECT * FROM position WHERE c_id=#{c_id}
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+	</select>
+	
+	<select id="queryPositionByCity_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM position WHERE c_id=#{c_id}
+		<if test="search_name != null">
+			AND name LIKE '%${search_name}%'
+		</if>
+	</select>
+	
+	<!-- 查询职位 -->
+	<select id="queryPosition_NO_USE" resultType="com.goldCityWeb.domain.Position">
+		SELECT p.* FROM `position` p, career_position cp WHERE 1 = 1
+		<if test="career_id != null">
+			AND p.id = cp.positionId AND cp.careerId = #{career_id}
+		</if>
+		<if test="search_name!=null">
+			AND p.jobName LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		GROUP BY p.id
+	</select>
+	
+	<select id="queryPosition_count_NO_USE" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT p.* FROM `position` p, career_position cp WHERE 1 = 1
+		<if test="career_id != null">
+			AND p.id = cp.positionId AND cp.careerId = #{career_id}
+		</if>
+		<if test="search_name!=null">
+			AND p.jobName LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		GROUP BY p.id) a
+	</select>
+</mapper>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+	
+	<body style="background:#1e181a;height: 100%;">
+		<link rel="stylesheet" th:href="@{/merchant/assets/css/style1.css}" />
+		<style>
+			.left-menu {
+				margin-left: 0px;
+				margin-top: 10px;
+				cursor: pointer;
+			}
+			.left-menu h6 {
+				padding-left: 0px;
+				color: #464749;
+				margin-top: 10px;
+				font-weight: normal;
+			}
+			.sele {
+				background: url(../merchant/assets/img/bg2.png) no-repeat;
+				background-size:  5px 100%;
+			}
+			.left-menu>div {height: 66px;margin-bottom: 0px;}
+		</style>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		    //加载内页
+		    function loadPage(obj, contentHref){
+		    	//加载右边的内页
+				iRight.panel("refresh",contentHref);
+				//top部分更新     新消息
+				updateMessage();
+				
+				if (obj.siblings('.sele').length > 0) {
+					var other_src_0 = obj.siblings('.sele').children('img').attr('src');
+					var other_src_1 = other_src_0.replace('ed.png', '.png');
+					obj.siblings('.sele').children('img').attr('src', other_src_1);
+					obj.siblings('.sele').children('h6').css('color', '#464749');
+					obj.siblings('.sele').removeClass('sele');
+					var src_0 = obj.children('img').attr('src')
+					if (obj.children('img').attr('src').indexOf('ed.png') == -1) {
+						var src_1 = src_0.replace('.png', 'ed.png');
+						obj.children('img').attr('src', src_1);
+						obj.children('h6').css('color', '#1FB5AC');
+						obj.addClass('sele');
+					}
+				} else {
+					var src_0 = obj.children('img').attr('src');
+					if (obj.children('img').attr('src').indexOf('ed.png') == -1) {
+						var src_1 = src_0.replace('.png', 'ed.png');
+						obj.children('img').attr('src', src_1);
+						obj.children('h6').css('color', '#1FB5AC');
+						obj.addClass('sele');
+					}
+				}
+			}       
+		        
+			//导航切换
+			$(document).ready(function() {
+				$('.left-menu>div').on('click', function() {
+					
+					var obj = $(this);
+					var contentHref = obj.attr("href"); //内容页路径
+					
+					if(contentHref == [[@{/merchant/redbag/index}]]){ //如果是发放红包，则需要进行审核判断
+						$.get([[@{/merchant/redbag/isAuth}]],{"_":Math.random()},function(data){
+							if(data.flag){
+								loadPage(obj,contentHref);
+							}else{
+								$("#merAuthDialog").fadeIn();
+							}
+						});
+					}else{ //否则直接访问
+						loadPage(obj,contentHref);
+					}
+				});
+				$('.left-menu>div:first').trigger("click");
+			});
+		/*]]>*/
+		</script>
+	
+		<div class="left-menu">
+			<div style="text-align:center;padding-top:6px;padding-bottom:10px" id="index" th:href="@{/merchant/user/index}">
+				<img style="width:30px;height:32px" th:src="@{/merchant/assets/img/index.png}"/>
+				<h6 style="text-align:center;">首页</h6>
+			</div>
+			<div style="text-align:center;padding:10px" id="paket" th:href="@{/merchant/redbag/index}">
+				<img th:src="@{/merchant/assets/img/paket.png}" style="width:30px;height:32px"/>
+				<h6 style="text-align:center;">发放红包</h6>
+			</div>
+			<div style="text-align:center;padding:10px" id="log" th:href="@{/merchant/order/index}">
+				<img th:src="@{/merchant/assets/img/log.png}"/>
+				<h6 style="text-align:center;">商家提现</h6>
+			</div>
+			<div style="text-align:center;padding:10px" id="charge" th:href="@{/merchant/charge/index}">
+				<img th:src="@{/merchant/assets/img/charg.png}"/>
+				<h6 style="text-align:center;">充值记录</h6>
+			</div>
+			<div style="text-align:center;padding:10px" id="set" th:href="@{/merchant/record/index}">
+				<img th:src="@{/merchant/assets/img/givelog.png}"/>
+				<h6 style="text-align:center;">发放记录</h6>
+			</div>
+			<div style="text-align:center;padding:10px" id="set" th:href="@{/merchant/setting/index}">
+				<img th:src="@{/merchant/assets/img/set.png}"/>
+				<h6 style="text-align:center;">设置</h6>
+			</div>
+		</div>
+	</body>
+
+</html>

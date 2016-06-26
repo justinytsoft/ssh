@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<style>
+.scbtn{line-height: 25px;padding: 0 11px;color: #fff;background-color: #286090;border-color: #204d74;text-decoration: none;display: inline-block;touch-action: manipulation;cursor: pointer;
+	-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;background-image: none;border: 1px solid transparent;border-radius: 4px;font-family: inherit;-webkit-appearance: button;
+	text-transform: none;overflow: visible;}	
+	.search ul li input{height: 27px; font-weight: normal;    font-size: 13px;}
+</style>
+<body style="background: #f1f1f1">
+	<div class="place">
+		<span>位置：资金管理</span>
+		<!-- <ul class="placeul">
+			<li><a th:href="@{/welcome}">首页</a></li>
+			<li>红包管理</li>
+		</ul> -->
+	</div>
+	
+	<div class="search" style="width:90%;margin-left:20px;margin-top:20px">
+		<ul>
+			<li style="margin-left:15px">搜索：</li>
+			<li style="margin-left:15px">
+				<select class="dfinput" style="height:34px;width:180px;opacity:1; border-color: rgb(167, 181, 188) rgb(206, 217, 223) rgb(206, 217, 223) rgb(167, 181, 188);">
+					<option selected="selected">充值</option>
+					<option>其它</option>
+				</select>
+			</li>
+			<li style="margin-left:15px"><input type="submit" class="scbtn" value="查询"/></li>
+		</ul>
+	</div>
+	
+	<div class="colorBoxlist">
+		<div class="colorBox blue">
+			<P class="top">总收入</P>
+			<p><span class="samll">￥</span><span class="big">2566</span></p>
+		</div>
+		<div class="colorBox yellow">
+			<P class="top">充值收入</P>
+			<p><span class="samll">￥</span><span class="big">445</span></p>
+		</div>
+		<div class="colorBox red">
+			<P class="top">商城收入</P>
+			<p><span class="samll">￥</span><span class="big">457</span></p>
+		</div>
+		<div class="colorBox green">
+			<P class="top">广告收入</P>
+			<p><span class="samll">￥</span><span class="big">457</span></p>
+		</div>
+	</div>
+	<div style="clear:both"></div>
+	<div class="paketTable">
+		<table>
+			<tr>
+				<th>商品名称</th>
+				<th>黄金币</th>
+				<th>数量</th>
+				<th>总价</th>
+				<th>用户名称</th>
+				<th>用户手机号</th>
+				<th>购买时间</th>
+			</tr>
+			<tr>
+				<td>充值</td>
+				<td>￥120</td>
+				<td>0</td>
+				<td>￥2000</td>
+				<td>demi商户</td>
+				<td>1820005745</td>
+				<td>2016-2/25 12:00</td>
+			</tr>
+			<tr>
+				<td>充值</td>
+				<td>￥120</td>
+				<td>0</td>
+				<td>￥2000</td>
+				<td>demi</td>
+				<td>1820005745</td>
+				<td>2016-2/25 12:00</td>
+			</tr>
+			<tr>
+				<td>充值</td>
+				<td>￥120</td>
+				<td>0</td>
+				<td>￥2000</td>
+				<td>demi商户</td>
+				<td>1820005745</td>
+				<td>2016-2/25 12:00</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

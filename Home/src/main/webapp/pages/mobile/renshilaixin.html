@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<title>帖子详情</title>
+</head>
+
+<body style="background:#eee;">
+	<section class="webPage">
+    	<h4 class="rs-top" >&nbsp;</h4>
+        <section class="renshi-top">
+        	<div class="touxiang-box" style="float:left; width:70px;margin:0 10px;">
+	        	<div class="renshi-touxiang" style=" margin:0;">
+	        		<a th:href="@{/services/user/company/show(company_id=${boss.id})}">
+	            		<img th:src="${boss.head!=null?application.baseImageUrl+boss.head:'/recruitment/assets/images/test.jpg'}" />
+	            	</a>
+	            </div>
+	            <!-- <span th:text="${boss.name}">姓名</span> -->
+	            <!-- <span  style="border:1px solid red;">姓名test</span> -->
+            </div>
+            <table style="width:65%;">
+            	<tr>
+            		<th width="30%">姓名：</th>
+                	<td width="65%" th:text="${boss.name}">姓名</td>
+                </tr>
+                <tr>
+                	<th>公司：</th>
+                    <td th:text="${boss.company_name}">MCG aliance</td>
+                </tr>
+                <tr>
+                	<th>职位：</th>
+                    <td th:text="${boss.my_job}">副总经理</td>
+                </tr>
+                <!-- <tr>
+                	<th>公司优势：</th>
+                	<td>
+                		<div class="biaoqian2" style=" width:100%; "></div>
+                	</td>
+                </tr> -->
+            </table>
+            <div class="biaoqian2" id="youshi">
+            
+            </div>
+        </section>
+        <section class="zhiwei-txt" th:if="${!#strings.equals(job.hidden, '2')}">
+        	<h4 class="tc" style="border-bottom:1px solid #d1d1d1; margin-left:0; line-height:30px;" ><a th:href="@{/services/job/detail(id=${job.id},isback=1)}" th:text="${job.jobName}">美术设计师（2D/3D）</a></h4>
+            <table>
+            	<tr>
+            		<th width="40"><img src="/recruitment/assets/images/money.png" /></th>
+            		<!-- <td width="60" class="red">薪资</td> -->
+                	<td>
+                		<span class="red">薪资：</span>
+                    	<span class="red" th:text="${'￥' + job.salary}">￥2-6k</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><img src="/recruitment/assets/images/zwicon4.png" /></td>
+                    <!-- <td>地址</td> -->
+                    <td>
+                    	<span >工作地址：</span>
+                    	<span  th:text="${job.city}">￥2-6k</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><img style="margin-left:10px;" src="/recruitment/assets/images/zwicon3.png" /></td>
+                    <!-- <td>学历</td> -->
+                    <td>
+                    	<span >学历：</span>
+                    	<span  th:text="${job.education}">￥2-6k</span>
+                    </td>
+                </tr>
+                <tr>
+                	<td><img src="/recruitment/assets/images/zwicon5.png" /></td>
+                	<!-- <td>经验</td> -->
+                    <td>
+						<span >经验：</span>
+                    	<span  th:text="${job.experience}">￥2-6k</span>
+					</td>
+                </tr>
+                <tr>
+                	<td><img src="/recruitment/assets/images/yaoqiu.png" /></td>
+                	<!-- <td>专业要求</td> -->
+                    <td>
+						<span >专业要求：</span>
+                    	<span th:text="${job.major}">技术性要求</span>
+					</td>
+                </tr>
+            </table>
+            <img src="/recruitment/assets/images/pin.png" class="pin" />
+        </section>
+        
+        <div style="margin:10px 0 10px 0" th:if="${#strings.equals(job.hidden, '2')}">
+        </div>
+        
+        <section class="renshi-bot">
+        	<div class="renshi-touxiang">
+        		<a th:href="@{/services/resume/detail(userId=${student.id},isback=1)}">
+            		<img th:src="${student.head != null? application.baseImageUrl+student.head:'/recruitment/assets/images/test.jpg'}" />
+            	</a>
+            </div>
+            <div class="renshi-txt">
+            	<!-- <div style="overflow:hidden;">
+            		<h4 class="fl" th:text="${student.name}">姓名</h4>
+            		<span class="fl" style=" margin-left:10px; color:#52cbc5; " th:text="${student.sex==1?'男':'女'}">副总经理</span>
+            		<span class="fl"  style=" margin-left:10px; color:#52cbc5;" id="age">12</span>
+            	</div> -->
+                <!-- <p>细心追求完美。任何事情认真对待 ，性格...</p> -->
+                <table>
+                	<tr>
+                		<th width="60" th:text="${student.name}"></th>
+                		<td>
+                			<span th:text="${student.sex==1?'男':'女'}"  style="color:#52cbc5; margin-right:5px; "></span>
+                			<span id="age"  style="color:#52cbc5!important; ">12</span>
+                		</td>
+                	</tr>
+                	<tr>
+                    	<th>
+                        	<img src="/recruitment/assets/images/zwicon4.png" />
+                        </th>
+                        <td th:text="${resume.area}">成都</td>
+                   	</tr>
+                   	<tr>
+                        <th>
+                        	<img src="/recruitment/assets/images/zwicon1.png" />
+                        </th>
+                        <td th:text="${#strings.arraySplit(resume.expectPosts,'_')[2]}">原画师</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="clr"></div>
+            <div class="biaoqian2" id="jn_biaoqian">
+            	
+            </div>
+        </section>
+        <section class="huifu-ul" style="margin-bottom:100px;">
+        	<ul>
+        		<li th:class="${reply.posterId!=session.app_login_user.id?'li-left':'li-right'}" th:each="reply:${replyList}">
+        			<h4 style="color:#999;" th:text="${beans.dateFormatter.formatDateToStr(reply.postDate,'MM月dd日 HH:mm')}">7月8日  13:05</h4>
+                	<div class="touxiang-div">
+                    	<img th:src="${reply.head != null? application.baseImageUrl+reply.head:'/recruitment/assets/images/test.jpg'}" />
+                    </div>
+                	<div class="huifu-text" style="line-height:20px" th:text="${reply.content}">你好</div>
+                </li>
+                <!-- <li class="li-right">
+                	<div class="touxiang-div">
+                    	<img src="/recruitment/assets/images/test.jpg" />
+                    </div>
+                	<div class="huifu-text">你好，关于这个职位。。。。</div>
+                </li> -->
+            </ul>
+        	
+        </section>
+        <!-- <div class="div-box" style="width:100%; height:50px; background:#fff; position:fixed; bottom:0; left:0; z-index:100;"></div>
+        <form th:if="${isback==1}" style="z-index:1001;" class="huifu-form" id="sendForm" th:action="@{/services/job/reply}" method="post">
+            <input type="text" placeholder="写回复" name="content"/>
+            <input type="hidden" th:value="${job.id}" name="job_id"/>
+            <input type="hidden" th:value="${student.id}" name="to_user"/>
+            <input type="hidden" value="1" name="isback"/>
+            <input type="button" id="sendbut" value="发送" />
+        </form> -->
+        
+    </section>
+    <!-- <a th:if="${first!=1}" href="#bottom"><span id="bottomA"></span></a> -->
+    <!-- <a href="#bottom"><span id="bottomA"></span></a> -->
+    <!-- <div id="bottom"></div> -->
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+function replay(){
+	return 1;
+}
+  var tagses = [[${resume.tags}]];
+	if(tagses != null){
+		var tag = tagses.split(",");
+		var jn_content = "";
+		for (var i=0; i<tag.length; i++)
+		  {
+			jn_content += '<a href="javascript:void(0);">'+tag[i]+'</a>';
+		  }
+		$('#jn_biaoqian').append(jn_content);
+	}
+	$('.renshi-touxiang img').each(function(){
+		$(this).load(function(){
+			var imgW1 = $('.renshi-touxiang img').width();
+			var boxW1 = $('.renshi-touxiang').width();
+			$('.renshi-touxiang img').css('marginLeft',((boxW1-imgW1)/2)+'px');
+		})
+	});
+	$('.touxiang-div img').each(function(){
+		$(this).load(function(){
+			var imgW2 = $('.touxiang-div img').width();
+			var boxW2 = $('.touxiang-div').width();
+			$('.touxiang-div img').css('marginLeft',((boxW2-imgW2)/2)+'px'); 
+		})
+	});
+	
+$(document).ready(function() {
+	document.body.scrollTop=document.body.scrollHeight;
+
+	var bir = [[${student.birthday}]];
+	if(bir!=null && bir!=""){
+		var datetime = new Date(bir.replace("年","-").replace("月","-").replace("日","").replace("-", "/").replace("-", "/"));
+		
+		 var year = datetime.getFullYear();
+		 var month = datetime.getMonth()+1;//js从0开始取 
+		 var date = datetime.getDate(); 
+		 var d = new Date();
+		 var d_year = d.getFullYear();
+		 var d_month = d.getMonth()+1;//js从0开始取
+		 var d_date = d.getDate(); 
+		 
+		 var age = d_year - year;
+		 if(d_month < month){
+			 age--;
+		 } else if( d_month == month){
+			 if(d_date < date){
+				 age--;
+			 }
+		 }
+		 $("#age").text(age);
+		 $("#age").css('color','#999');
+	} else {
+		 $("#age").text(0);
+		 $("#age").css('color','#999');
+	}
+	/* $('input[name=content]').focus(function(){
+		$('#sendForm').css('bottom','0');
+	}) */
+	
+	
+	$("#sendbut").click(function() {
+		if($('input[name=content]').val().trim()==''){
+			alert("回复内容不可为空!");
+			return false;
+		}
+		//$('#sendForm').css('bottom','20px');
+		$("#age").css('color','#999');
+		$("#sendForm").submit();
+		$("#age").css('color','#999');
+	});
+	
+	var superiority = [[${boss.superiority}]];
+	if(superiority!=null && superiority!=""){
+		var sus = superiority.split(" ");
+		var content = "";
+		for(var i = 0; i<sus.length;i++){
+			if(sus[i]!=""){
+			content += '<a href="javascript:void(0);">'+sus[i]+'</a>'
+			}
+		}
+		$('#youshi').append(content);
+	}
+	 /* window.onscroll=function(){
+		 alert(11);
+		$(".huifu-form").css("top",$(window).height()-$(window).scrollTop()+'px');
+	 } */
+	 $('input[name=content]').focus(function(){
+		 $(".huifu-form").css('position','static');
+	 })
+	 /* $('input[name=content]').blur(function(){
+		 $(".huifu-form").css({'position':'fixed','bottom':'14px'});
+	 }) */
+	 
+	
+});
+/*]]>*/
+</script>
+</html>

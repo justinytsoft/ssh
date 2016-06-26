@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" ></head>
+	
+<script th:src="@{/assets/js/ajaxfileupload.js}"></script>
+<style>
+	li>label {font-size:16px;text-align:left;}
+		.formtext {/* text-align:center; */}
+		.formtext b {line-height:45px;font-size:16px;padding-left:20px}
+		.btn {
+		line-height: 25px;
+		padding: 0 12px;
+		color: #fff;
+		background-color: #286090;
+		border-color: #204d74;
+		text-decoration: none;
+		display: inline-block;
+		touch-action: manipulation;
+		cursor: pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		background-image: none;
+		border: 1px solid transparent;
+		border-radius: 4px;
+		font-family: inherit;
+		-webkit-appearance: button;
+		text-transform: none;
+		overflow: visible;
+		 font-weight: normal;
+		 font-size: 13px;
+	}
+	.span_img{display: inline-block; margin-left:-5px;cursor: pointer;}
+	.forminfo .dfinput{width:1px;}
+</style>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/				
+
+    function fileUpload(n, o){
+		
+		//设置文件dom 的name 为 file
+    	$($(this).next().find("input[type=file]")[0]).attr("name","file");
+		//获取文件dom 的id
+		var fileId = $($(this).next().find("input[type=file]")[0]).attr("id");
+		
+    	$.ajaxFileUpload({
+	        url: [[@{/upload/uploadImage}]],
+	        secureuri: true,
+	        fileElementId: fileId,
+	        type: 'POST',
+	        dataType: 'json',
+	        success: function (result) {
+                $("#pre").attr("src",result.data.path).show();
+            	$("#image").val(result.data.fileName); 
+        	},
+        	error:function(){
+        		cAlert("上传失败");
+        	}
+   	   }); 
+    	
+       //清空文件dom，不清空则不能再次选择文件
+   	   $("#productCover").filebox("reset");
+       //取消校验
+       $("#productCover").filebox("disableValidation");
+	}
+/*]]>*/
+</script>
+<body style="background:#f1f1f1">
+	<div class="place">
+    	<span>位置：商品添加</span>
+    </div>
+    
+    <div class="webPage">
+    	<!-- <div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div> -->
+	    <form class="formbody mauto" th:action="@{/commodity/save}" name="saveForm" id="saveForm" method="post"  enctype="multipart/form-data" >
+		    <ul class="forminfo">
+			    <li>
+			    	<label>商品名:</label>
+			    	<input type="text" name="name"  class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li>
+			    	<label>图片:</label> 
+					<input id="productCover" class="easyui-filebox" data-options="width:200,height:40,required:true,novalidate:true,validateOnCreate:false,editable:false,buttonText:'选择文件',onChange:fileUpload"/>
+					<br/>
+					<img id="pre" th:style="'width:200px;height:130px;border:1px solid gray;margin-top: 5px;display:none;margin-left:100px'"/>
+					<input type="hidden" name="image" id="image" />
+				</li>
+			    <li>
+			    	<label>商品类型:</label>
+			    	<select name="category" class="easyui-combobox" data-options="width:200,height:40,required:true,validateOnCreate:false,editable:false">
+				    		<option value="0">道具类</option>
+				    		<option value="1">物品类</option>	    	
+			    	</select>
+			    </li>
+			    <li>
+			    	<label>详情:</label>
+			    	<input type="text" name="desc" class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li>
+			    	<label>价格:</label>
+			    	<input type="text" name="price" class="easyui-numberbox" data-options="width:200,height:40,required:true,validateOnCreate:false,precision:2"/>
+			    </li>
+			    <li>
+			    	<label>库存:</label>
+			    	<input type="text" name="stock" class="easyui-numberbox" data-options="width:200,height:40,required:true,validateOnCreate:false,min:1"/>
+			    </li>
+			    <li>
+			    	<label>提货方式:</label>
+			    	<select name="receive_type" class="easyui-combobox" data-options="width:200,height:40,required:true,validateOnCreate:false,editable:false">
+				    	<option value="1">自提</option>
+				    	<option value="2">快递</option>
+			    	</select>
+			    </li>
+			    <li>
+			    	<label>自提地址:</label>
+			    	<input type="text" name="receive_address" class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li>
+			    	<label>限制等级:</label>
+			    	<input type="text" name="limit_level" class="easyui-numberbox" data-options="width:200,height:40,required:true,validateOnCreate:false,validateOnBlur:true,prompt:'多少级能使用'"/>
+			    </li>
+			    <li>
+			    	<label>使用方法:</label>
+			    	<input type="text" name="use_way" class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li>
+			    	<label>特殊效果:</label>
+			    	<input type="text" name="special_work" class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li>
+			    	<label>功能描述:</label>
+			    	<input type="text" name="work_description" class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li>
+			    	<label>使用说明:</label>
+			    	<input type="text" name="use_description" class="easyui-textbox" data-options="width:200,height:40,required:true,validateOnCreate:false"/>
+			    </li>
+			    <li class="ml130 mt20 tc" style="width:200px;">
+			    	<input name="saveButton" id="saveButton" type="button"  class="btn" value="确认保存"/>
+			    	<div class="clr"></div>
+			    </li>
+			</ul>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	//文本编辑器
+	$('#editor1').ckeditor();
+	
+	//校验表单
+	$("#saveButton").click(function(){
+		var form = $("#saveForm");
+		//启用文件元素校验
+		if($("#image").val()==""){
+			form.form("enableValidation");
+		}
+		if(form.form("validate")){
+			$("#saveForm").submit();
+		}
+	});
+	
+	$("#removeUser").click(function() {
+		var ua = $("select[name=checkedUser]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				$(this).remove();
+				$("select[name=checkedUser1]").empty();
+			});
+		}
+	});
+	$("#removeAllUser").click(function(){
+		var checkedOption=$("select[name=checkedUser]").find("option");
+		if(checkedOption.size()>0){
+			$("select[name=checkedUser]").empty();
+		}		
+	})
+	
+	
+	
+	$("#addUser").click(function() {
+		var checkUserArr = new Array();
+		$("select[name=checkedUser] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				var exists = false;
+				for (var i = 0; i < checkUserArr.length; i++) {
+					if (checkUserArr[i] == $(this).val()) {
+						exists = true;
+					}
+				}
+				if (!exists) {
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
+				}
+				$(this).prop("selected", false);
+			});
+			$("select[name=checkedUser]").append(options);
+			//alert(11111);
+			//alert("新添加了一个22222");
+			getPosition();
+		}
+	});
+	$("#addAllUser").click(function(){
+		var checkUserArr = new Array();
+		$("select[name=checkedUser] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser]").find("option");
+		var options='';
+		ua.each(function(){
+			var exists = false;
+			for (var i=0; i <checkUserArr.length; i++){
+				if(checkUserArr[i]==$(this).val()){
+					exists = true;
+				}
+			}
+			if(!exists){
+				options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+			}			
+		});
+		$("select[name=checkedUser]").append(options);
+		alert("添加了一个");
+		getPosition();
+	})
+	
+	
+	var addDbl=$("select[name=allUser] option");	
+	addDbl.each(function(){		
+		$(this).dblclick(function(){
+			
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+				}
+			});
+			$("select[name=checkedUser]").append(options);
+			//alert(333333333);
+			getPosition();
+		});
+	});
+	
+	var addDbl=$("select[name=allUser]");	
+	addDbl.change(function(){
+		$("select[name=allUser] option").each(function(){
+		$(this).dblclick(function(){
+			//alert(this.value)
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				//alert(exists)
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+					//alert(options)
+				}
+			});
+			$("select[name=checkedUser]").append(options);
+			getPosition();
+		});
+		});
+	});
+	
+	var removeDbl=$("select[name=checkedUser]");
+	removeDbl.dblclick(function(){
+			//alert(11);
+			var rem=$("select[name=checkedUser]").find("option:selected");
+			rem.remove();
+			$("select[name=checkedUser1]").empty();
+	});
+	
+	
+	$("#searchButton").click(function() {
+		
+		var search_name = $("input[name=search_name]").val();
+		
+		$.ajax({
+   			url : [[@{/admin/getMajor}]],
+   			data : {
+   				'search_name': search_name
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data, textStatus, jqXHR) {
+ 				$("select[name=allUser]").empty();
+ 				$("select[name=allUser]").trigger("change");
+   				if (data.length > 0) {
+   					var options='';
+   					
+   					for (var i = 0; data.length > i; i++) {
+   						options += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+   	   				}
+   					$("select[name=allUser]").append(options);
+   				}
+   				$("select[name=allUser]").trigger("change");
+   			},error:function(){
+   				window.location.href="/recruitment/login";
+   			}
+   		});
+	});
+	
+	
+	
+	$("#removeUser1").click(function() {
+		var ua = $("select[name=checkedUser1]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				$(this).remove();
+			});
+		}
+	});
+	$("#removeAllUser1").click(function(){
+		var checkedOption=$("select[name=checkedUser1]").find("option");
+		if(checkedOption.size()>0){
+			$("select[name=checkedUser1]").empty();
+		}		
+	})
+	
+	
+	
+	$("#addUser1").click(function() {
+		var checkUserArr = new Array();
+		$("select[name=checkedUser1] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser1]").find("option:selected");
+		if (ua.size() > 0) {
+			var options='';
+			
+			ua.each(function() {
+				var exists = false;
+				for (var i = 0; i < checkUserArr.length; i++) {
+					if (checkUserArr[i] == $(this).val()) {
+						exists = true;
+					}
+				}
+				if (!exists) {
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";
+				}
+				$(this).prop("selected", false);
+			});
+			$("select[name=checkedUser1]").append(options);
+		}
+	});
+	$("#addAllUser1").click(function(){
+		var checkUserArr = new Array();
+		$("select[name=checkedUser1] option").each(function() {
+			checkUserArr.push($(this).val());
+		});
+		var ua = $("select[name=allUser1]").find("option");
+		var options='';
+		ua.each(function(){
+			var exists = false;
+			for (var i=0; i <checkUserArr.length; i++){
+				if(checkUserArr[i]==$(this).val()){
+					exists = true;
+				}
+			}
+			if(!exists){
+				options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+			}			
+		});
+		$("select[name=checkedUser1]").append(options);
+	})
+	
+	
+	var addDbl=$("select[name=allUser1] option");	
+	addDbl.each(function(){		
+		$(this).dblclick(function(){
+			
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser1] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser1]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+				}
+			});
+			$("select[name=checkedUser1]").append(options);
+		});
+	});
+	
+	var removeDbl=$("select[name=checkedUser1]");
+	removeDbl.dblclick(function(){
+			//alert(11);
+			var rem=$("select[name=checkedUser1]").find("option:selected");
+			rem.remove();
+	});
+	
+	var addDbl=$("select[name=allUser1]");	
+	addDbl.change(function(){
+		$("select[name=allUser1] option").each(function(){
+		$(this).dblclick(function(){
+			//alert(this.value)
+			var checkUserArrDbl = new Array();
+			$("select[name=checkedUser1] option").each(function() {
+				checkUserArrDbl.push($(this).val());
+			});
+			
+			var ua = $("select[name=allUser1]").find("option:selected");
+			var options='';
+			ua.each(function(){
+				var exists = false;
+				for (var i=0; i <checkUserArrDbl.length; i++){
+					if(checkUserArrDbl[i]==$(this).val()){
+						exists = true;
+					}
+				}
+				//alert(exists)
+				if(!exists){
+					options += "<option value='" + $(this).val() + "'>" + $(this).text() + "</option>";	
+					//alert(options)
+				}
+			});
+			$("select[name=checkedUser1]").append(options);
+		});
+		});
+	});
+	
+	$("#searchButton1").click(function() {
+		
+		var search_name = $("input[name=search_name1]").val();
+		getPosition();
+		/* $.ajax({
+   			url : [[@{/admin/getCareer}]],
+   			data : {
+   				'search_name': search_name
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data, textStatus, jqXHR) {
+ 				$("select[name=allUser1]").empty();
+ 				$("select[name=allUser1]").trigger("change");
+   				if (data.length > 0) {
+   					var options='';
+   					
+   					for (var i = 0; data.length > i; i++) {
+   						options += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
+   	   				}
+   					$("select[name=allUser1]").append(options);
+   				}
+   				$("select[name=allUser1]").trigger("change");
+   			},error:function(){
+   				window.location.href="/recruitment/login";
+   			}
+   		}); */
+	});
+	
+	function getPosition() {
+		var positionName = $("input[name=search_name1]").val();
+		var majorName = "";
+		$("select[name=checkedUser] option").each(function() {
+			majorName += $(this).text() + ',';
+		});
+		
+		$.ajax({
+			url : [[@{/admin/relation/getpositionbymajor}]],
+			data : {
+				'majorName': majorName,
+				'positionName':positionName
+			},
+			dataType: 'json',
+			type: 'post',
+			async: false,
+			success : function(data) {
+				$("select[name=allUser1]").empty();
+				$("select[name=checkedUser1]").empty();
+				if (data.data.length > 0) {
+					var options='';
+					for (var i = 0; data.data.length > i; i++) {
+						options += "<option value='" + data.data[i].id + "'>" + data.data[i].jobName + "</option>";
+	  				}
+					$("select[name=allUser1]").append(options);
+				}
+				//$("select[name=allUser1]").trigger("change");
+			},error:function(){
+				window.location.href="/recruitment/login";
+			}
+		});
+	}
+	
+});
+
+
+/*]]>*/
+</script>
+</html>

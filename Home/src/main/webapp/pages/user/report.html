@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<title>举报</title>
+<body>
+	
+	<form th:action="@{/services/ user/report}" method="post" id="saveform">
+		举报类型:<select name="type">
+				<option value="非法信息" >非法信息</option>
+				<option value="出售假货">出售假货</option>
+				<option value="其他">其他</option>
+			</select><br/>
+		<input type="text" name="content" />
+		<input type="button" value="确认" id="subbut" />
+	</form>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	$("#subbut").click(function() {
+   	 if($("input[name=content]").val()==''){
+    	 alert("请输入理由!");
+    	 return false;
+    }
+    $("#saveform").submit();
+   	});
+}); 
+/*]]>*/
+</script>
+</html>
+

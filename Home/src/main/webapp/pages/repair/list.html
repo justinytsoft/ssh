@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>维修管理 </li>
+	    	<li>维修列表查看：</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" method="post" th:action="@{/admin/repair/list}" class="formbody" style="width:960px">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<ul class="seachform mauto">
+			<li class="fl mr20">
+				<label>报修类别：</label>
+			</li>
+			<li class="fl mr20">
+				<select  name="type_id" class="select1">
+					<option value="0">全部类别</option>
+				    <option th:each="rt:${rtList}" th:selected="${rt.id == type_id}" th:value="${rt.id}" th:text="${rt.repairContent}"></option>
+			    </select>
+			    
+			</li>
+			<li class="fl mr20">
+				<label>开始时间：</label>
+				<input type="text" readonly="readonly" th:value="${f_time==null? '' : f_time}" name="f_time" class="dfinput" style="width:120px;background: #fff url(/recruitment/assets/js/My97DatePicker/skin/datePicker.gif) no-repeat right;" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
+			</li>
+			<li class="fl mr20">
+				<label>结束时间：</label>
+				<input type="text" readonly="readonly" th:value="${t_time==null? '' : t_time}" name="t_time" class="dfinput" style="width:120px;background: #fff url(/recruitment/assets/js/My97DatePicker/skin/datePicker.gif) no-repeat right;" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
+			</li>
+			<li class="fl mr20">
+				<label>当前状态：</label>
+			</li>
+			<li class="fl mr20">
+				<select name="is_fixed" class="select1">
+					<option value="-1">全部</option>
+					<option th:selected="${is_fixed==0}" value="0">待处理</option>
+					<option th:selected="${is_fixed==1}" value="1">已派出</option>
+			    </select>
+			</li>
+		    <li class="fr mr0">
+		    	<input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/>
+		    </li>
+		    <li class="fr mr0">
+		    	<input style="float:left;" type="button" id="exportButton" class=" subBut ml70 mt10 mb10 scbtn" value="导出"/>
+		    </li>
+		    
+		</ul>
+			
+			
+			<div>
+				<span th:unless="${repairList!=null and not #lists.isEmpty(repairList)}" th:utext="暂无数据！"></span>
+				<table  class="tablelist mauto" th:if="${repairList!=null and not #lists.isEmpty(repairList)}">
+					<thead>
+						<tr>
+							<th width="60"><input type="checkbox" id="check_all"/>全选</th>
+							<th width="100">寝室号</th>
+							<th width="100">报修人</th>
+							<th width="100">电话</th>
+							<th width="200">预约时间</th>
+							<th width="200">学校</th>
+							<th width="100">状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="re,status:${repairList}">
+							<td><input type="checkbox" th:value="${re.id}" name="check_id" th:text="${status.count}"/></td>
+							<td th:text="${re.dormitoryNo}">名称</td>
+							<td th:text="${re.reporterName}"></td>
+							<td th:text="${re.telNo}"></td>
+							<td th:text="${re.plannedTime}"></td>
+							<td th:text="${re.college_name}"></td>
+							<td th:text="${re.is_fixed?'已派出':'待处理'}"></td>
+							<td>
+								<a th:href="@{/admin/repair/show(id=${re.id})}">查看</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${repairList!=null and not #lists.isEmpty(repairList)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+    $(".select1").uedSelect({
+		width : 120
+	});
+    $("#check_all").click(function () {
+		 if($("#check_all").is(':checked')) {
+       	$("[name='check_id']:checkbox").each(function() {
+       		$(this).prop("checked", true);
+       	});
+		} else {
+			$("[name='check_id']:checkbox").each(function() {
+       		$(this).prop("checked", false);
+       	}); 
+		}
+   });
+    $("#exportButton").click(function(){
+		var status=$("input[name=status]").val();
+		var type_id=$("select[name=type_id]").val();
+		var f_time=$("input[name=f_time]").val();
+		var t_time=$("input[name=t_time]").val();
+		var checked_id = "";
+		$("[name = check_id]:checkbox").each(function(){
+			if($(this).is(':checked')) {
+				checked_id += "," + $(this).val();
+			}
+		});
+		if(checked_id.length==0){
+			alert("请选择需要导出的数据");
+			return false;
+		}
+		checked_id = checked_id.substr(1);
+		
+		//alert("type=" + encodeURIComponent(type) + "&f_time=" + f_time + "&t_time=" + t_time);
+		window.location.href="exp?type_id=" + type_id + "&f_time=" + f_time + "&t_time=" + t_time+"&checked_id="+checked_id;
+		//$.post("action.php",{'type':type,'f_time':f_time, 't_time':t_time})
+	});
+    
+    
+});
+/*]]>*/
+</script>
+</html>
