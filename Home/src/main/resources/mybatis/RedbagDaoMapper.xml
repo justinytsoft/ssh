@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.IRedbagDao">
+
+	<!-- 通过广告id查询广告 -->
+	<select id="queryAdvById" resultType="com.goldCityWeb.domain.MainList">
+		SELECT a.*, s.name AS section_name FROM adv a LEFT JOIN section s ON s.id = a.section_id
+		<where>
+			a.id = #{id}
+		</where>
+	</select>
+
+	<!-- 查询商家广告 -->
+	<select id="queryAdv" resultType="com.goldCityWeb.domain.MainList">
+		SELECT a.*, 
+			   s.name AS section_name 
+			   ,cp.logo,
+			   (SELECT su.nick_name FROM income inc,sys_users su WHERE `adv_id`= a.id AND su.id=inc.uid ORDER BY inc.gold_count DESC LIMIT 1) AS lucky_name
+			   FROM adv a 
+			   LEFT JOIN section s ON s.id = a.section_id
+			   LEFT JOIN company cp ON a.company_id = cp.id
+		<where>
+			<if test="param.id!=null">a.company_id = #{param.id}</if>
+			<if test="param.verify_status!=null">AND a.verify_status = #{param.verify_status}</if>
+			<if test="param.adv_status!=null and param.adv_status==0">AND a.adv_status != 2 AND a.adv_time >= now()</if>
+			<if test="param.adv_status!=null and param.adv_status==1">AND a.adv_status != 2 AND a.adv_time <![CDATA[<=]]> now()</if>
+			<if test="param.adv_status!=null and param.adv_status==2">AND a.adv_status = #{param.adv_status}</if>
+			<if test="param.adv_status!=null and param.adv_status==3">AND a.adv_status != 2</if> <!-- 查询未完成的广告 -->
+			<if test="param.sdate!=null">AND a.adv_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND a.adv_time <= #{param.edate}]]></if>
+		</where>
+		<if test="param.page!=null and param.rows!=null">
+			LIMIT #{param.page}, #{param.rows}
+		</if>
+	</select>
+
+	<!-- 查询商家广告总数 -->
+	<select id="queryAdvTotal" resultType="int">
+		SELECT COUNT(1) FROM adv a 
+			   LEFT JOIN section s ON s.id = a.section_id
+			   LEFT JOIN company cp ON a.company_id = cp.id
+		<where>
+			<if test="param.id!=null">a.company_id = #{param.id}</if>
+			<if test="param.verify_status!=null">AND a.verify_status = #{param.verify_status}</if>
+			<if test="param.adv_status!=null and param.adv_status==0">AND a.adv_status != 2 AND a.adv_time >= now()</if>
+			<if test="param.adv_status!=null and param.adv_status==1">AND a.adv_status != 2 AND a.adv_time <![CDATA[<=]]> now()</if>
+			<if test="param.adv_status!=null and param.adv_status==2">AND a.adv_status = #{param.adv_status}</if>
+			<if test="param.adv_status!=null and param.adv_status==3">AND a.adv_status != 2</if> <!-- 查询未完成的广告 -->
+			<if test="param.sdate!=null">AND a.adv_time >= #{param.sdate}</if>
+			<if test="param.edate!=null"><![CDATA[AND a.adv_time <= #{param.edate}]]></if>
+		</where>
+	</select>
+	
+</mapper>

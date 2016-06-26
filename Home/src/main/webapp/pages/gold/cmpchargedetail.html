@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<script th:src="@{/assets/js/My97DatePicker/WdatePicker.js}" defer="defer"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>金币数据</li>
+	    	<li>商家充值流水：</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" th:action="@{/pages/gold/cmpchargedetail}" method="post" class="formbody">
+			<ul class="seachform mauto">
+			<li>
+				<label>选择日期:</label>
+				<input type="text" name="date1" th:value="${date1}" class="dfinput" style="width:200px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>-
+				<input type="text" name="date2" th:value="${date2}" class="dfinput" style="width:200px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
+			</li>
+		    <li class="fr mr0"><label>&nbsp;</label><input id="searchButton" name="searchButton" type="submit" value="查询" /></li>
+			</ul>
+			<div style="width:1200px">
+				<span th:unless="${ccs!=null and not #lists.isEmpty(ccs)}" th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"  th:if="${ccs!=null and not #lists.isEmpty(ccs)}">
+					<thead>
+						<tr>
+							<th width="60">城市</th>
+							<th width="150">充值时间</th>
+							<th width="100">商家名字</th>
+							<th width="200">充值金额</th>
+							<th width="200">支付方式</th>
+							<th width="50">发票信息</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u:${ccs}">
+							<td th:text="${u.city_name}"></td>
+							<td th:text="${u.charge_time}"></td>
+							<td th:text="${u.company_name}"></td>
+							<td th:text="${u.charge_count}"></td>
+							<td th:text="${u.name}">支付方式</td>
+							<td th:text="${u.receipt==1?'需要发票':'不需要'}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${ccs!=null and not #lists.isEmpty(ccs)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
+</html>

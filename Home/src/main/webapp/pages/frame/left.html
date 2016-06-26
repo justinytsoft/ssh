@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript">
+
+$(function() {	
+	//导航切换
+		 $(".menuson li").click(function(){
+		$(".menuson li.active").removeClass("active")
+		$(this).addClass("active");
+	});
+	
+	$('.title').click(function(){
+		var $ul = $(this).next('ul');
+		$('dd').find('ul').slideUp();
+		if ($ul.is(':visible')) {
+			$(this).next('ul').slideUp();
+		} else {
+			$(this).next('ul').slideDown();
+		}
+	}); 
+	
+	$('dd').css({'display':'none'});
+	$('label').css({'display':'none'});
+	$('dl dd:lt(7):gt(5)').css({'display':'block'});
+	$('ul:lt(7):gt(5)').css({'display':'block'});
+	
+})	
+ 
+</script>
+<style type="text/css">
+	li>a {font-size:18px;color:#96a0aa;padding-top:20px;padding-bottom:20px;padding-right:60px}
+	li {padding-top:20px;padding-bottom:20px;}
+	.logoImg {margin-top:30px;float:left;margin-left:5px;}	
+	.leftmenu {
+    width: 181px;
+    background: url(../images/leftline.gif) repeat-y right;
+    dt
+}
+</style>
+<body style="background:#32323a;overflow-x:hidden">
+	<!-- logo -->
+	<div class="lefttop" style="background:#29282e;width:240px">
+		<img class="logoImg" alt="logo" th:src="@{/assets/images/logoIndex.png}"/>
+	</div>
+    <!-- nav -->
+    <dl class="leftmenu">
+    <dd th:each="menu : ${sec.principal.menus}">
+    <!-- <div class="title">
+    	<span><img th:src="@{${menu.icon}}" /></span><label th:text="${menu.name}"></label>
+    </div> style="overflow-x:hidden;overflow-y:auto;"-->
+    <div >
+    <ul class="menuson">
+        <li th:each="submenu : ${menu.subMenus}" style="padding-top:10px;padding-bottom:10px">
+        	<cite></cite><a th:href="@{${submenu.url}}" target="rightFrame" th:text="${submenu.name}">菜单名称</a><i></i>
+        </li>
+    </ul>
+    </div>    
+    </dd>
+    </dl>
+</body>
+</html>

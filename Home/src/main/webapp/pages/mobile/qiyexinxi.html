@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/base.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<title>职位详情</title>
+</head>
+
+<body style="background:#eee;">
+	<section class="webPage" style="margin-bottom:60px;">
+    	<section class="qiye-top">
+    		<!-- <a href="javascript:history.back(-1);"><img width="50" src="/recruitment/assets/images/back.png" /></a> -->
+        	<div style="position:relative;">
+        		<div class="logo-bg"></div>
+	            <div class="logo-box" style="margin-top:10px;">
+	            	<img th:src="${company.head!=null?application.baseImageUrl+company.head:'/recruitment/assets/images/test.jpg'}" />
+	            </div>
+            </div>
+        </section>
+        <section class="qiye-txt">
+        	<ul>
+            	<li>
+                	<img src="/recruitment/assets/images/zwicon1.png" />
+                    <label>公司简介:</label>
+                    <span th:text="${company.company_intruduction}">
+                    	本公司开创于2013年，位于成都市天府软件园开发区，希望新能量加入...
+                    </span>
+                </li>
+                <li>
+                	<img src="/recruitment/assets/images/qyicon1.png" />
+                    <label>公司地址:</label>
+                    <span th:text="${company.company_address}">
+                    	成都市天府软件园E2
+                    </span>
+                </li>
+                <li>
+                	<img src="/recruitment/assets/images/qyicon2.png" />
+                    <label>公司规模：</label>
+                    <span th:text="${company.company_scope}">
+                    	31~100
+                    </span>
+                </li>
+                <!-- <li>
+                	<img src="/recruitment/assets/images/qyicon3.jpg" />
+                    <label>优势:</label>
+                    <div class="clr"></div>
+                    <div class="biaoqian2">
+                    	
+                    </div>
+                </li> -->
+                <li>
+                	<img src="/recruitment/assets/images/qyicon4.jpg" />
+                    <label>官网：</label>
+                    <span th:text="${company.company_site}">
+                    	www.baidu.com
+                    </span>
+                </li>
+            </ul>
+        </section>
+    </section>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$('.logo-box img').load(function(){
+	var imgW = $('.logo-box img').width();
+	var boxW = $('.logo-box').width();
+	$('.logo-box img').css('marginLeft',((boxW-imgW)/2)+'px');
+})
+
+var superiority = [[${company.superiority}]];
+if(superiority!=null && superiority!=""){
+	var sus = superiority.split(" ");
+	var content = "";
+	for(var i = 0; i<sus.length;i++){
+		if(sus[i]!=""){
+		content += '<a href="javascript:void(0);">'+sus[i]+'</a>'
+		}
+	}
+	$('.biaoqian2').append(content);
+}
+	$(document).ready(function(e) {
+		
+		
+        var winW = $(window).width();
+		$('.logo-bg').css('left',((winW-110)/2)+'px');
+		$('.logo-box').css('left',((winW-90)/2)+'px');
+		
+    });
+	/*]]>*/
+</script>
+</html>

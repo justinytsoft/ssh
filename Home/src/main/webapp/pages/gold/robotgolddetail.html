@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<script th:src="@{/assets/js/My97DatePicker/WdatePicker.js}" defer="defer"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>金币数据</li>
+	    	<li>商家充值流水：</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" th:action="@{/pages/gold/robotgolddetail}" method="post" class="formbody">
+			<ul class="seachform mauto">
+			<li>
+				<label>选择日期:</label>
+				<input type="text" name="date1" th:value="${date1}" class="dfinput" style="width:200px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>-
+				<input type="text" name="date2" th:value="${date2}" class="dfinput" style="width:200px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
+			</li>
+		    <li class="fr mr0"><label>&nbsp;</label><input id="searchButton" name="searchButton" type="submit" value="查询" /></li>
+			</ul>
+			<div style="width:1200px">
+				<span th:unless="${rgs!=null and not #lists.isEmpty(rgs)}" th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"  th:if="${rgs!=null and not #lists.isEmpty(rgs)}">
+					<thead>
+						<tr>
+							<th width="150">抢红包时间</th>
+							<th width="100">商家名字</th>
+							<th width="200">抢到数量</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u:${rgs}">
+							<td th:text="${u.grab_time}"></td>
+							<td th:text="${u.company_name}"></td>
+							<td th:text="${u.gold_count}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${rgs!=null and not #lists.isEmpty(rgs)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
+</html>

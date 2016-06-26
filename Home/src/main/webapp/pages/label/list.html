@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>标签管理 </li>
+	    	<li>标签查询：</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" method="post" th:action="@{/admin/label/list}" class="formbody" style="width:760px">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<ul class="seachform mauto">
+			<li class="mr20">
+				<select name="main_id" class="select1">
+					<option value="0">全部分类</option>
+				    <option th:each="l:${lts}" th:selected="${main_id == l.id}" th:value="${l.id}" th:text="${l.name}"></option>
+			    </select>
+			</li>
+			
+		    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+		    
+		</ul>
+			
+			
+			<div>
+				<span th:unless="${ls!=null and not #lists.isEmpty(ls)}" th:utext="暂无数据！"></span>
+				<table  class="tablelist mauto" th:if="${ls!=null and not #lists.isEmpty(ls)}">
+					<thead>
+						<tr>
+							<th width="60">序号</th>
+							<th width="200">标签名</th>
+							<th width="200">标签分类</th>
+							<th width="200">描述</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="l,status:${ls}">
+							<td th:text="${status.count}">序号</td>
+							<td th:text="${l.name}">名称</td>
+							<td th:text="${l.main_name}"></td>
+							<td th:text="${l.description}"></td>
+							<td>
+								<a th:href="@{/admin/label/edit(id=${l.id})}">查看/修改</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${ls!=null and not #lists.isEmpty(ls)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+           $(".select1").uedSelect({
+		width : 202
+	});
+/*]]>*/
+</script>
+</html>

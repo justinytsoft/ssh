@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+<style type="text/css">
+.blueBtn {
+	padding: 5px 20px;
+	background: #6dcff6;
+	color: #fff;
+	border-radius: 2px;
+	cursor: pointer
+}
+
+.yellowBtn {
+	padding: 5px 20px;
+	background: #f1d826;
+	color: #fff;
+	border-radius: 2px;
+}
+/* .blueBtn:hover ,.yellowBtn:hover {color:red} */
+.tablelist tbody tr:hover {
+	background: none;
+}
+
+.tablelist tbody tr:nth-child(2n-1) {
+	background: #f9f9f9;
+	height: 40px
+}
+
+.tablelist tbody tr:nth-child(2n) {
+	background: #fff;
+	height: 40px
+}
+
+.tablelist th {
+	background: none;
+	height: 45px;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.tablelist th, .tablelist td {
+	border: 1px solid #e3eaf2;
+}
+
+.tablelist tr td a {
+	padding: 0 11px;
+}
+
+.tablelist tr td a:nth-of-type(2) {
+	background: #D9534F;
+	border: 1px solid #D43F3A;
+	border-radius: 5px;
+}
+
+.tablelist tr td a {
+	line-height: 25px;
+	padding: 0 11px;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
+	text-decoration: none;
+	display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+}
+
+.scbtn {
+	line-height: 25px;
+	padding: 0 11px;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
+	text-decoration: none;
+	display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+}
+
+.search ul li input {
+	height: 27px;
+	font-weight: normal;
+	font-size: 13px;
+}
+</style>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
+
+<body style="background: #f1f1f1">
+	<div class="place">
+		<span>位置：反馈管理</span>
+	</div>
+	<div class="webPage">
+		<form id="searchForm" th:action="@{/adv/verify_list}" method="post" class="formbody" style="width: 80%">
+
+			<!-- <div class="search">
+				<ul>
+					<li style="margin-left: 15px">搜索：</li>
+					<li style="margin-left: 15px"><select name="verify_status" style="height:34px;border-color: rgb(167, 181, 188) rgb(206, 217, 223) rgb(206, 217, 223) rgb(167, 181, 188);">
+							<option value="0" th:selected="${verify_status==0}">未审核</option>
+							<option value="2" th:selected="${verify_status==2}">全部</option>
+							<option value="1" th:selected="${verify_status==1}">已通过</option>
+							<option value="-1" th:selected="${verify_status==-1}">不通过</option>
+					</select></li>
+					<li style="margin-left: 15px"><input type="submit"
+						class="scbtn" value="查询" /></li>
+				</ul>
+			</div> -->
+			<div>
+				<span th:unless="${fs!=null and not #lists.isEmpty(fs)}" th:utext="暂无数据！"></span>
+				<table class="tablelist mauto" th:if="${fs!=null and not #lists.isEmpty(fs)}">
+					<thead>
+						<tr>
+							<th width="3">联系电话</th>
+							<th width="2">反馈内容</th>
+							<th width="3">反馈时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="f:${fs}">
+							<td th:text="${f.phone}"></td>
+							<td th:text="${f.content}"></td>
+							<td th:text="${#dates.format(f.create_time,'yyyy-MM-dd HH:mm')}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10" th:if="${fs!=null and not #lists.isEmpty(fs)}" th:include="fragment/paginationbar :: paginationbar"></div>
+			</div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+</html>

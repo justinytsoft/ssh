@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" ></head>
+<body style="background:url(' + @{/assets/images/bodyBg.png} + ');">
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>字典数据维护</li>
+	    	<li>行业列表维护</li>
+	    </ul>
+    </div>
+    <div class="webPage">
+		<div class="formbody">
+			<form id="searchForm" th:action="@{/admin/relation/collegeToMajor}" method="post" class="formbody" style="width:960px">
+			<ul class="seachform mauto">
+			<li class="mr20">
+				<label>行业名称：</label>
+				<input type="text" name="name" th:value="${name!=null?name:''}" class="dfinput" style="width:150px"/>
+			</li>
+		    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+		    
+			</ul>
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			
+			<table class="tablelist mauto" style="width: 560px;" th:if="${majors!=null and not #lists.isEmpty(majors)}"><!--   -->
+				<thead>
+					<tr>			
+		            	<th width="80">学校</th>
+		                <th width="180">专业</th>
+		                <th width="60">操作</th>
+					</tr>
+				</thead>
+				<tbody th:each="major:${majors}" style="border: #000 1px solid;">
+					<input type="hidden" name="majorId" th:value="${major.id}"/>
+					<tr th:each="position,status:${major.detailList}">
+		            	<td th:if="${status.count==1}" th:rowspan="${#lists.size(major.detailList)}" th:text="${major.name}"></td>
+		            	<td th:text="${position.name}"></td>
+		                <td>
+		                	<a onclick="deleteClick(this)">删</a>
+							<input type="hidden" name="positionId" th:value="${position.id}"/>
+						</td>
+		            </tr>
+				</tbody>
+			</table>
+			<div class="mt10" th:if="${majors!=null and not #lists.isEmpty(majors)}" th:include="fragment/paginationbar :: paginationbar"></div>
+			</form>
+			<form class="ml30" th:action="@{/admin/relation/collegeToMajor/upload}" id="saveform" method="post" enctype="multipart/form-data">
+				<h4 class="lh30 mt20">Excel导入：</h4>
+				<input type="file" id="file" name="excel" class="mt20" />	
+				<div class="clr"></div>		
+				<input type="button" class="subBut fl mt20 mb20" id ="subbutton" value="保存"/>
+				<div class="clr"></div>	
+			</form>
+	
+		</div>
+	</div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+function deleteClick(obj) {
+	var majorId =  $(obj).parent().parent().parent().find("input[name=majorId]").val();
+	var positionId = $(obj).next().val();
+	$.ajax({
+		url : [[@{/admin/relation/deletecollegeToMajor}]],
+		data : {
+			'college_id': majorId,
+			'major_id' : positionId
+		},
+		dataType: 'text',
+		type: 'post',
+		async: false,
+		success : function(data) {
+			if(data == '"SUCCESS"') {
+				alert("修改成功");
+
+				$("#searchForm").submit();
+			} else {
+				alert("发生错误，请重新登录");
+			}
+			//$("select[name=spec]").trigger("change");
+		}
+	});
+}
+
+$(document).ready(function() {
+//excel校验
+$("#file").change(function(){
+	var filepath = $(this).val();
+	var extStart = filepath.lastIndexOf(".");
+	var ext = filepath.substring(extStart,filepath.length).toUpperCase();
+	if(ext!=".XLSX" && ext!=".XLS"){
+		alert("上传文件必须为excel格式！");
+		this.value = "";
+		$(this).focus();
+	}
+})
+$("#subbutton").click(function(){
+	var filepath = $("#file").val();
+	var extStart = filepath.lastIndexOf(".");
+	var ext = filepath.substring(extStart,filepath.length).toUpperCase();
+	if(filepath!=""&&ext!=".XLSX" && ext!=".XLS"){
+		alert("上传文件必须为excel格式！");
+		return;
+	}
+	$("#saveform").submit();
+})
+
+
+
+});
+/*]]>*/
+</script>
+</html>

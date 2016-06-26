@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html style="overflow: hidden;" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+
+	<body>
+		<style>
+			.mask {display: none;}
+			.pop1 {display: none;}
+			.datagrid-wrap {margin-bottom:50px;}
+		</style>
+		
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			//获取选中行
+			var txSelRows;
+			//选中行的ID
+			var txIds; 
+			//日期控件的重置按钮
+			var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+	         buttons.splice(1, 0, {
+	            text: '重置',
+	            handler: function(target){
+	            	$(target).datebox("clear");
+	            	$(target).datebox("hidePanel");
+	            }
+	         });
+	         
+	         //提现
+	         function orderTx(type){
+        		//获取选中行
+				txSelRows = $("#orderList").datagrid("getChecked");
+				//选中行的ID
+				txIds = []; 
+				//记录是否包含非未结算记录
+				var flag = true;
+				//订单总价
+				var moneyCount = 0;
+				
+				if(txSelRows.length<=0){
+					cAlert("请选择要提现的记录");						
+				}else{
+					$.each(txSelRows,function(){
+						var obj = this;
+						if(obj.status!=0){
+							cAlert("只能提现未结算的记录");
+							flag = false;
+							return false;
+						}
+						moneyCount += obj.real_fee;
+						txIds.push(obj.id);
+					});
+					/* if(flag){
+						$("#txMoney").text("￥" + moneyCount);
+						$('.mask').show();
+						$('.pop1').show();
+					} */
+					cConfirm("确认要提现吗",function(f){
+						if(f){
+							$.post([[@{/merchant/order/tx}]],{"_":Math.random(),"ids":txIds.join(","),type:type},function(data){
+								if(data.flag){
+									$("#orderList").datagrid("reload",{status:0});
+									$("#orderList").datagrid("clearChecked");
+								}
+								cAlert(data.msg);
+							});
+						}
+					});
+				}
+	         }
+			
+			$(function(){
+				
+/* 				//显示提现窗口
+				$('.TX').click(function(){
+					//获取选中行
+					txSelRows = $("#orderList").datagrid("getChecked");
+					//选中行的ID
+					txIds = []; 
+					//记录是否包含非未结算记录
+					var flag = true;
+					//订单总价
+					var moneyCount = 0;
+					
+					if(txSelRows.length<=0){
+						cAlert("请选择要提现的记录");						
+					}else{
+						$.each(txSelRows,function(){
+							var obj = this;
+							if(obj.status!=0){
+								cAlert("只能提现未结算的记录");
+								flag = false;
+								return false;
+							}
+							moneyCount += obj.real_fee;
+							txIds.push(obj.id);
+						});
+						// if(flag){
+						//	$("#txMoney").text("￥" + moneyCount);
+						//	$('.mask').show();
+						//	$('.pop1').show();
+						//}
+						cConfirm("确认要提现吗",function(f){
+							if(f){
+								$.post([[@{/merchant/order/tx}]],{"_":Math.random(),"ids":txIds.join(",")},function(data){
+									if(data.flag){
+										$("#orderList").datagrid("reload",{status:0});
+										$("#orderList").datagrid("clearChecked");
+									}
+									cAlert(data.msg);
+								});
+							}
+						});
+					}
+				}); */
+				
+				
+				//隐藏提现窗口
+				/* $('#auth_close').click(function(){
+					$('.mask').hide();
+					$('.pop1').hide();
+				}); */
+				
+				//确定提现
+				$("#txConfirm").click(function(){
+					$.post([[@{/merchant/order/tx}]],{"_":Math.random(),"ids":txIds.join(",")},function(data){
+						if(data.flag){
+							$('.mask').hide();
+							$('.pop1').hide();
+							$("#orderList").datagrid("reload",{});
+						}
+						cAlert(data.msg);
+					});
+				});
+				
+				//创建列表
+				$("#orderList").datagrid({
+					url:[[@{/merchant/order/list}]],
+				    fitColumns : true, //设置为 true, 则自动调整宽度 
+					singleSelect : true, //	设置为 true，则只允许选中一行。
+				    rownumbers:false, //设置为 true，则显示带有行号的列。
+					nowrap : false, //设置为 true，则把数据显示在一行里。设置为 true 可提高加载性能。
+					striped : true, //设置为 true，则把行条纹化。（即奇偶行使用不同背景色）
+				    loadMsg : "数据加载中,请稍等...", //当从远程站点加载数据时，显示的提示消息。
+				    idField : "id", //相当于主键, 在第一页选中的行翻到第二页也能记住
+				    selectOnCheck : false, //如果为true，单击复选框将永远选择行。 如果为false，选择行将不选中复选框。
+				    checkOnSelect : false, //如果为true，当用户点击行的时候该复选框就会被选中或取消选中。 如果为false，当用户仅在点击该复选框的时候才会呗选中或取消。
+				    pagination:true, //设置为 true，则在数据网格（datagrid）底部显示分页工具栏。
+				    pageSize:10, //当设置了 pagination 属性时，初始化页面尺寸。
+				    pageList:[5,10,20,30,50,100], //当设置了 pagination 属性时，初始化页面尺寸的选择列表。
+				    columns:[[ //设置表头 
+						{
+							field:'id',
+							checkbox:true
+						},
+						{
+							field:'status',
+							title:'状态',
+							align:"center",
+							width:50,
+							formatter:function(value,row,index){
+								if(value==0){
+									return "未结算";
+								}else if(value==1){
+									return "申请结算";
+								}else if(value==2){
+									return "已结算";
+								}else{
+									return value;
+								}
+							}
+						},
+						{
+							field:'str_create_time',
+							title:'消费时间',
+							align:"center",
+							width:100
+						},
+						{
+							field:'fee_price',
+							title:'消费金额',
+							align:"center",
+							width:100,
+							formatter:function(value,row,index){
+								return "￥"+value;
+							}
+						},
+						{
+							field:'fee_user',
+							title:'消费用户',
+							align:"center",
+							width:100
+						},
+						{
+							field:'fee_number',
+							title:'消费单号',
+							align:"center",
+							width:100
+						} 
+					]],
+					rowStyler:function(index,row){
+						return "height:50px";
+					},
+					onLoadSuccess:function(data){
+						
+						//表头无分割线
+						$.each($("td"),function(){
+							$(this).css("border-style","none");
+						});
+						if (data.total == 0) {//如果没有数据    进
+						    var tip = '<div id="nothing" style="font-size:20px;height:200px;line-height:200px;text-align:center;color:rgb(200,200,200)"><img src="'+[[@{/merchant/assets/img/blanke.png}]]+'" /><span style="font-size: 16px;color:#B3B3B3;">未查询到相关订单哦！</span></div>';
+						    //添加一个新数据行，第一列的值为你需要的提示信息，然后将其他列合并到第一列来，注意修改colspan参数为你columns配置的总列数
+						    $(this).datagrid('appendRow', { status: tip }).datagrid('mergeCells', { index: 0, field: 'status', colspan:5 });
+						  	//将复选框隐藏
+			                $(this).datagrid("hideColumn","id");
+						  	//将提现按钮隐藏
+			                $("#orderFooter").hide();
+						    //隐藏分页导航条，这个需要熟悉datagrid的html结构，直接用jquery操作DOM对象，easyui datagrid没有提供相关方法隐藏导航条
+						    $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').hide();
+						    //移除鼠标移到行上面时,让背景不发生改变
+						    $(".datagrid-body tr").removeClass();
+						    $("td[field='str_charge_time']").css('border','none');
+						}
+						else { 
+						    //如果通过调用reload方法重新加载数据有数据时显示出分页导航容器
+						    $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').show();
+						  	
+						    //只有未结算状态才显示复选框
+			            	var oStatus = parseInt($("#orderStatus").combobox("getValue"));
+							if(oStatus!=0){
+								//将复选框隐藏
+				                $(this).datagrid("hideColumn","id");
+				              	//将提现按钮隐藏
+								$("#orderFooter").hide();
+							}else{
+								//显示复选框
+				            	$(this).datagrid("showColumn","id");
+				            	//将提现按钮显示
+								$("#orderFooter").show();
+							}
+						} 
+					}
+				});
+				//分页条格式
+				$("#orderList").datagrid('getPager').pagination({
+	                layout:['list','sep','first','prev','sep','links','sep','next','last','sep','refresh']
+	            }); 
+				
+				//查询
+				$("#search").click(function(){
+					var status = $("#orderStatus").combobox("getValue");
+					var sdate = $("#sdate").datebox("getValue");
+					var edate = $("#edate").datebox("getValue");
+					
+					var sDate = new Date(sdate.replace(/-/g,"/"));
+					var eDate = new Date(edate.replace(/-/g,"/"));
+					
+					var s = Date.UTC(sDate.getFullYear(),(sDate.getMonth()+1),sDate.getDate()); //选择的时间 毫秒数
+					var e = Date.UTC(eDate.getFullYear(),(eDate.getMonth()+1),eDate.getDate()); //当前时间 毫秒数
+					
+					if(e < s){
+						cAlert("结束时间必须大于开始时间");
+						return;
+					} 
+					
+					$("#orderList").datagrid("reload",{status:status,sdate:sdate,edate:edate});
+				});
+				
+				//初始化下拉框
+				$("#orderStatus").combobox({
+					editable:false,
+					height:30,
+					width:100,
+				});
+			});
+		/*]]>*/
+		</script>
+	
+		<div class="contain">
+			<div class="clr"></div>
+			<!--containIndex-->
+			<div class="containIndex">
+			
+				<!--itemAll-->
+				<div class="itemAll">
+					<div class="itemBox">
+						<p class="label">金额总数</p>
+						<p class="num" th:text="${'￥'+feePriceCount}">￥1520</p>
+					</div>
+					<div class="itemBox">
+						<p class="label">未结算金额总数</p>
+						<p class="num" th:text="${'￥'+unclosedCount}">￥1520</p>
+					</div>
+					<div class="itemBox">
+						<p class="label">申请结算金额总数</p>
+						<p class="num" th:text="${'￥'+applyCount}">￥1520</p>
+					</div>
+					<div class="itemBox">
+						<p class="label">已结算金额总数</p>
+						<p class="num" th:text="${'￥'+closedCount}">￥1520</p>
+					</div>
+					
+					<br/>
+					<br/>
+					
+					<div class="itemBox">
+						<p class="label">订单总数</p>
+						<p class="num" th:text="${feeRecordCount}">￥12</p>
+					</div>
+					<div class="itemBox">
+						<p class="label">订单未结算总数</p>
+						<p class="num" th:text="${unclosedNum}">￥12</p>
+					</div>
+					<div class="itemBox">
+						<p class="label">订单申请结算总数</p>
+						<p class="num" th:text="${applyNum}">￥12</p>
+					</div>
+					<div class="itemBox">
+						<p class="label">订单已结算总数</p>
+						<p class="num" th:text="${closedNum}">￥12</p>
+					</div>
+				</div>
+				
+				<!--search-->
+				<div style="vertical-align: middle;margin: 20px 0;font-size: 18px">
+					<label style="font-size: 15px">状态:</label>
+					<select id="orderStatus">
+					    <option value="-1">不限</option>
+					    <option value="0">未结算</option>
+					    <option value="1">申请结算</option>
+					    <option value="2">已结算</option>
+					</select>
+					
+					<label style="font-size: 15px">消费时间:</label>
+					<input id="sdate" class="easyui-datebox" data-options="editable:false,width:100,height:30,buttons:dateboxReset"/>
+					~
+					<input id="edate" class="easyui-datebox" data-options="editable:false,width:100,height:30,buttons:dateboxReset"/>
+					
+					<div id="search" style="width: 80px;height:21px;background-color: #00b8ee;display: inline-block;text-align: center;padding: 4px 0;cursor: pointer;border-radius:3px">
+						<span style="color: white;">查 询</span>
+					</div>
+				</div>
+				
+				<!-- table -->
+				<div style="width: 90%">
+					<table id="orderList"></table>
+				</div>
+			</div>
+		</div>
+		
+		<!--footer-->
+		<div id="orderFooter" class="r-footer" style="display:none;">
+			<span class="TX" onclick="orderTx(2)">现金提现</span>
+			<span class="TX" onclick="orderTx(1)">金币提现</span>
+		</div>
+		
+		<!--pop-->
+		<div class="mask"></div>
+		<div class="pop1">
+			<a id="auth_close" href="javascript:;" title="关闭"><img th:src="@{/merchant/assets/img/close.png}"/></a>
+			<div class="popItem">
+				<span class="txItemBox">
+					<label>提现金额：</label>
+					<span id="txMoney">￥120</span>
+				</span>
+			</div>
+			<div class="popTable">
+				<table>
+					<tr>
+						<th width="25%">银行卡号</th>
+						<td width="75%"><input type="text" class="form-control sort"/> </td>
+					</tr>
+					<tr>
+						<th>开户行名称</th>
+						<td><input type="text" class="form-control sort"/> </td>
+					</tr>
+					<tr style="border-bottom: none;">
+						<th>开户行电话</th>
+						<td><input type="text" class="form-control sort"/></td>
+					</tr>
+				</table>
+			</div>
+			<p><button class="popbuttom" id="txConfirm">确定</button></p>
+		</div>
+	</body>
+</html>

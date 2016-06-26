@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+<script type="text/javascript">
+	$(function(){
+		$.each($("td[name=status]"),function(){
+			var obj = $(this);
+			if(obj.text()=="0"){
+				obj.text("未结算");
+			}else if(obj.text()=="1"){
+				obj.text("申请结算");
+			}else if(obj.text()=="2"){
+				obj.text("已结算");
+			}
+		});
+	});
+</script>
+<style>
+.scbtn{line-height: 25px;padding: 0 11px;color: #fff;background-color: #286090;border-color: #204d74;text-decoration: none;display: inline-block;touch-action: manipulation;cursor: pointer;
+	-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;background-image: none;border: 1px solid transparent;border-radius: 4px;font-family: inherit;-webkit-appearance: button;
+	text-transform: none;overflow: visible;}
+	.search ul li input{height: 27px; font-weight: normal;font-size: 13px;}
+	.tablelist {border:0px;}
+</style>
+<body style="background:#f1f1f1">
+	<div class="place">
+		<span>所在位置：商户结算</span>
+		<!-- <ul class="placeul">
+			<li><a th:href="@{/welcome}">首页</a></li>
+			<li>红包管理</li>
+		</ul> -->
+	</div>
+	<div class="search" style=" margin-left: 20px;">
+		<form id="searchForm" th:action="@{/statement/statement_list}" method="post">
+			<ul>
+				<li style="margin-left:15px">搜索：</li>
+				<li style="margin-left:15px">
+					<input class="dfinput" name="phone" th:value="${phone}" style="height:30px;width:180px" type="text" placeholder="请输入用户手机号"/>
+				</li>
+				<li style="margin-left:15px">状态：</li>
+				<li style="margin-left:15px">
+					<select name="status" class="dfinput" style="height:30px;width:180px;opacity:1;border: 1px solid #CED9DF">
+						<option value="0" th:selected="${status==0}">未结算</option>
+						<option value="1" th:selected="${status==1}">申请结算</option>
+						<option value="2" th:selected="${status==2}">已结算</option>
+					</select>
+				</li>
+				<li style="margin-left:15px"><input type="submit" class="scbtn" value="查询"/></li>
+			</ul>
+		</form>
+	</div>
+	<div class="paketTable tablelist">
+		<span th:unless="${cs!=null and not #lists.isEmpty(cs)}">暂无数据！</span>
+		<table th:if="${cs!=null and not #lists.isEmpty(cs)}">
+			<tr>
+				<th>状态</th>
+				<th>商户名称</th>
+				<!-- <th>提现总价</th> -->
+				<th>提现总数</th>
+				<th>商户电话</th>
+				<th>商户联系人</th>
+				<th>操作</th>
+			</tr>
+			<tr th:each="c:${cs}">
+				<td name="status" th:text="${status}"></td>
+				<td th:text="${c.company_name}">￥2000</td>
+				<!-- <td th:text="${'￥' + (c.statement_money==null?0:c.statement_money)}">15000 1215454</td> -->
+				<td th:text="${c.statement_num==null?0:c.statement_num}">demi</td>
+				<td th:text="${c.company_phone}">18200254565</td>
+				<td th:text="${c.link_man}">18200254565</td>
+				<td class="edit">
+					<a th:href="@{/statement/statement_detail(id=${c.id},status=${status})}">详情</a>
+				</td>
+			</tr>
+		</table>
+		<div class="mt10" th:if="${cs!=null and not #lists.isEmpty(cs)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a href="#">首页</a></li>
+	    </ul>
+    </div>
+    <div class="mainindex">
+	    <div class="welinfo">
+		    <span><img th:src="@{/assets/images/sun.png}" alt="天气" /></span>
+		    <b th:text="${sec.principal.name} + ' 您好，欢迎使用信息管理系统'"></b>
+	    </div>
+	    
+	    <div class="welinfo">
+		    <span><img th:src="@{/assets/images/time.png}" alt="时间" /></span>
+		    <!-- <i th:text="${'您上次登录的时间：' + beans.dateFormatter.formatDateToStr(sec.principal.last_login_time)}">2013-10-09 15:22</i> -->
+	    </div>
+    </div>
+</body>
+
+</html>

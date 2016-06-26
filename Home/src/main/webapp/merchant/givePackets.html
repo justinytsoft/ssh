@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+
+	<body style="background-color: #f4f4f4;">
+		
+		<link rel="stylesheet" th:href="@{/merchant/assets/css/style1.css}" />
+		<style>
+			.giveMoneyTable tr th {text-align: right;}
+			.giveMoneyTable tr td {text-align: left;padding-left: 15px;}
+		</style>
+		
+		<script type="text/javascript" th:src="@{/assets/js/ajaxfileupload.js}"></script>	
+		<script type="text/javascript" th:src="@{/assets/js/common.js}"></script>	
+			
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			$('.giveMoneyGb').css({'height':$(window).height()-120,});
+			//再次发布时加载数据
+			var m = [[${m}]];
+
+			$(function(){
+				
+				//初始化日期框
+				$('#redbagSendTime').datetimebox({
+				    height: 37,
+				    width:173,
+				    showSeconds: false, //是否显示秒
+				    editable: false, //是否开启键盘输入
+				    required:true, //是否必须输入
+				    validateOnCreate:false, // 相当于 onblur 事件
+					onHidePanel:function(){ //关闭面板是触发
+						var nowDate = new Date();
+						var selDate = new Date(($('#redbagSendTime').datetimebox("getText").replace(/-/g,"/")));
+						
+						var sel = Date.UTC(selDate.getFullYear(),(selDate.getMonth()+1),selDate.getDate()); //选择的时间 毫秒数
+						var now = Date.UTC(nowDate.getFullYear(),(nowDate.getMonth()+1),nowDate.getDate()); //当前时间 毫秒数
+						var later = now + 24 * 30 * 60 * 60 * 1000; //当前时间 30 天后的时间 毫秒数
+						
+						if(now > sel || sel > later){ //当前时间大于选择时间    或  选择时间超过当前时间7天  就要不得
+							$('#redbagSendTime').datetimebox("clear");
+							cAlert("时间只能大于当前时间且最多延迟30天");
+						}
+					}
+				});
+				
+				//初始化下拉列表
+				$("#redbagSection").combobox({
+					url:[[@{/merchant/getSections}]],
+					valueField:"id",
+					textField:"name",
+					width:173,
+					height:35,
+					editable:false,
+					required:true,
+				    validateOnCreate:false,
+				    onLoadSuccess:function(){ //默认选中第一个
+				    	if(m==null){
+					    	var data = $('#redbagSection').combobox('getData');
+					    	$("#redbagSection ").combobox('select',data[0].id); 
+				    	}
+			    	}
+				});
+
+				//上传按钮点击事件
+				if(m==null){
+					$("#redbagUpload").click(function(){
+						$("#redbagFile").trigger("click");
+					});
+				}
+				
+				//表单提交
+				$("#redbagSubmit").click(function(){
+					cConfirm("确认要提交吗",function(f){
+						if(f){
+							var form = $("#redbagForm");
+							var model = $("input[type=radio][name=model]:checked").val();
+							
+							if(model==0){
+								if($("#redbagCover").val()==""){
+									cAlert("请选择广告封面");
+									return;
+								}
+							}
+							
+							if(form.form("validate")){ //表单验证
+								
+								/* var strDate = $('#redbagSendTime').datebox("getText");
+								var strTime = $('#redbagSendHour').datebox("getValue");
+								
+								var nowDate = new Date();
+								var selDate = stringToDate(strDate + " " + strTime +":00:00");
+								var sel = Date.UTC(selDate.getFullYear(),(selDate.getMonth()+1),selDate.getDate()); //选择的时间 毫秒数
+								var now = Date.UTC(nowDate.getFullYear(),(nowDate.getMonth()+1),nowDate.getDate()); //当前时间 毫秒数
+								var later = now + 24 * 30 * 60 * 60 * 1000; //当前时间 30 天后的时间 毫秒数
+								
+								if(now > sel || sel > later){ //当前时间大于选择时间    或  选择时间超过当前时间7天  就要不得
+									$('#redbagSendTime').datetimebox("clear");
+									cAlert("时间只能大于当前时间且最多延迟30天");
+									return;
+								}
+								
+								var strDateTime = strDate + " " + strTime + ":00";
+								$("#send_time").val(strDateTime); */
+								
+								form.form("submit",{ //表单提交
+									url:form.attr("action"),
+									success: function(data){
+										data = eval('(' + data + ')');  // change the JSON string to javascript object
+										if(data.flag){
+											updateMessage();
+											iRight.panel("refresh",[[@{/merchant/redbag/index}]]); //刷新页面
+										}	
+										cAlert(data.msg);
+									}
+								});
+							}
+						}
+					});
+				});
+				
+				//回显数据
+				if(m!=null){
+					var form = $("#redbagForm");
+					form.form("load",{
+						id:m.id,
+						section_id:m.section_id,
+						//send_time:new Date(m.adv_time).format("yyyy-MM-dd HH:mm"),
+						adv_play_time:m.adv_play_time,
+						money:m.amount,
+						//count:m.number,
+						title:m.title,
+						sub_title:m.sub_title,
+						type:m.type
+					});
+					if(m.title==null || m.title==""){
+						$("input[name=model]:first").trigger("click");
+						$("#redbagPre").attr("src",(imgPre+m.adv_img)).show();
+						$("#redbagCover").val(m.adv_img);
+					}else{
+						$("input[name=model]:last").trigger("click");
+					}
+				} else{
+					$("input[type=radio][name=model]:first").trigger("click");
+				}
+				
+				$.each($("input[name=type]"),function(i,v){
+					var type = i+1
+					if(m!=null && m.type!=type){
+						this.disabled = true;
+					}
+				});
+				
+				//预览
+				$("#advCoverPre").click(function(){
+					var title = $("#redbagTitle").textbox("getText");
+					var subTitle = $("#redbagSubTitle").textbox("getText");
+					var mid = $("input[name=type]:checked").val();
+					if($.trim(title)=="" || $.trim(subTitle)==""){
+						cAlert("标题不能为空");
+						return;
+					}
+					$.post([[@{/merchant/redbag/pre}]],{"_":Math.random(),"title":title,"subTitle":subTitle,"mid":mid},function(data){
+						console.info(data);
+						if(data.flag){
+							alertImg("<img style='width:450px;height:500px;border:1px solid rgba(0, 211, 255, 0.35)' src='"+data.path+"' />");
+						}else{
+							cAlert(data.msg);
+						}
+					}); 
+				});
+			});
+		
+			//发放金额改变时触发 n 新值 o 旧值
+			function setSendCount(n, o){
+				var balance = parseInt($("#merGoldCount").text().split(":")[1]);
+				
+	            if(/^\d+$/.test(n) && n>=500){
+	            	if(n>balance){//余额不足
+	            		cAlert("余额不足请充值");
+	            		$("#redbagMoney").textbox("clear");
+		            	$("#redbagCount").text("0");
+	            	}else{
+						$("#redbagCount").text(n*2);
+	            	}
+	            }else{
+	            	$("#redbagMoney").textbox("clear");
+	            	$("#redbagCount").text("0");
+	            }
+			}
+			
+			//file元素发生改变时触发
+			function redbagUploadCover(obj){
+				$.ajaxFileUpload({
+                    url: [[@{/services/upload/uploadImage}]], //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: "redbagFile", //文件上传域的ID
+                    dataType: 'json', //返回值类型 一般设置为json
+                    success: function (data, status)  //服务器成功响应处理函数
+                    {
+                    	$("#redbagPre").attr("src",data.data.path).show();
+                    	$("#redbagCover").val(data.data.fileName);
+                    },
+                    error: function (data, status, e)//服务器响应失败处理函数
+                    {
+                    	cAlert(e);
+                    }
+	        	});
+				$(obj).val("");
+			}
+			
+			//模版选择
+			function modelSel(val){
+				var cus = $("tr[name=cus]");
+				var sys = $("tr[name=sys]");
+				if(val==0){
+					$.each(cus,function(){
+						$(this).show();
+					});
+					$.each(sys,function(){
+						$(this).hide();
+					});
+					$("#redbagTitle").textbox({required:false});
+					$("#redbagSubTitle").textbox({required:false});
+				}else{
+					$.each(cus,function(){
+						$(this).hide();
+					});
+					$.each(sys,function(){
+						$(this).show();
+					});
+					$("#redbagTitle").textbox({required:true});
+					$("#redbagSubTitle").textbox({required:true});
+				}
+				if(m!=null){
+					$.each($("input[name=model]"),function(i,v){
+						if(m.title!="" && i==0){
+							this.disabled = true;	
+						}else if(m.title=="" && i==1){
+							this.disabled = true;	
+						}
+					});
+				}
+			}
+			
+			//发布时间小时改变触发
+			/* function onChange(n, o){
+				var strDate = $('#redbagSendTime').datetimebox("getText");
+				var strDateTime = strDate + " " + n;
+
+				if(strDate == ""){
+					cAlert("请先选择日期");
+				}
+				
+				var nowDate = new Date();
+				var selDate = new Date((strDateTime.replace(/-/g,"/")));
+				
+				var sel = Date.UTC(selDate.getFullYear(),(selDate.getMonth()+1),selDate.getDate()); //选择的时间 毫秒数
+				var now = Date.UTC(nowDate.getFullYear(),(nowDate.getMonth()+1),nowDate.getDate()); //当前时间 毫秒数
+				var later = now + 24 * 30 * 60 * 60 * 1000; //当前时间 30 天后的时间 毫秒数
+				
+				if(now > sel || sel > later){ //当前时间大于选择时间    或  选择时间超过当前时间7天  就要不得
+					$('#redbagSendTime').datetimebox("clear");
+					cAlert("时间只能大于当前时间且最多延迟30天");
+				}
+			} */
+		/*]]>*/
+		</script>
+		
+		<div class="contain giveMoney">
+			<!--<p>注：*每次发放红包平台要收取黄金币xx</p>-->
+			<!--table-->
+			<div class="giveMoneyGb">
+				<form id="redbagForm" th:action="@{/merchant/redbag/save}" method="post">
+					<input type="hidden" name="id"/>
+					<table class="giveMoneyTable">
+						<!-- <tr class="p">
+							<th>注：</th>
+							<td>*每次发放红包平台要收取黄金币xx</td>
+						</tr> -->
+						<tr>
+							<th width="110px">发放地区：</th>
+							<td>
+								<select name="section_id" id="redbagSection" th:readonly="${m!=null?true:false}"></select>
+							</td>
+						</tr>
+						<tr>
+							<th>发放时间：</th>
+							<td>
+								<input id="redbagSendTime" name="send_time" type="text"/>
+								<!-- <input id="send_time" type="hidden" name="send_time" />
+								<select id="redbagSendHour" class="easyui-combobox" data-options="width:173,height:38,editable:false">
+									<option value="07">07 时</option>
+									<option value="09">09 时</option>
+									<option value="11">11 时</option>
+									<option value="13">13 时</option>
+									<option value="17">17 时</option>
+									<option value="20">20 时</option>
+								</select>
+								<label>前期只能在：07、09、11、13、17、20这几个时间段发布，后期时间可以自由定制。</label> -->
+							</td>
+						</tr>
+						<!-- <tr>
+							<th>播放时间：</th>
+							<td>
+								<input class="easyui-textbox" type="text" name="adv_play_time" data-options="width:173,height:35,required:true,validateOnCreate:false,missingMessage:'只能输入整数',validType:'isNumber'"/>
+								<span style="font-size: 16px;padding-left: 15px;">秒</span>
+							</td>
+						</tr> -->
+						<tr>
+							<th>发放金额：</th>
+							<td>
+								<input class="easyui-textbox" type="text" id="redbagMoney" name="money" data-options="width:173,height:35,required:true,validateOnCreate:false,onChange:setSendCount,missingMessage:'黄金币(最低500), 且必须是100的倍数',validType:['minNum[500]','numMult[100]']"/>
+								<span style="font-size: 16px;padding-left: 15px;color: red">黄金币(最低500), 且必须是100的倍数</span>
+							</td>
+						</tr>
+						<tr>
+							<th>发放数量：</th>
+							<td>
+								<!-- <input class="easyui-textbox" type="text" id="redbagCount" name="count" data-options="width:173,height:35,readonly:true"/> -->
+								<span id="redbagCount" th:text="${m!=null?m.number:0}">0</span>
+								<span style="font-size: 16px;padding-left: 15px;">个</span>
+							</td>
+						</tr>
+						<tr>
+							<th>模版选择：</th>
+							<td>
+								<input type="radio" name="model" value="0" onclick="modelSel(0)"/> 自定义模版
+								<input type="radio" name="model" value="1" onclick="modelSel(1)"/> 系统模版
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>主标题：</th>
+							<td>
+								<input th:readonly="${m!=null?true:false}" class="easyui-textbox" type="text" id="redbagTitle" name="title" data-options="width:173,height:35,validateOnCreate:false"/>
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>次标题：</th>
+							<td>
+								<input th:readonly="${m!=null?true:false}" class="easyui-textbox" type="text" id="redbagSubTitle" name="sub_title" data-options="width:173,height:35,validateOnCreate:false"/>
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>模版：</th>
+							<td style="padding:10px">
+								<div th:each="m,status:${ms}" style="display: inline-block;text-align: center;">
+									<img alt="模版" th:src="${m.path}" style="width: 200px;height: 250px" />
+									<br/>
+									<input type="radio" name="type" th:checked="${status.first?'checked':false}" th:value="${m.id}"/>
+								</div>
+							</td>
+						</tr>
+						<tr name="sys">
+							<th>操作：</th>
+							<td>
+								<a class="easyui-linkbutton c8" id="advCoverPre">预 览</a>
+							</td>
+						</tr>
+						<tr name="cus" class="ats ats1">
+							<th>上传广告：</th>
+							<td class="pl td-charter">
+								<div class="clearfix fl" style="display: inline-block;margin-right: 10px;cursor: pointer;" id="redbagUpload">
+									<span class="up-charter" style="padding: 5px 0px;background: #00A0EA;width: 70px;">选择图片</span>
+								</div> 
+								<div>
+									<input type="file" name="file" id="redbagFile" onchange="redbagUploadCover(this)" style="display: none"/>
+									<input type="hidden" name="cover" id="redbagCover"/>
+									<img id="redbagPre" alt="封面" style="width:150px;height:150px;display: none;border: 1px solid #ADADAD"/>
+								</div>
+								<span class="f12 tp">广告尺寸大小1280X720，图片大小不超过8M，支持png/jpg文件格式，RGB图片格式</span>
+							</td>
+						</tr>
+					</table>
+				</form>
+				<button id="redbagSubmit" class="fabu" style="cursor: pointer;margin-bottom: 20px">提交审核</button>
+			</div>
+		</div>
+	</body>
+
+</html>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.2.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+
+    <http pattern="/login" security="none"/>
+    <http pattern="/get" security="none"/>
+    <http pattern="/get2" security="none"/>
+    <http pattern="/services/**" security="none"/>
+    <http pattern="/assets/**" security="none"/>
+    <http pattern="/upload/**" security="none"/>
+    
+    <!-- 商家端 -->
+    <http pattern="/merchant/login" security="none"/>
+    <http pattern="/merchant/user/reg" security="none"/>
+    <http pattern="/merchant/user/save_reg" security="none"/>
+    <http pattern="/merchant/user/forget" security="none"/>
+    <http pattern="/merchant/user/password_mod" security="none"/>
+    <http pattern="/merchant/assets/**" security="none"/>
+    
+    
+    <http auto-config="false" use-expressions="false" entry-point-ref="authenticationProcessingFilterEntryPoint">
+    
+        <!-- <intercept-url pattern="/merchant/**" access="ROLE_MERCHANT" /> -->
+        <intercept-url pattern="/**" access="ROLE_ADMIN,ROLE_MERCHANT" />
+        
+        <logout logout-url="/logout" success-handler-ref="customLogoutFilter"/>
+        
+        <!-- 自定义的登陆拦截器 -->
+    	<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />  
+    </http>
+    
+    <!-- 登陆点 -->
+ 	<beans:bean id="authenticationProcessingFilterEntryPoint" class="com.goldCityWeb.security.LoginPageEntryPoint">  
+        <beans:property name="loginPageStrategy" ref="urlMappingLoginPageStrategy"></beans:property>  
+    </beans:bean>  
+    
+    <!-- 登陆点实现策略 -->
+	<beans:bean id="urlMappingLoginPageStrategy" class="com.goldCityWeb.security.UrlMappingLoginPageStrategy"/>
+
+	<!-- 自定义的登陆拦截器 -->
+    <beans:bean id="loginFilter" class="com.goldCityWeb.security.LoginFilter">  
+        <beans:property name="filterProcessesUrl" value="/authentication"></beans:property>  
+        <beans:property name="usernameParameter" value="j_username"></beans:property>
+        <beans:property name="passwordParameter" value="j_password"></beans:property>
+        <beans:property name="authenticationFailureHandler" ref="loginFailureHandler"></beans:property>  
+        <beans:property name="authenticationSuccessHandler" ref="loginSuccessHandler"></beans:property>  
+        <beans:property name="authenticationManager" ref="authenticationManager"></beans:property>  
+    </beans:bean>  
+
+	<!-- 验证管理器 -->
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider ref="authenticationProvider"></authentication-provider>
+    </authentication-manager>
+    
+	<!-- 验证提供者 -->
+	<beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="userDetailsService" />
+        <beans:property name="passwordEncoder" ref="passwordEncoder" />
+    </beans:bean>
+	
+	<!-- 登录验证处理类 -->
+	<beans:bean id="userDetailsService" class="com.goldCityWeb.security.DefaultUserDetailsService" />
+
+	<!-- 给提交过来的密码加密 -->
+ 	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<!-- 登录成功业务处理 -->
+ 	<beans:bean id="loginSuccessHandler" class="com.goldCityWeb.security.LoginSuccessHandler">  
+        <!-- 可以配置相应的跳转方式。属性forwardToDestination为true采用forward false(默认)为sendRedirect -->  
+    </beans:bean>  
+    
+    <!-- 登陆失败处理器 -->
+    <beans:bean id="loginFailureHandler" class="com.goldCityWeb.security.LoginFailureHandler">  
+        <!-- 可以配置相应的跳转方式。属性forwardToDestination为true采用forward false(默认)为sendRedirect -->  
+        <beans:property name="forwardToDestination" value="false"></beans:property>
+    </beans:bean> 
+    
+    <!-- 登出处理器 -->
+    <beans:bean id="customLogoutFilter" class="com.goldCityWeb.security.LogoutSuccessHandler">
+    	<beans:property name="targetUrlParameter" value="lp"></beans:property>
+    </beans:bean>
+    
+		
+<!--     <http auto-config="true" use-expressions="true">
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+        
+        <form-login
+                login-processing-url="/authentication"
+                login-page="/login"
+                authentication-failure-url="/login?error=true"
+                authentication-success-handler-ref="authenticationSuccessHandler"
+                always-use-default-target="false"
+        />
+        <logout logout-url="/logout" logout-success-url="/login"/>
+    </http>
+	
+	 <beans:bean id="authenticationSuccessHandler" class="com.goldCityWeb.security.LoginSuccessHandler">  
+        <beans:property name="defaultTargetUrl" value="/index"></beans:property>  
+        <beans:property name="forwardToDestination" value="false"></beans:property>  
+    </beans:bean>  
+
+ 	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+    <authentication-manager>
+        <authentication-provider ref="authenticationProvider">
+        </authentication-provider>
+    </authentication-manager>
+	
+	<beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="userDetailsService" />
+        <beans:property name="passwordEncoder" ref="passwordEncoder" />
+    </beans:bean>
+	
+	<beans:bean id="userDetailsService" class="com.goldCityWeb.security.DefaultUserDetailsService" /> -->
+</beans:beans>

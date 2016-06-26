@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.FeedbackDao">
+	
+	<insert id="saveFeedback">
+		INSERT INTO feedback (user_id, content, phone,create_time) VALUES(#{user_id}, #{content}, #{phone}, NOW())
+	</insert>
+	
+	<select id="queryFeedbacks" resultType="com.goldCityWeb.domain.Feedback">
+		SELECT * FROM feedback
+		ORDER BY create_time DESC
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryFeedbacks_count" resultType="int">
+		SELECT COUNT(1) FROM feedback
+	</select>
+	
+</mapper>

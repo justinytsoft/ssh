@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	$(function(){
+		$("#submit").click(function(){
+			var form = $("#expressForm");
+			var type = $("#receive_type").val();
+			var flag = true;
+			
+			//是快递的话要校验是否为空
+			if(type==1){
+				if(!form.form("validate")){
+					flag = false;
+				}
+			}
+
+			//提交表单
+			if(flag){
+				cConfirm("确定要进行该操作吗",function(f){
+					if(f){
+						form.submit();
+					}
+				});
+			}
+		});
+		
+		//返回值
+		var msg = [[${msg}]];
+		if(msg!=null){
+			cAlert(msg);
+		}
+	});
+/*]]>*/
+</script>
+<body style="background:#f1f1f1">
+	<div class="place">
+		<span>所在位置：兑换管理>兑换详情</span>
+	</div>
+	<div class="paketTable">
+		<table style="margin-bottom: 10px">
+			<tr>
+				<th>商品名称</th>
+				<th>商品数量</th>
+				<th>商品价格</th>
+				<th>订单号</th>
+			</tr>
+			<tr>
+				<td th:text="${pr.p_name}"></td>
+				<td th:text="${pr.count}"></td>
+				<td th:text="${pr.gold}"></td>
+				<td th:text="${pr.order_num}"></td>
+			</tr>
+		</table>
+		
+		<table style="margin-bottom: 50px">
+			<tr>
+				<th>收货人</th>
+				<th>收货人电话</th>
+				<th>收货地址</th>
+			</tr>
+			<tr>
+				<td th:text="${pr.name}"></td>
+				<td th:text="${pr.phone}"></td>
+				<td th:text="${pr.address}"></td>
+			</tr>
+		</table>
+		
+		<form th:action="@{/exchange/handle}" id="expressForm" method="post">
+			<input type="hidden" name="type" th:value="${pr.receive_type}" id="receive_type"/>
+			<input type="hidden" name="id" th:value="${pr.id}"/>
+			<table>
+				<tr>
+					<th width="200">快递名称</th>
+					<th width="200">快递单号</th>
+					<th>备注</th>
+				</tr>
+				<tr th:unless="${pr.handle}">
+					<td>
+						<input type="text" name="express_name" class="easyui-textbox" style="width: 70%" data-options="required:true,validateOnCreate:false"/>
+					</td>
+					<td>
+						<input type="text" name="express_num" class="easyui-textbox" style="width: 70%" data-options="required:true,validateOnCreate:false"/>
+					</td>
+					<td>
+						<input type="text" name="remark" class="easyui-textbox" style="width: 70%"/>
+					</td>
+				</tr>
+				<tr th:if="${pr.handle}">
+					<td th:text="${pr.express_name}"></td>
+					<td th:text="${pr.express_num}"></td>
+					<td th:text="${pr.remark}"></td>
+				</tr>
+				<tr th:unless="${pr.handle}" style="background: none">
+					<td colspan="3" style="text-align: right;border: none;padding-top: 30px">
+						<a class="easyui-linkbutton c8" id="submit">确认处理</a>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

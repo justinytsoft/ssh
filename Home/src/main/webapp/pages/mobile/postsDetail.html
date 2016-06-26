@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<title>帖子详情</title>
+</head>
+
+<body>
+	<section class="webPage" style="margin-bottom:40px;">
+		<section class="postTop">
+			<div class="post-touxiang">
+				<img th:src="${poster.head != null? application.baseImageUrl+poster.head:'/recruitment/assets/images/test.jpg'}" />
+			</div>
+			<div class="post-right">
+				<h4 th:text="${poster.name}">test</h4>
+				<h5  th:if="${posts.tagsMain=='跳蚤市场'}" th:text="${posts.price}">￥30</h5>
+			</div>
+			<div class="post-right-r" th:text="${posts.create_time}">
+				7月2日
+			</div>
+		</section>
+    	<section class="top-section" >
+    		<h4 th:text="${posts.title}">成都首试同一交通事故刑案民案同审 避免同案不同判</h4>
+    		<!-- <input class="close-tiezi" th:if="${posts.posterId==session.app_login_user.id}" type="button" id="closeBut" value="关闭"/> -->
+            <pre><article class="detail-content" style="word-wrap:break-word;font-size:16px;"  th:utext="${posts.content}">
+            	昨日，双流(微博)法院在交通事故联调中心的审判法庭集中审理了9起交通事故刑事案件，而涉及同一事故的民事部分，也同时 在同一法庭的不同审判庭开庭审理，民事部分达成的调解及时
+反馈给刑庭，作为影响定罪量刑的依据。据悉，这是成都法院系统首次试行交通事故刑事和民事案件合并管辖、同时审理的案件。什么是合并管辖？通俗地讲，就是同一个交通事故中涉及刑事犯罪的部分和涉及民事赔偿的部分，统一刑庭，民事部分到民庭的机制，直接由同一
+            	
+            </article></pre>
+            <section class="detail-content">
+            	<img th:if="${posts.previewUrl!=null and posts.previewUrl!=''}" th:src="${application.baseImageUrl+posts.previewUrl}" />
+            	<img th:each="p:${pis}" th:if="${p.img_src!=null}" th:src="${application.baseImageUrl+p.img_src}" />
+            </section>
+            <!-- <a href="javascript:void(0);">
+                <img src="/recruitment/assets/images/zan.png" />
+                <span>顶</span>
+            </a> -->
+            	
+        </section>
+        <a th:if="${posts.tagsMain=='跳蚤市场' and up!=1 and up!=null}" th:href="@{/services/posts/up(postsId=${posts.id},userId=${su.id})}" class="dianzan" th:text="${up==1?'已赞':'点赞'}">点赞</a>
+        <a th:if="${posts.tagsMain=='跳蚤市场' and up==1 and up!=null}" href="javascript:void(0)"  class="dianzan" th:text="${up==1?'已赞':'点赞'}">点赞</a>
+        <!-- 回复 -->
+        <section th:if="${replyList!=null and not #lists.isEmpty(replyList)}" class="huifu" style="margin-bottom:50px;">
+        	<h4>回复</h4>
+            <ul>
+            	<li th:each="reply:${replyList}">
+                	<div class="touxiang">
+                    	<img onload="this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width)/2 + 'px';" th:src="${reply.head_img!=null?application.baseImageUrl+reply.head_img:'/recruitment/assets/images/test.jpg'}" />
+                    </div>
+                    <div class="li-txt">
+						<h5 th:text="${reply.user_name}"></h5>   
+                        <p th:text="${reply.content}">
+                        	通俗地讲，就是同一个交通事故中涉及刑事犯罪的部分和涉及民事赔偿的部分，统一刑
+庭，民事部分到民庭
+                        </p>                 
+                    </div>
+                </li>
+                <!-- <li>
+                	<div class="touxiang">
+                    	<img src="images/test.jpg" />
+                    </div>
+                    <div class="li-txt">
+						<h5>demi</h5>   
+                        <p>
+                        	通俗地讲，就是同一个交通事故中涉及刑事犯罪的部分和涉及民事赔偿的部分，统一刑
+庭，民事部分到民庭
+                        </p>                 
+                    </div>
+                </li> -->
+            </ul>
+        </section>
+        <!-- <form class="huifu-form" id="saveForm" th:if="${posts.state != 2 and posts.tagsMain!='跳蚤市场'}" th:action="@{/services/posts/reply}" method="post">
+            <div class="huifu-box">
+            	<input type="text" name="content" placeholder="写回复" />
+            	<input type="hidden" name="postsId" th:value="${posts.id}"/>
+            	<input type="button" value="发送" id="subbut"/>
+            </div>
+        </form> -->
+    </section>
+    <a th:if="${first!=1}"  href="#bottom"><span id="click-bottom"></span></a>
+    <div id="bottom"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$('.post-touxiang img').load(function(){
+    var imgW = $('.post-touxiang img').width();
+	var boxW = $('.post-touxiang').width();
+	$('.post-touxiang img').css('marginLeft',((boxW-imgW)/2)+'px');
+})
+$(document).ready(function() {
+	/* $('input[name=content]').click(function(){
+		$('.huifu').css('marginBottom','0');
+	}) */
+	//
+	$('#click-bottom').click();
+	//点赞样式调整
+	var liNum = $('.huifu li').length;
+	if(liNum==0){
+		$('.dianzan').css('marginBottom','80px');
+	}
+	
+	var msg = [[${msg}]];
+	if(msg != null) {
+		alert(msg);
+	}
+	
+	$("#closeBut").click(function() {
+		if(confirm("是否关闭帖子？")) {
+			window.location.href=[[@{/services/posts/state(posts_id=${posts.id},state=2)}]]
+		}
+	});
+	
+	$("#subbut").click(function() {
+		
+		if($("input[name=content]").val().trim()==''){
+			alert("发布内容不可为空!")
+			return false;
+		}
+		//$('.huifu').css('marginBottom','80px');
+		$("#saveForm").submit();
+	});
+	
+});
+/*]]>*/
+</script>
+</html>

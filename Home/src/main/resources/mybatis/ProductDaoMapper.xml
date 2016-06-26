@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.IProductDao">
+
+	<resultMap type="com.goldCityWeb.domain.Product" id="pResultMap">
+		<id property="id" column="id"/>
+		<collection property="covers" column="id" javaType="List" ofType="com.goldCityWeb.domain.ProductCover" select="queryProductCovers"></collection>
+	</resultMap>
+	
+	<!-- 兑换处理 保存快递信息 -->
+	<update id="updateProductExchangeHandle">
+		UPDATE product_record
+		<set>
+			express_name = #{param.express_name},
+			express_num = #{param.express_num},
+			remark = #{param.remark},
+			handle = 1
+		</set>
+		WHERE id = #{param.id}
+	</update>
+	
+	<!-- 查询商品消费记录详情 -->
+	<select id="queryProductRecordById" resultType="com.goldCityWeb.domain.ProductRecord">
+		SELECT * FROM product_record WHERE id = #{id}
+	</select>
+	
+	<!-- 查询商品消费记录 -->
+	<select id="queryProductRecord" resultType="com.goldCityWeb.domain.ProductRecord">
+		SELECT * FROM product_record
+		<where>
+			type = 1
+			<if test="phone!=null">AND phone LIKE '%${phone}%'</if>
+			<if test="status!=null">AND handle LIKE '%${status}%'</if>
+			<if test="sdate!=null">AND create_time >= #{sdate}</if>
+			<if test="edate!=null"><![CDATA[AND create_time <= #{edate}]]></if>
+		</where>
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<!-- 查询商品消费记录总数 -->
+	<select id="queryProductRecordTotal" resultType="int">
+		SELECT COUNT(1) FROM product_record
+		<where>
+			type = 1
+			<if test="phone!=null">AND phone LIKE '%${phone}%'</if>
+			<if test="status!=null">AND handle LIKE '%${status}%'</if>
+			<if test="sdate!=null">AND create_time >= #{sdate}</if>
+			<if test="edate!=null"><![CDATA[AND create_time <= #{edate}]]></if>
+		</where>
+	</select>
+	
+	<!-- 通过ID查询商品 -->
+	<select id="queryProductById" resultMap="pResultMap">
+		SELECT * FROM product WHERE id = #{id} AND deleted = 0 AND status = 1
+	</select>
+	
+	<!-- 通过ID查询商品 -->
+	<select id="queryProductCoverById" resultMap="pResultMap">
+		SELECT * FROM product WHERE id = #{id} AND deleted = 0 AND status = 1
+	</select>
+	
+	
+	<!-- 查询商品的封面 -->
+	<select id="queryProductCovers" resultType="com.goldCityWeb.domain.ProductCover">
+		SELECT * FROM product_cover WHERE pid = #{id}
+	</select>
+	
+	<!-- 查询所有商品 -->
+	<select id="queryProducts" resultMap="pResultMap">
+		SELECT * FROM product 
+		<where>
+			<if test="category!=null">category=#{category}</if>
+			<if test="name!=null">AND name LIKE '%${name}%'</if>
+			 AND deleted = 0 AND status = 1
+		</where>
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<!-- 查询所有商品的总数 -->
+	<select id="queryProductsTotal" resultType="int">
+		SELECT COUNT(1) FROM product 
+		<where>
+			<if test="category!=null">category=#{category}</if>
+			<if test="name!=null">AND name LIKE '%${name}%'</if>
+			 AND deleted = 0 AND status = 1
+		</where>
+	</select>
+	
+	<insert id="saveProduct" parameterType="com.goldCityWeb.domain.Product" >
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+    		select LAST_INSERT_ID()
+    	</selectKey>
+		INSERT INTO `product` (`mid`, `category`, `name`, `price`, `desc`, `stock`, `address`, `phone`, `prompt`, `deleted`, `status`, `create_time`, `receive_type`, `receive_address`,`limit_level`, `use_way`, `special_work`, `work_description`, `use_description`) 
+		VALUES (#{mid}, #{category}, #{name}, #{price}, #{desc}, #{stock}, #{address}, #{phone}, #{prompt}, 0, 1, NOW(),#{receive_type}, #{receive_address}, #{limit_level}, #{use_way}, #{special_work}, #{work_description}, #{use_description})
+	</insert>
+	
+	
+	
+	<update id="updateProduct">
+		UPDATE 
+		  `product` 
+		SET
+		  `mid` = #{mid},
+		  `category` = #{category},
+		  `name` = #{name},
+		  `price` = #{price},
+		  `desc` = #{desc},
+		  `stock` = #{stock},
+		  `address` = #{address},
+		  `phone` = #{phone},
+		  `prompt` = #{prompt},
+<!-- 		  `deleted` = #{deleted}, -->
+<!-- 		  `status` = #{status}, -->
+		  `create_time` = #{create_time},
+		  `receive_type` = #{receive_type},
+		  `receive_address` = #{receive_address},
+		  `limit_level` = #{limit_level},
+		  `use_way` = #{use_way},
+		  `special_work` = #{special_work},
+		  `work_description` = #{work_description},
+		  `use_description` = #{use_description} 
+		WHERE `id` = #{id}
+	</update>
+	
+	<insert id="saveProductRecord" parameterType="com.goldCityWeb.domain.ProductRecord"
+		useGeneratedKeys="true" keyProperty="id">
+		
+INSERT INTO product_record 
+	( 
+	p_id, 
+	`type`, 
+	order_num, 
+	receive_type, 
+	p_name, 
+	p_path, 
+	u_id, 
+	address, 
+	`name`, 
+	phone, 
+	create_time, 
+	`count`, 
+	gold
+	)
+	VALUES
+	(
+	#{p_id}, 
+	#{type}, 
+	#{order_num}, 
+	#{receive_type}, 
+	#{p_name}, 
+	#{p_path}, 
+	#{u_id}, 
+	#{address}, 
+	#{name}, 
+	#{phone}, 
+	now(), 
+	#{count}, 
+	#{gold}
+	);
+	</insert>
+	
+	
+	<select id="queryCommodityType" resultType="com.goldCityWeb.domain.CommodityType">
+		select * from `commodity_type`
+	</select>
+	
+	<update id="updateProductCover">
+		update product_cover set cover = #{cover} where pid = ${pid}
+	</update>
+	
+	<update id="updateUserCard">
+		update sys_users set
+		<if test="p_id==1">
+		grab = grab + #{count}
+		</if>
+		<if test="p_id==2">
+		lucky = lucky + #{count}
+		</if>
+		where id = #{user_id}
+	</update>
+	
+	<insert id="insetyProductCover">
+		insert into product_cover (`pid`, `cover`) values(#{pid}, #{cover})
+	</insert>
+	
+	<select id="queryProductCoverByPid" resultType="com.goldCityWeb.domain.ProductCover">
+		SELECT * FROM product_cover WHERE pid = ${pid}
+	</select>
+</mapper>

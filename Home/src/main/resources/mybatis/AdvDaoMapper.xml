@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.AdvDao">
+	
+	<select id="querySoonSendAdv" resultType="com.goldCityWeb.domain.MainList">
+		SELECT * FROM adv 
+		<where>
+			<![CDATA[SUBDATE(adv_time,interval 60 second) <= now()]]>
+			AND adv_status != 2 
+			AND verify_status = 1
+		</where>
+	</select>
+	
+	<select id="queryMainList" resultType="com.goldCityWeb.domain.MainList">
+		SELECT * FROM adv WHERE adv_status!=2 AND verify_status=1 AND adv_pre_time &lt; now()
+		<if test="section != null">
+			AND section_id = #{section}
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	
+	<select id="queryMainList_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM adv WHERE adv_status!=2  AND verify_status=1 AND adv_pre_time &lt; now()
+		<if test="section != null">
+			AND section_id = #{section}
+		</if>
+	</select>
+	
+	<select id="queryAdvById" resultType="com.goldCityWeb.domain.Adv">
+		SELECT * FROM adv WHERE id=#{id}
+	</select>
+	
+	<select id="queryAdvRemindByUserIdANDAdvId" resultType="com.goldCityWeb.domain.Remind">
+		SELECT * FROM remind WHERE user_id=#{user_id} AND adv_id=#{adv_id}
+	</select>
+	
+	<select id="queryAdvGrabRecordByUserIdANDAdvId" resultType="com.goldCityWeb.domain.AdvGrabRecord">
+		SELECT * FROM adv_grab_record WHERE user_id=#{user_id} AND adv_id=#{adv_id}
+	</select>
+	
+	<select id="queryAdvSeeRecordByUserIdANDAdvId" resultType="com.goldCityWeb.domain.SeeRecord">
+		SELECT * FROM see_record WHERE user_id=#{user_id} AND adv_id=#{adv_id}
+	</select>
+	
+	<delete id="deleteAdvRemindById">
+		DELETE FROM remind WHERE id=#{id}
+	</delete>
+	
+	<select id="queryAllMoould" resultType="com.goldCityWeb.domain.Mould">
+		SELECT * FROM mould
+	</select>
+	
+	<select id="queryMouldById" resultType="com.goldCityWeb.domain.Mould">
+		SELECT * FROM mould WHERE id = #{id}
+	</select>
+	
+	
+	<select id="queryLatestAdvByCId" resultType="com.goldCityWeb.domain.Adv">
+		SELECT * FROM adv WHERE company_id=#{id} AND `verify_status`=1 AND adv_status=2 ORDER BY adv_time DESC LIMIT 1
+	</select>
+	
+	
+	<select id="queryAdvList" resultType="com.goldCityWeb.domain.MainList">
+		SELECT IF(r.id IS NULL,0,1) AS remind,IF(s.id IS NULL,0,1) AS see,ad.*,cp.logo,(SELECT su.nick_name FROM income inc,sys_users su WHERE `adv_id`= ad.id AND su.id=inc.uid ORDER BY inc.gold_count DESC LIMIT 1) AS lucky_name FROM company cp,adv ad
+		LEFT JOIN remind r ON r.adv_id=ad.id AND r.user_id=#{uid} LEFT JOIN see_record s ON s.adv_id=ad.id AND s.user_id=#{uid}
+ 		WHERE ad.`company_id` = cp.id AND ad.`verify_status`
+		<if test="company_id != null">
+			AND cp.`id` = #{company_id}
+		</if>
+		<if test="user_id != null">
+			AND cp.`user_id` = #{user_id}
+		</if>
+		<if test="status==1"><!-- 查询已发布的广告 -->
+			AND adv_status=2 ORDER BY ad.over_time DESC
+		</if>
+		<if test="status==2"><!--查询半小时内的广告 (已发布) -->
+			AND adv_time &gt; NOW()  ORDER BY ad.adv_time DESC
+		</if>
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	
+	<select id="queryAdvList_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM company cp,adv ad
+		LEFT JOIN remind r ON r.adv_id=ad.id AND r.user_id=#{uid} LEFT JOIN see_record s ON s.adv_id=ad.id AND s.user_id=#{uid}
+ 		WHERE ad.`company_id` = cp.id AND ad.`verify_status`
+		<if test="company_id != null">
+			AND cp.`id` = #{company_id}
+		</if>
+		<if test="user_id != null">
+			AND cp.`user_id` = #{user_id}
+		</if>
+		<if test="status==1"><!-- 查询已发布的广告 -->
+			AND adv_time &lt; NOW() 
+		</if>
+		<if test="status==2"><!--查询半小时内的广告  -->
+			AND adv_time &gt; NOW()
+		</if>
+		
+	</select>
+	
+	<insert id="insertAdv" parameterType="com.goldCityWeb.domain.MainList"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `adv` 
+		<set>
+			`company_id` = #{company_id},
+			company_name = #{company_name}, 
+			`adv_img` = #{adv_img},
+			`adv_time` = #{adv_time},
+			`create_time` = NOW(),
+			`section_id` = #{section_id},
+			`title` = #{title},
+			`sub_title` = #{sub_title},
+			`type` = #{type},
+			`amount` = #{amount},
+			`number` = #{number},
+			<!-- adv_play_time = #{adv_play_time}, -->
+			adv_pre_time = #{adv_pre_time},
+			verify_status = #{verify_status}
+		</set>
+		<!-- INSERT INTO `adv` (`company_id`,company_name , `adv_img`,`adv_time`, `create_time`,
+		`section_id`,`title`,`sub_title`,`type`,`amount`,`number`,adv_play_time,adv_pre_time,verify_status) VALUES
+		(#{company_id},#{company_name},#{adv_img},#{adv_time}, NOW(),#{section_id},#{title},#{sub_title},#{type},#{amount},#{number},#{adv_play_time},#{adv_pre_time},#{verify_status}) -->
+	</insert>
+	
+	<insert id="insertAdvRemind" parameterType="com.goldCityWeb.domain.Remind"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `remind`
+		<set>
+			`user_id` = #{user_id},
+			adv_id = #{adv_id}, 
+			`remind_num` = #{remind_num},
+			`create_time` = NOW()
+		</set>
+	</insert>
+	
+	<insert id="insertAdvSeeRecord" parameterType="com.goldCityWeb.domain.SeeRecord"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `see_record`
+		<set>
+			`user_id` = #{user_id},
+			adv_id = #{adv_id}, 
+			`create_time` = NOW()
+		</set>
+	</insert>
+	
+	<insert id="insertHongBao" parameterType="java.util.List"
+		>
+		INSERT INTO `red_bag`
+			(adv_id, 
+			price, 
+			big,
+			`create_time`) values
+		<foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.adv_id},#{item.price},#{item.big},now())  
+    </foreach> 
+	</insert>
+	
+	
+	<insert id="insertAdvGrabRecord" parameterType="com.goldCityWeb.domain.AdvGrabRecord"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `adv_grab_record`
+		<set>
+			`user_id` = #{user_id},
+			adv_id = #{adv_id}, 
+			`create_time` = NOW()
+		</set>
+	</insert>
+	
+	<!-- 搜索所有未审核状态的广告 -->
+	<select id="queryAdvByVerify" resultType="com.goldCityWeb.domain.MainList">
+		SELECT adv.*,company.phone_num as phone_num FROM adv ,company WHERE adv.company_id=company.id 
+		<if test="verify_status != null">
+		 and adv.verify_status = #{verify_status}
+		</if>
+		ORDER BY create_time DESC
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryAdvByVerify_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM adv WHERE 1=1
+		<if test="verify_status != null">
+		and verify_status = #{verify_status}
+		</if>
+	</select>
+	
+	<select id="queryInComeByUserIdAndAdvId" resultType="com.goldCityWeb.domain.Income">
+		SELECT * FROM income WHERE uid = #{user_id} AND adv_id=#{adv_id}
+		
+	</select>
+	
+	<update id="updateAdvVerifyStatus">
+		UPDATE adv SET verify_status = #{verify_status} WHERE id = #{id}
+	</update>
+	
+	<update id="updateAdvStatus">
+		UPDATE adv SET adv_status = 2,over_time=now() WHERE adv_status!=2 AND id = #{id} AND (grab_count=number OR date_add(adv_time, interval 15 minute) &lt; now())
+	</update>
+	
+	<update id="updateAllAdvStatus">
+		UPDATE adv SET adv_status = 2,over_time=now() WHERE adv_status!=2 AND (grab_count=number OR date_add(adv_time, interval 15 minute) &lt; now())
+	</update>
+	
+	<update id="updateAdvGrab">
+		UPDATE adv SET grab_count = grab_count + 1,grab_gold = grab_gold + #{grab_gold} WHERE id = #{id}
+	</update>
+	
+	<update id="updateAdvClickCount">
+		UPDATE adv SET click_count = click_count + 1 WHERE id = #{id}
+	</update>
+	
+	<insert id="insertInCome" parameterType="com.goldCityWeb.domain.Income"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `income`
+            (
+             `uid`,
+             `mid`,
+             `merchant_name`,
+             `desc`,
+             `create_time`,
+             `gold_count`,
+             `adv_id`,
+             use_card)
+VALUES (
+        #{uid},
+        #{mid},
+        #{merchant_name},
+        #{desc},
+        now(),
+        #{gold_count},
+        #{adv_id},
+        #{use_card});
+	</insert>
+	
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.CommodityDao">
+	
+	<insert id="saveCommodity" parameterType="com.goldCityWeb.domain.Commodity"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO commodity (`name`, image, `type`, `describe`, `price`, `receive_type`, `receive_address`, `limit_level`,
+		`use_way`, special_work,work_description,use_description) 
+		VALUES (#{name}, #{image}, #{type}, #{describe}, #{price}, #{receive_type}, #{receive_address}, #{limit_level},
+		#{use_way}, #{special_work},#{work_description},#{use_description})	
+	</insert>
+	
+	<update id="updateCommodity">
+		update commodity set `name` = #{name}, image=#{image}, `type`=#{type},
+		`describe` = #{describe}, price = #{price}, receive_type=#{receive_type},
+		receive_address = #{receive_address}, limit_level = #{limit_level},
+		`use_way` = #{use_way}, special_work = #{special_work},work_description = #{work_description},
+		use_description = #{use_description} where id = #{id}
+	</update>
+	
+	<select id="queryCommodityById" resultType="com.goldCityWeb.domain.Commodity">
+		select * from `commodity` where id = #{id}
+	</select>
+	
+	<select id="queryCommodityType" resultType="com.goldCityWeb.domain.CommodityType">
+		select * from `commodity_type`
+	</select>
+	
+	<select id="queryCommodityList" resultType="com.goldCityWeb.domain.Commodity">
+		SELECT cm.*, (SELECT ct.name FROM commodity_type ct WHERE ct.id = cm.`type`) AS type_name FROM commodity cm WHERE 1 = 1 
+		<if test="name!=null">
+			AND cm.`name` LIKE CONCAT('%', #{name}, '%')  
+		</if>
+		<if test="type!=null">
+			and cm.`type` = #{type}
+		</if>
+		GROUP BY cm.`type` asc 
+		<if test="limit != null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryCommodityList_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM commodity WHERE 1 = 1 
+		<if test="name!=null">
+			AND `name` LIKE CONCAT('%', #{name}, '%')  
+		</if>
+		<if test="type!=null">
+			and `type` = #{type}
+		</if>
+	</select>
+</mapper>

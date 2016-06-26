@@ -1,0 +1,75 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="/fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<body>
+
+<div class="place">
+		<span>所在位置：举报管理</span>
+		<!-- <ul class="placeul">
+			<li><a th:href="@{/welcome}">首页</a></li>
+			<li>红包管理</li>
+		</ul> -->
+	</div>
+
+ <form th:action="@{/pages/user/reportmanage}" id="searchForm" method="post">
+			<!-- <ul >
+				<li >
+					<label>公司名：</label>
+					<input type="text" th:value="${name==null? '' : name}" name="name" class="new_input" />
+				</li>
+				<li class="fl mr20">
+				<label>举报类型：</label>
+				<input type="text" th:value="${type==null? '' : type}" name="type" class="new_input" />
+				</li>
+			    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+			</ul> -->
+			<div class="paketTable">
+	<table border="1px" width="100%">
+
+			<tr>
+				<td width="20%">时间</td>
+				<td width="10%">举报商家</td>
+				<td width="20%">举报类型</td>
+				<td width="20%">举报内容</td>
+				<td width="15%">举报人</td>
+				<td>联系电话</td>
+			</tr>
+			<tr th:each="report:${reports}">
+				<td th:text="${#dates.format(report.create_time, 'yyyy-MM-dd')}"></td>
+				<td th:text="${report.company_name}"></td>
+				<td th:text="${report.type}"></td>
+				<td th:text="${report.content}"></td>
+				<td th:text="${report.username}"></td>
+				<td th:text="${report.phone}"></td>
+			</tr>
+		</table>
+		<!-- 	<div th:include="/paginationbar :: paginationbar"></div> -->
+		</div>
+	</form>
+</body>
+<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+
+	function post(URL, PARAMS) {
+		var temp = document.createElement("form");
+		temp.action = URL;
+		temp.method = "post";
+		temp.style.display = "none";
+		for ( var x in PARAMS) {
+			var opt = document.createElement("textarea");
+			opt.name = x;
+			opt.value = PARAMS[x];
+			// alert(opt.name)        
+			temp.appendChild(opt);
+		}
+		document.body.appendChild(temp);
+		temp.submit();
+		return temp;
+	}
+	/*]]>*/
+</script>
+</html>
+

@@ -1,0 +1,58 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+	padding:0;
+	margin:0;
+}
+.webPage{
+	width:1358px;
+	height:768px;
+	margin:0 auto;
+	background:url(../images/index_bg.jpg) left top no-repeat scroll;
+}
+.choujiang{
+	width:542px;
+	padding-top:495px;
+	margin:0 auto;
+}
+.choujiang input{
+	display:block;
+	margin:0 auto;
+	height:53px;
+	width:396px;
+	line-height:53px;
+	border:0;
+	background:#f64e69;
+	color:#ffd83d;
+	font-family:"微软雅黑";
+	font-weight:bold;
+	font-size:30px;
+	text-align:center;
+}
+.but{
+	margin-top:60px;
+	text-align:center;
+}
+.but img:first-child{
+	margin-right:75px;
+}
+.but img{
+	cursor:pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

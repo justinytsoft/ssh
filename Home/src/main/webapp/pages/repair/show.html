@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" ></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+
+<body style="background:url(' + @{/assets/images/bodyBg.png} + ');">
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>维修管理</li>
+	    	<li>维修信息查看</li>
+	    </ul>
+    </div>
+    
+    <div class="webPage">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?	'':msg}"></b>
+		</div>
+	    <form class="formbody mauto" style=" width:370px;" enctype="multipart/form-data" >
+	    <ul class="forminfo">
+		    <li>
+		    	<label class="labelModi">寝室号:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="dormitoryNo" th:value="${repair.dormitoryNo}"  class="dfinput" /> -->
+				<label th:text="${repair.dormitoryNo}"></label>
+		    </li>
+		    <li>
+		    	<label class="labelModi">报修人:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="reporterName" th:value="${repair.reporterName}"  class="dfinput" /> -->
+		    	<label th:text="${repair.reporterName}"></label>
+		    </li>
+		    <li>
+		    	<label class="labelModi">学号:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="studentNo" th:value="${repair.studentNo}"  class="dfinput" /> -->
+		    	<label th:text="${repair.studentNo}"></label>
+		    </li>
+		    <li>
+		    	<label class="labelModi">电话:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="telNo" th:value="${repair.telNo}"  class="dfinput" /> -->
+		    	<label th:text="${repair.telNo}"></label>
+		    </li>
+		    <li>
+		    	<label class="labelModi">预约时间:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="plannedTime" th:value="${repair.plannedTime}"  class="dfinput" /> -->
+		    	<label th:text="${repair.plannedTime}"></label>
+		    </li>
+		    <li>
+		    	<label class="labelModi">报修内容:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="repairContent" th:value="${repair.repairContent}"  class="dfinput" /> -->
+		    	<label th:text="${repair.repairContent}"></label>
+		    </li>
+		    <li>
+		    	<label class="labelModi">当前状态:</label>
+		    	<!-- <input type="text" readonly="readonly"  name="repairContent" th:value="${repair.repairContent}"  class="dfinput" /> -->
+		    	<label th:text="${repair.is_fixed?'已派出':'待处理'}"></label>
+		    </li>
+		   <!--  <li class="fr mr0" th:if="${repair.is_fixed == false}"><input style="float:left;" type="button" id="fixBut" class=" subBut ml70 mt10 mb10 scbtn" value="完成"/></li> -->
+		    
+		    
+		</ul>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	$(".select1").uedSelect({
+		width : 202
+	});
+	
+	$("#fixBut").click(function() {
+		if(confirm("是否已确认完成？")) {
+			$.ajax({
+	   			url : [[@{/admin/repair/change/fix}]],
+	   			data : {
+	   				id: [[${repair.id}]]
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data) {
+	   				if(data.status == 200) {
+	   					alert("修改成功");
+						$('#fixBut').hide();
+	   				} else {
+	   					alert("修改失败");
+	   				}
+	 				//$("select[name=spec]").trigger("change");
+	   			}
+	   		});
+		}
+	});
+});
+
+
+/*]]>*/
+</script>
+</html>

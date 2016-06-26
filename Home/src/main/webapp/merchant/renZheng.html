@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html style="height: 100%;" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+
+	<body style="background-color: #f4f4f4;">
+		<link rel="stylesheet" th:href="@{/merchant/assets/css/style1.css}" />
+		<style>
+			.giveMoneyTable tr th {text-align: right;width: 150px}
+			.giveMoneyTable tr td {text-align: left;padding-left: 15px;}
+			.giveMoneyGb img{
+				width:150px;
+				height:150px;
+				margin-bottom: 5px;
+			}			
+			.giveMoneyTable input[type="file"]{
+				float:left;
+				margin-left:-130px;
+				margin-top:10px;
+				opacity:0; 
+				filter:alpha(opacity=0);
+				cursor:pointer;
+			}
+			span.up_pic_btn {display:inline-block;width:120px;text-align:center;float:left;padding-left:0px;padding-right:0px;}
+			.mt10 {margin-top:20px;}
+		</style>
+		
+		<script type="text/javascript" th:src="@{/assets/js/ajaxfileupload.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		    var lat;
+			var lng;
+			var p = [[${company}]]; //回显对象
+			var SettingFlag = p!=null; //回显标记
+			
+			$(function(){
+				$("#saveButton").click(function(){
+					cConfirm("确认提交审核吗",function(f){
+						if(f){
+							var form = $("#rzForm");
+							if(form.form("validate")){
+								form.form("submit",{
+									success:function(data){
+										var data = eval('(' + data + ')');  // change the JSON string to javascript object
+										cAlert(data.msg);
+										iTop.panel("refresh");
+										iRight.panel("refresh");
+									}
+								});
+							}
+						}
+					});
+					return false;
+				});
+				
+				var company = [[${company}]];
+				if(company!=null){
+					var licence = $(".licence");
+					var realAuth = $(".realAuth");
+					if(company.company_type==3){
+						licence.hide();
+						realAuth.show();
+					}else{
+						licence.show();
+						realAuth.hide();
+					}
+				}
+				
+				$("a[id=pickButton]").click(function() {
+					$("#mapframe").attr("src", [[@{/merchant/setting/mapMark}]]);
+					$("#curPostion").text("");
+					$("#mapPostion").panel("open");
+				});
+				
+				//省
+				$("#province").combobox({
+					url:[[@{/merchant/getProvince}]],
+					valueField:'id',
+				    textField:'name',
+				    onSelect: function(rec){
+				    	var url = [[@{/merchant/getCity}]] + "?provinceId=" + rec.id;
+			        	$("#city").combobox("reload",url);
+			        },
+			        onLoadSuccess:function(){ //回显
+						if(p!=null){
+							$("#province").combobox("select",p.province_id);
+						}
+			        } 
+				});
+				
+				//市
+				$("#city").combobox({
+					valueField:'id',
+				    textField:'name',
+				    onSelect: function(rec){
+				    	var url = [[@{/merchant/getPosition}]] + "?c_id=" + rec.id;
+			        	$("#postion").combobox("reload",url);
+			        },
+					onLoadSuccess:function(){ //默认选中第一个
+						if(SettingFlag){
+							$("#city").combobox("select",p.city_id);
+						}else{
+					    	var data = $('#city').combobox('getData');
+					    	$("#city").combobox('select',data[0].id);
+				    	}
+					}
+				});
+				
+				//区
+				$("#postion").combobox({
+					valueField:'id',
+				    textField:'name',
+					onLoadSuccess:function(){ //默认选中第一个
+						if(SettingFlag){
+							SettingFlag = false;
+							$("#postion").combobox("select",p.position_id); 
+						}else{
+					    	var data = $('#postion').combobox('getData');
+					    	$("#postion").combobox('select',data[0].id);
+						}
+			    	}
+				});
+			});
+			
+			function onChange(n, o){
+				var licence = $(".licence");
+				var realAuth = $(".realAuth");
+				if(n==3){
+					licence.hide();
+					realAuth.show();
+				}else{
+					licence.show();
+					realAuth.hide();
+				}
+			}
+			
+			function mapPostion(){
+				$("#mapPostion").panel("close");
+				var lng = $("#longitude").val();
+				var lat = $("#latitude").val();
+				$("#lng").textbox("setText",lng);
+				$("#lat").textbox("setText",lat);
+			}
+			
+			//file元素发生改变时触发
+			function uploadImg(obj){
+				var cur = $(obj);
+				var img = $(cur.parent().find("img")[0]);
+				var input = $(cur.parent().find("input:first")[0]);
+				$.ajaxFileUpload({
+                    url: [[@{/services/upload/uploadImage}]], //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: cur.attr("id"), //文件上传域的ID
+                    dataType: 'json', //返回值类型 一般设置为json
+                    success: function (data, status)  //服务器成功响应处理函数
+                    {
+                    	img.attr("src",data.data.path).show();
+                    	input.val(data.data.fileName);
+                    	console.info(input.val());
+                    },
+                    error: function (data, status, e)//服务器响应失败处理函数
+                    {
+                    	cAlert(e);
+                    }
+	        	});
+				cur.val("");
+			}
+		/*]]>*/
+		</script>
+	
+		<form id="rzForm" th:action="@{/merchant/setting/save}" enctype="multipart/form-data" method="POST">
+			<div class="contain giveMoney">
+				<!--<p>注：*每次发放红包平台要收取黄金币xx</p>-->
+				<!--table-->
+				<div class="giveMoneyGb" style="padding-bottom: 30px;">
+					<table class="giveMoneyTable">
+						<tr class="p">
+							<th>注：</th>
+							<td>*商户认证之后才可以发红包</td>
+						</tr>
+						<tr>
+							<th width="110px">商家分类：</th>
+							<td>
+								<select class="easyui-combobox" name="company_type" data-options="width:166,height:40,editable:false,onChange:onChange">
+									<option th:each="ct:${ctList}" th:value="${ct.id}" th:text="${ct.type_name}" th:selected="${company!=null AND company.company_type==ct.id}">请选择一级分类</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>商家联系人：</th>
+							<td>
+								<input type="text" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false" name="link_man" th:value="${company==null?'':company.link_man}"/>
+							</td>
+						</tr>
+						<tr>
+							<th>商家电话：</th>
+							<td><input type="text" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false,validType:'isTP'" name="company_phone" th:value="${company==null?'':company.company_phone}"/></td>
+						</tr>
+						<tr>
+							<th>商家名称：</th>
+							<td><input type="text" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false" name="company_name"  th:value="${company==null?'':company.company_name}"/></td>
+						</tr>
+						<tr>
+							<th>商家地址：</th>
+							<td>
+								<input id="province" name="province_id" class="easyui-combobox" data-options="width:166,height:40,required:true,validateOnCreate:false,editable:false,prompt:'请选择省份'"/>
+								<input id="city" name="city_id" class="easyui-combobox" data-options="width:166,height:40,required:true,validateOnCreate:false,editable:false,prompt:'请选择城市'"/>
+								<input id="postion" name="position_id" class="easyui-combobox" data-options="width:166,height:40,required:true,validateOnCreate:false,editable:false,prompt:'请选择地区'"/>
+							</td>
+							<!-- <td>
+	    						<div>
+									<input type="hidden" id="longitude" name="longitude" th:value="${company==null?'':company.longitude}"/>
+									<input type="hidden" id="latitude" name="latitude" th:value="${company==null?'':company.latitude}"/>
+									<a class="easyui-linkbutton" id="pickButton">选择位置</a>
+	    							<span class="jingdu" style="margin-left: 25px">经度：</span>
+	    							<input type="text" class="easyui-textbox" data-options="width:166,height:30,editable:false,required:true,validateOnCreate:false" id="lng" th:value="${company==null?'':company.longitude}"/>		    						    			
+	    							<span class="jingdu" style="margin-left:20px">纬度：</span>
+	    							<input type="text" class="easyui-textbox" data-options="width:166,height:30,editable:false,required:true,validateOnCreate:false" id="lat" th:value="${company==null?'':company.latitude}"/>		    						    			
+	    						</div>
+							</td> -->
+						</tr>  
+						<tr>
+							<th>商家详细地址：</th>
+							<td><input type="text" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false" name="address" th:value="${company==null?'':company.address}"/></td>
+						</tr>
+						
+						
+						
+						
+						<tr class="upD licence">
+							<th>
+								<span class="warning">*</span>营业执照：
+								<div th:unless="${company!=null AND not #strings.isEmpty(company.licence)}" style="text-align:right;margin-right: 7px">
+									<em class="auth_status_em" style="text-align: center;">未上传</em>
+								</div>
+							</th>
+							<td class="pl td-charter">
+								<!-- 不能移动位置，使用相对路径回显图片 -->
+								<input type="hidden" name="licensePath" th:value="${company==null?'':company.licence}"/>
+								<img class="charter-prev-img fl mr20" th:src="${application.baseImageUrl + (company==null?'':company.licence)}" th:style="${company==null?'display: none':''}"/>
+								
+								<span class="up_pic_btn licence_btn">请上传图片</span>
+								<input type="file" id="licenseFile" name="file" class="image_file file-real-name" onChange="uploadImg(this)"/><br/>
+								
+								<span class="f12 mt10 tp">支持jpg、jpeg、png图片格式，图片需小于2MB</span>
+							</td>
+						</tr>
+						
+						
+						
+						
+						
+						<tr class="upD realAuth" style="display: none">
+							<th>
+								<span class="warning">*</span>实名认证：
+								<div th:unless="${company!=null AND not #strings.isEmpty(company.real_auth)}" style="text-align:right;margin-right: 7px">
+									<em class="auth_status_em" style="text-align: center;">未上传</em>
+								</div>
+							</th>
+							<td class="pl td-charter">
+								<!-- 不能移动位置，使用相对路径回显图片 -->
+								<input type="hidden" name="realAuthPath" th:value="${company==null?'':company.real_auth}"/>
+								<img class="charter-prev-img fl mr20" th:src="${application.baseImageUrl + (company==null?'':company.real_auth)}" th:style="${company==null?'display: none':''}"/>
+								
+								<span class="up_pic_btn">请上传图片</span>
+								<input type="file" id="realAuthFile" name="file" style="left:0px;" class="image_file file-logo" onChange="uploadImg(this)"/><br/>
+								
+								<span class="f12 mt10 tp"><font color="#b2884f">请手持身份证，上传本人有效照片</font></span>
+								<span class="f12 tp">支持jpg、jpeg、png图片格式，图片需小于2MB</span>
+							</td>
+						</tr> 
+						
+						
+						
+						
+						
+						<tr class="upD">
+							<th>
+								logo：
+								<div th:unless="${company!=null AND not #strings.isEmpty(company.logo)}" style="text-align:right;margin-right: 7px">
+									<em class="auth_status_em" style="text-align: center;">未上传</em>
+								</div>
+							</th>
+							<td class="pl td-charter">
+								<!-- 不能移动位置，使用相对路径回显图片 -->
+								<input type="hidden" name="logoPath" th:value="${(company==null?'':company.logo)}"/>
+								<img class="charter-prev-img fl mr20" th:src="${application.baseImageUrl + (company==null?'':company.logo)}" th:style="${company==null?'display: none':''}"/>
+								
+								<span class="up_pic_btn">请上传图片</span>
+								<input type="file" id="logoFile" name="file" class="image_file file-real-name" onChange="uploadImg(this)"/>
+							</td>
+						</tr>
+						<tr class="upD">
+							<th>
+								特殊行业许可证：
+								<div th:unless="${company!= null AND not #strings.isEmpty(company.trade_license)}" style="text-align:right;margin-right: 7px">
+									<em class="auth_status_em" style="text-align: center;">未上传</em>
+								</div>
+							</th>
+							<td class="pl td-charter">
+								<!-- 不能移动位置，使用相对路径回显图片 -->
+								<input type="hidden" name="trade_licensePath" th:value="${(company==null?'':company.trade_license)}"/>
+								<img class="charter-prev-img fl mr20" th:src="${application.baseImageUrl + (company==null?'':company.trade_license)}" th:style="${company==null?'display: none':''}"/>
+								
+								<span class="up_pic_btn">请上传图片</span>
+								<input type="file" name="file" style="left:0px;" id="tradeLicenseFile" class="image_file file-logo" onChange="uploadImg(this)"/>
+							</td>
+						</tr>
+						<tr class="upD">
+							<th>
+								企业简介：
+							</th>
+							<td class="pl">
+								<textarea class="easyui-textbox" data-options="width:400,height:100,multiline:true" name="description" placeholder="请输入20-1000字，请勿出现联系方式和地址"  th:text="${company==null?'':company.description}"></textarea><br/>
+							</td>
+						</tr>
+						<tr class="p">
+							<th>注：</th>
+							<td>*银行账户信息请准确填写</td>
+						</tr> 
+						<tr>
+							<th>店铺网址：</th>
+							<td><input type="text" class="easyui-textbox" data-options="width:166,height:40" name="web_link"  th:value="${company==null?'':company.web_link}"/></td>
+						</tr>
+						<tr>
+							<th>联系人电话：</th>
+							<td><input type="text" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false,validType:'isPhone'" name="phone_num"  th:value="${company==null?'':company.phone_num}"/></td>
+						</tr>
+						<tr>
+							<th>银行卡号：</th>
+							<td><input type="text" name="bank_card_num" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false" th:value="${company==null?'':company.bank_card_num}"/></td>
+						</tr> 
+						<tr>
+							<th>开户行名称：</th>
+							<td><input type="text" name="bank_name" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false" th:value="${company==null?'':company.bank_name}"/></td>
+						</tr> 
+						<tr>
+							<th>开户行信息：</th>
+							<td><input type="text" name="bank_phone" class="easyui-textbox" data-options="width:166,height:40,required:true,validateOnCreate:false" th:value="${company==null?'':company.bank_phone}"/></td>
+						</tr> 
+					</table>
+					
+					<button class="fabu" id="saveButton" style="cursor: pointer;">提交审核</button>
+				</div>
+			</div>
+		</form>
+		
+		<!-- 地图选点 -->
+		<div id="mapPostion" class="easyui-window" title="地图选点" data-options="modal:true,closed:true,footer:'#ft'" style="width:50%;height:80%">
+			<iframe id="mapframe" name="mapframe" style="width:100%;height:99%" th:src="@{/merchant/setting/mapMark}"></iframe>
+		</div>
+		<!-- footer -->
+	 	<div id="ft" style="padding:5px;color:#929292;height: 25px;line-height: 25px">
+        	当前位置：<span id="curPostion"></span>
+        	<a class="easyui-linkbutton" style="float: right;" data-options="onClick:mapPostion">确 定</a>
+	    </div>
+	</body>
+
+</html>

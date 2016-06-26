@@ -1,0 +1,21 @@
+.addWrap {
+	background: rgb(255, 255, 255); margin: auto; width: 100%; position: relative;
+}
+.addWrap .swipe {
+	 overflow: hidden; visibility: hidden; position: relative;
+}
+.addWrap .swipe-wrap {
+	height:50%; overflow: hidden; position: relative;
+}
+.addWrap .swipe-wrap > div {
+	/*width: 100%;*/ float: left; position: relative;
+}
+#position {
+	padding: 0px; text-align: center;
+}
+#position li {
+	margin: 0px 3px; border-radius: 5px; width: 10px; height: 10px; display: inline-block; background-color: rgb(175, 175, 175); -webkit-border-radius: 5px;
+}
+#position li.cur {
+	background-color: rgb(255, 0, 0);
+}

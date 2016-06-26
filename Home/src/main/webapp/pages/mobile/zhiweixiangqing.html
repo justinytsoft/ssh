@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<title>帖子详情</title>
+</head>
+
+<body style="background:#eee;">
+	<section class="webPage">
+    	<section class="zhiwei-top" style="padding-top:40px;">
+    		<!-- <a th:if="${isback!=null}"  href="javascript:history.back(-1);" class="jl-back" style="margin-left:10px; margin-top:10px;">
+				<img width="50" src="/recruitment/assets/images/back.png" />
+			</a> -->
+        	<div class="zhiwei-img" style="margin-top:-20px;">
+        		<a th:href="@{/services/user/company/show(company_id=${user.id})}">
+            	<img th:src="${user.head!=null?application.baseImageUrl+user.head:'/recruitment/assets/images/test.jpg'}" />
+            	</a>
+            </div>
+            <h4 class="zw-name" th:text="${user.name}">姓名</h4>
+            <table>
+            	<tr>
+                	<th width="50">职位：</th>
+                    <td width="100" th:text="${user.my_job}">副总经理</td>
+                    <th width="50">规模：</th>
+                    <td width="100" th:text="${user.company_scope}">31~100</td>
+                </tr>
+                <tr>
+                	<th>公司：</th>
+                    <td colspan="3" th:text="${user.company_name}">MCG aliance</td>
+                </tr>
+                <tr>
+                    <th>地址：</th>
+                    <td colspan="3" th:text="${user.company_address}">成都市天府软件园</td>
+                </tr>
+                <tr>
+                	<th>优势：</th>
+                	<td colspan="3">
+                		<div class="biaoqian2" style="margin-left:0;">
+                    	
+                    	</div>
+                	</td>
+                </tr>
+                <!-- <li>
+                	<img src="/recruitment/assets/images/qyicon3.jpg" />
+                    <label>优势:</label>
+                    <div class="clr"></div>
+                    
+                </li> -->
+            </table>
+        </section>
+        <section class="zhiwei-txt">
+        	<!-- <h4 th:text="${job.jobName}"><a href="#">美术设计师（2D/3D）</a></h4> -->
+            <table>
+            	<tr>
+            		<td width="40"><img src="/recruitment/assets/images/position.png" /></td>
+            		<!-- <th style=" color:#52cbc5;">
+            			职位：
+            		</th> -->
+            		<td>
+            			<span>职位：</span>
+            			<span th:text="${job.jobName}"></span>
+            		</td>
+            	</tr>
+            	<tr>
+            		<td><img src="/recruitment/assets/images/money.png" /></td>
+            		<!-- <th class="red">薪资：</th> -->
+            		<td>
+            			<span class="red">薪资：</span>
+            			<span class="red" th:text="${job.salary}"></span>
+            		</td>
+            	</tr>
+            	<!-- <tr>
+                	<td colspan="6">
+                    	<span class="red" th:text="${job.salary}">￥2-6k</span>
+                        <img style="margin-top:5px;" class="fl" src="/recruitment/assets/images/zwicon1.png" />
+                        <span th:text="${job.workType}">美术设计师（2D/3D）</span>
+                    </td>
+                </tr> -->
+                <tr>
+            		<td><img src="/recruitment/assets/images/xingzhi.png" /></td>
+            		<td>
+            			<span>性质：</span>
+            			<span th:text="${job.workType}"></span>
+            		</td>
+            		
+            	</tr>
+                <tr>
+                    <td><img src="/recruitment/assets/images/zwicon2.png" /></td>
+                    <!-- <th>人数：</th> -->
+                    <td>
+						<span>人数：</span>
+						<span th:text="${job.number + '人'}"></span>
+					</td>
+                </tr>
+                <tr>
+                    <td><img src="/recruitment/assets/images/zwicon4.png" /></td>
+                    <!-- <th>地址：</th> -->
+                    <td>
+						<span>地址：</span>
+						<span th:text="${job.city}"></span>
+					</td>
+                </tr>
+                <tr>
+                   	<td><img style="margin-left:10px;" src="/recruitment/assets/images/zwicon3.png" /></td>
+                    <!-- <th>学历：</th> -->
+                    <td>
+						<span>学历：</span>
+						<span th:text="${job.education}"></span>
+					</td>
+                </tr>
+                <tr>
+                    <td><img src="/recruitment/assets/images/zwicon5.png" /></td>
+                    <!-- <th>经验：</th> -->
+                    <td>
+						<span>经验：</span>
+						<span th:text="${job.experience}"></span>
+					</td>
+                </tr>
+                <tr>
+                    <td><img src="/recruitment/assets/images/yaoqiu.png" /></td>
+                    <!-- <th>专业要求：</th> -->
+                    <td>
+                    	<span>专业要求：</span>
+                    	<span th:text="${job.major}"></span>
+                    </td>
+                </tr>
+            </table>
+        </section>
+        <section class="zhiwei-txt">
+        	<h3 style="font-size:16px; color:#34bcbc;">职位描述：</h3>
+        	<ol>
+        		<pre><li th:text="${job.description}" style="word-wrap:break-word;">
+        			1.根据工作任务的需要确立工作岗位名称及其数量；
+        		</li></pre>
+        		<!-- <li>
+        			2.根据岗位工种确定岗位职务范围；
+        		</li>
+        		<li>
+        			3.根据工种性质确定岗位使用的设备、工具、工作质量和效率；
+        		</li>
+        		<li>
+        			4.明确岗位环境和确定岗位任职资格；
+        		</li>
+        		<li>
+        			5.确定各个岗位之间的相互关系；
+        		</li>
+        		<li>
+        			6.根据岗位的性质明确实现岗位的目标的责任。
+        		</li> -->
+        	</ol>
+        	<!-- <h3>任职要求：</h3>
+        	<ol>
+        		<li  th:text="${job.require}">
+        			1.根据工作任务的需要确立工作岗位名称及其数量；
+        		</li>
+        		<li>
+        			2.根据岗位工种确定岗位职务范围；
+        		</li>
+        		<li>
+        			3.根据工种性质确定岗位使用的设备、工具、工作质量和效率；
+        		</li>
+        		<li>
+        			4.明确岗位环境和确定岗位任职资格；
+        		</li>
+        		<li>
+        			5.确定各个岗位之间的相互关系；
+        		</li>
+        		<li>
+        			6.根据岗位的性质明确实现岗位的目标的责任。
+        		</li>
+        	</ol> -->
+        </section>
+        <form id="deliverForm" th:action="@{/services/job/deliver}" method="post">
+        	<input type="hidden" th:value="${job.id}" name="job_id"/>
+        </form>
+        <div style="padding-bottom:30px">
+        <!-- 学生端 -->
+        <div th:if="${userType == 5 and isback==null and is_not == null}" class="zw-but"  id="delbut">发送人事信息</div>
+        <div th:if="${userType == 5 and isback==null and is_not == 1}" class="zw-but"  >请先完成简历编辑</div>
+        <!-- <div th:if="${userType == 5 and isback==null}" class="zw-but"  id="delbut" th:style="${isDeli==null OR isDeli==false?'':'display: none;'}">发送人事信息</div> -->
+        <!-- <div th:if="${userType == 5 and isback==null}" class="zw-but"  id="isDeli" th:style="${isDeli!=null AND isDeli==true?'':'display: none;'}">已申请</div> -->
+        <!-- <div class="zw-but" id="sendbut" style="margin-bottom:30px;">发送信息</div> -->
+        <!-- 企业端 -->
+        <!-- <div th:if="${userType == 4 and my==1 and isback==null}" class="zw-but" id="bjbut">编辑</div> -->
+        <div th:if="${userType == 4 and my==1 and isback==null}" class="zw-but" style="margin-bottom:30px;" id="delbut1" >删除</div>
+        </div>
+    </section>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+           
+$('.zhiwei-img img').load(function(){
+    var imgW = $('.zhiwei-img img').width();
+	var boxW = $('.zhiwei-img').width();
+	$('.zhiwei-img img').css('marginLeft',((boxW-imgW)/2)+'px');
+})
+$(document).ready(function() {
+	$("#delbut").click(function() {
+		 $.ajax({
+			url : [[@{/services/job/deliver}]],
+   			data : {
+   				'job_id': [[${job.id}]]
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data) {
+   				/* var status = data.status;
+   				if(status!=200) {
+   					alert(data.message);
+   					return false;
+   				} */
+   				//alert("完成了");
+   				//window.location.href="isdelete";
+   				//alert("------")
+   				window.location.href="laixin?first=1&job_id="+[[${job.id}]]+"&isback=1";
+   				/* $("#delbut").hide();
+   				$("#isDeli").show();  */
+   				return;
+   			},error:function(res){
+   				alert(res);
+   			}
+   		}); 
+   		//$("#deliverForm").submit();
+	});
+	var job_id = [[${job.id}]];
+	$("#sendbut").click(function() {
+		alert("激活了跳转");
+		window.location.href="laixin?job_id="+[[${job.id}]];
+	});
+	
+	$("#bjbut").click(function() {
+		window.location.href="edit?id="+[[${job.id}]];
+	});
+	
+	$('#delbut1').click(function(){
+		if(!confirm("是否确认删除?")){
+			return false;
+		}
+		$.ajax({
+			url : [[@{/services/job/change/jobdelete}]],
+   			data : {
+   				'jobId': [[${job.id}]]
+   			},
+   			dataType: 'json',
+   			type: 'post',
+   			async: false,
+   			success : function(data) {
+   				var status = data.status;
+   				if(status == 200) {
+   					alert("删除成功");
+   				} else {
+   					alert(data.message);
+   				}
+   				//alert("完成了");
+   				window.location.href="isdelete";
+   				
+   			},error:function(res){
+   				alert(res);
+   			}
+   		});
+	}) 
+	
+	
+	var superiority = [[${user.superiority}]];
+	if(superiority!=null && superiority!=""){
+		var sus = superiority.split(" ");
+		var content = "";
+		for(var i = 0; i<sus.length;i++){
+			if(sus[i]!=""){
+			content += '<a href="javascript:void(0);">'+sus[i]+'</a>'
+			}
+		}
+		$('.biaoqian2').append(content);
+	}
+	
+});
+/*]]>*/
+</script>
+</html>

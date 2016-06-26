@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html style="overflow: hidden;" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<head th:include="merchant/fragment/common :: header"></head>
+
+	<body style="background: #F4F4F4;">
+		
+		<style>
+			.Content .Content_Wrap table th {font-weight: normal;}
+			.clr {clear: both;}
+			.Content .Content_Wrap {top: 280px;font-family:inherit;min-width:938px;}
+			.blank {display: none;}
+			 /* .messager-window{left:50%!important;top:50%!important;margin-left:-300px!important;margin-top:-300px!important;} */
+			.Content .Content_top input[type="file"] {margin-top:-30px;opacity:0;filter:alpha(opacity=0);}
+			span.renzheng_btn {background-color:#B38645;position:absolute;bottom:15px;font-size:14px;height:40px;padding:0px 35px;line-height:40px;}
+			.Content .Content_top .Content_between span:nth-of-type(2) {line-height:130px;}
+			.datagrid-wrap {margin-bottom:100px;}
+			#dlg p{
+				margin-bottom:10px;
+				background: rgba(179, 199, 255, 0.39);
+			}
+		</style>
+		
+		<script type="text/javascript" th:src="@{/assets/js/common.js}"></script>	
+		<script type="text/javascript" th:src="@{/assets/js/jquery.cookie.js}"></script>	
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		     //表格宽度      
+		       $(function(){
+		       })    
+		     //
+			var imgPre = [[${application.baseImageUrl}]];
+			var tip = '<div id="nothing" style="font-size:20px;height:200px;line-height:200px;text-align:center;color:rgb(200,200,200)"><img src="'+[[@{/merchant/assets/img/blank.png}]]+'" /><span style="font-size: 16px;color:#B3B3B3;">未查询到任何红包哦！</span></div>';
+			
+			//查看广告封面
+			function see(path){
+				alertImg("<img style='width:450px;height:500px;border:1px solid rgba(0, 211, 255, 0.35)' src='"+imgPre+path+"' />");
+				return false;
+			}
+			
+			//阻止用户点击浏览器回退按钮
+			$.cookie("isLogin", "true", {expires : 7}); // 存储一个带7天期限的 cookie
+			
+			//查看广告详情
+			function detail(data){
+				data = data.split(",");
+				if(data[0]!="2"){
+					cAlert("只有完成的广告才能查看详情");
+				}else{
+					$.post([[@{/merchant/redbag/getAdvById}]],{"_":Math.random(),"id":data[1]},function(data){
+						if(data.flag){
+							var m = data.data;
+							$("#redbagCover").attr("src",imgPre+m.adv_img);
+							$("#redbagSection_name").text(m.section_name);
+							$("#redbagSdate").text(m.adv_time==null?'':new Date(m.adv_time).format("yyyy-MM-dd hh:mm"));
+							$("#redbagEdate").text(m.over_time==null?'':new Date(m.over_time).format("yyyy-MM-dd hh:mm"));
+							$("#redbagNum").text(m.number);
+							$("#redbagLuckly").text(m.lucky_name==null?'待定':m.lucky_name);
+							$("#dlg").dialog("open",true);
+						}else{
+							cAlert(data.msg);
+						}
+					});
+				}
+			} 
+			
+			//再次发布
+			function resend(data){
+				data = data.split(",");
+				if(data[0]!="2"){
+					cAlert("只有发送状态为完成的红包才能再次发布");
+				}else{
+					var resendPath = [[@{/merchant/redbag/index}]]+"?id="+data[1];
+					loadPage($('.left-menu>div:eq(1)'),resendPath);
+				}
+			}
+			
+			//跳转到发放红包页面
+			function sendRedbag(){
+				//切换左侧菜单 下标从0开始
+				selMenu(1);
+			}
+			
+			function gotoPage(i){
+				//切换左侧菜单 下标从0开始
+				selMenu(i);
+			}
+		           
+			$(function(){
+				//创建列表
+				$("#advList").datagrid({
+					url:[[@{/merchant/redbag/list}]],
+				    fitColumns : true, //设置为 true, 则自动调整宽度 
+					singleSelect : true, //	设置为 true，则只允许选中一行。
+				    rownumbers:false, //设置为 true，则显示带有行号的列。
+					nowrap : false, //设置为 true，则把数据显示在一行里。设置为 true 可提高加载性能。
+					striped : true, //设置为 true，则把行条纹化。（即奇偶行使用不同背景色）
+				    loadMsg : "数据加载中,请稍等...", //当从远程站点加载数据时，显示的提示消息。
+				    pagination:true, //设置为 true，则在数据网格（datagrid）底部显示分页工具栏。
+				    pageSize:10, //当设置了 pagination 属性时，初始化页面尺寸。
+				    pageList:[5,10,20,30,50,100], //当设置了 pagination 属性时，初始化页面尺寸的选择列表。
+				    columns:[[ //设置表头 
+						{
+							field:'verify_status',
+							title:'审核状态',
+							align:"center",
+							width:100, 
+							formatter:function(value,row,index){
+								if((typeof row.type)!="undefined"){
+									if(value=="0"){
+										return "待审核";
+									}else if(value=="1"){
+										return "通过";
+									}else{
+										return "未通过";
+									}
+								}else{
+									return tip;
+								}
+							}
+						},
+						{
+							field:'adv_status',
+							title:'发送状态',
+							align:"center",
+							width:100, 
+							formatter:function(value,row,index){
+								if(value=="0"){
+									return "未开始";
+								}else if(value=="1"){
+									return "发放中";
+								}else{
+									return "已完成";
+								}
+							}
+						},
+						{
+							field:'adv_time',
+							title:'发放时间',
+							align:"center",
+							width:100,
+							formatter:function(value,row,index){
+								return new Date(value).format("yyyy-MM-dd hh:mm");
+							}
+						},
+						{
+							field:'click_count',//section_name
+							title:'播放次数',
+							align:"center",
+							width:100
+						},
+						{
+							field:'amount',
+							title:'金额',
+							align:"center",
+							width:100,
+							formatter:function(value,row,index){
+								return "￥"+value;
+							}
+						},
+						{
+							field:'number',
+							title:'数量',
+							align:"center",
+							width:100
+						},
+						{
+							field:'adv_img',
+							title:'图片',
+							align:"center",
+							width:100,
+							formatter:function(value,row,index){
+								var img = "<div class='Look' style='display:inline-block;'><a href='javascript:' name='"+value+"' onclick='return see(this.name)'>点击查看</a></div>";
+								return img;
+							}
+						},
+						{
+							field:'_edit',
+							title:'操作',
+							align:"center",
+							width:150,
+							formatter:function(value,row,index){
+								var name = row.adv_status + "," + row.id;
+ 								var edit = "<div class='Look' style='display:inline-block;margin-right:5px'><a href='javascript:' name='"+name+"' onclick='return resend(this.name)'>再次发布</a></div>";
+ 								var detail = "<div class='Look' style='display:inline-block;'><a href='javascript:' name='"+name+"' onclick='return detail(this.name)'>查看详情</a></div>";
+								return edit+detail;
+							}
+						}
+					]],
+					rowStyler:function(index,row){
+						return "height:50px";
+					},
+					onLoadSuccess:function(data){
+						//表头无分割线
+						$.each($("td"),function(){
+							$(this).css("border-style","none");
+						});
+						if (data.total == 0) {//如果没有数据    进
+						    //添加一个新数据行，第一列的值为你需要的提示信息，然后将其他列合并到第一列来，注意修改colspan参数为你columns配置的总列数
+						    $(this).datagrid('appendRow', { verify_status: tip }).datagrid('mergeCells', { index: 0, field: 'verify_status', colspan: 8})
+						    //隐藏分页导航条，这个需要熟悉datagrid的html结构，直接用jquery操作DOM对象，easyui datagrid没有提供相关方法隐藏导航条
+						    $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').hide();
+						    //移除鼠标移到行上面时,让背景不发生改变
+						    $(".datagrid-body tr").removeClass();
+						    $("td[field='str_charge_time']").css('border','none');
+						}
+						else { 
+						    //如果通过调用reload方法重新加载数据有数据时显示出分页导航容器
+						    $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').show();
+						}
+					}
+				});
+				//分页条格式
+				$("#advList").datagrid('getPager').pagination({
+	                layout:['list','sep','first','prev','sep','links','sep','next','last','sep','refresh']
+	            });
+				
+				//查询
+				$("#search").click(function(){
+					var verify_status = $("#verify_status").combobox("getValue");
+					var adv_status = $("#adv_status").combobox("getValue");
+					var sdate = $("#sdate").datebox("getValue");
+					var edate = $("#edate").datebox("getValue");
+					
+					var sDate = new Date(sdate.replace(/-/g,"/"));
+					var eDate = new Date(edate.replace(/-/g,"/"));
+					
+					var s = Date.UTC(sDate.getFullYear(),(sDate.getMonth()+1),sDate.getDate()); //选择的时间 毫秒数
+					var e = Date.UTC(eDate.getFullYear(),(eDate.getMonth()+1),eDate.getDate()); //当前时间 毫秒数
+					
+					if(e < s){
+						cAlert("结束时间必须大于开始时间");
+						return;
+					}
+					
+					$("#advList").datagrid("reload",{verify_status:verify_status,adv_status:adv_status,sdate:sdate,edate:edate});
+				});
+			});
+		/*]]>*/
+		</script>
+		
+		<div class="Content">
+			<div class="Content_top">
+				<ul>
+					<li class="li_1">
+						<div class="Content_between">
+							<span class="numP">发布红包数</span>
+							<span class="my_CSS3_class" th:text="${advCount}"></span>
+						</div>
+						<input type="button" class="TwoSub newadv" value="发布新广告" onclick="sendRedbag()" />
+					</li>
+					<li class="li_2" style="background: none;">
+						<div class="centercus">
+							 <img alt="" th:src="@{/merchant/assets/img/logw.png}" />
+							 <div>
+							<span onclick="gotoPage(2)" style="cursor:pointer">订单记录</span>
+							</div>
+						</div>
+					</li>
+					<li class="li_3" style="margin-left:15px" th:if="${company!=null and company.verify_status==1}">
+						<div class="basic_info" style="position:relative;">
+							<p>
+								<span>公司基本信息</span>
+								<img alt="" th:src="@{/merchant/assets/img/logo_7.png}" />
+								<a onclick="gotoPage(5)">编辑</a>
+							</p>
+							<div style="margin-top:15px;margin-left:15px;margin-right:15px">
+								<img class="fl mr20 "  th:src="${application.baseImageUrl + company.logo}" style="width:130px;height:115px"/>
+								<span class="f12 mt10 tp"><font style="color:#B38645;font-size: 16px;" th:text="${company.company_name}">商户名称</font></span>
+								<span class="f12 mt10 tp"><font style="color:#B38645;font-size: 16px;" th:text="${company.company_phone}">18200261250</font></span>
+								<span class="f12 mt10 tp"><font style="color:#000;font-size:12px;" th:text="${#strings.length(company.description) ge 151 ? #strings.substring(company.description,0,150)+' ...' : company.description}" th:title="${company.description}"></font></span> <!-- 企业简介-->
+							</div>
+						</div>
+					</li>
+					<li class="li_3" style="margin-left:15px" th:if="${company==null or company.verify_status!=1}">
+						<div class="basic_info" style="position:relative;">
+							<p>
+								<span>公司基本信息</span>
+								<img alt="" th:src="@{/merchant/assets/img/logo_7.png}" />
+								<a onclick="gotoPage(5)">编辑</a>
+							</p>
+							<div style="margin-top:15px;margin-left:15px;margin-right:15px">
+								<img class="fl mr20 "  th:src="@{/merchant/assets/img/gslogo.png}"/>
+								<span class="f12 mt10 tp"><font style="color:gray;font-size: 16px;">上传公司logo</font></span>
+								<span class="f12 mt10 tp" style="margin-top:0px"><font style="color:red">只有认证后才可以发广告哦</font></span>
+							</div>
+							<span class="up_pic_btn renzheng_btn" style="cursor: pointer;" onclick="gotoPage(5)">点击马上认证</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="clr" style="margin-bottom:25px;"></div>
+ 			<div class="Content_Wrap" style="border: none;background:none;">
+ 			
+				<div style="padding: 20px 0">
+					审核状态：
+					<select class="easyui-combobox" id="verify_status" data-options="editable:false,height:30,width:120">
+						<option value="-2">不限</option>
+						<option value="0">待审核</option>
+						<option value="1">审核通过</option>
+						<option value="-1">审核未通过</option>
+					</select>
+					发送状态：
+					<select class="easyui-combobox" id="adv_status" data-options="editable:false,height:30,width:120">
+						<option value="-1">不限</option>
+						<option value="0">未开始</option>
+						<option value="1">发放中</option>
+						<option value="2">已完成</option>
+					</select>
+					发放时间：
+					<input type="text" class="easyui-datebox" id="sdate" data-options="editable:false,width:120,height:30,buttons:dateboxReset"/>
+					~
+					<input type="text" class="easyui-datebox" id="edate" data-options="editable:false,width:120,height:30,buttons:dateboxReset"/>
+					<div id="search" style="width: 80px;height:21px;background-color: #00b8ee;display: inline-block;text-align: center;padding: 4px 0;cursor: pointer;border-radius:3px">
+						<span style="color: white;">查 询</span>
+					</div>
+				</div>
+				
+				<table id="advList"></table>
+			</div> 
+		</div>
+		<!--footer-->
+		<div class="r-footer">
+			<div class="fl">
+				总共发放 <em class="resume-num blue" th:text="${advCount}"></em> 个红包 
+			</div>
+			<div class="fl">
+				&nbsp;&nbsp;总价格&nbsp;<em class="newadd" th:text="${'￥'+advCountMoney}">￥1520</em>
+			</div>
+		</div>
+		<!-- detail -->
+		<div id="dlg" class="easyui-dialog" title="广告详情" data-options="modal:true,closed:true" style="width:380px;height:210px;padding:10px">
+        	<div style="float: left;">
+        		<img id="redbagCover" alt="广告封面" th:src="@{/merchant/assets/img/logo_7.png}" style="width:130px;height:133px;border: 1px solid #ECEAE1" />
+        	</div>
+        	<div style="float: left;margin-left: 10px">
+        		<p><span>发放时间：</span><span id="redbagSdate">2000-04-15 12:00</span></p>
+        		<p><span>结束时间：</span><span id="redbagEdate">2000-04-15 13:00</span></p>
+        		<p><span>红包数量：</span><span id="redbagNum">1000个</span></p>
+        		<p><span>发放地址：</span><span id="redbagSection_name">张家港</span></p>
+        		<p><span>幸运王：</span><span id="redbagLuckly">hansen</span></p>
+        	</div>
+    	</div> 
+	</body>
+
+</html>

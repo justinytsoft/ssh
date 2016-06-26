@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+	<style>
+table tr td a {
+	line-height: 25px;
+	padding: 0 30px;color: #fff;background-color: #red;border-color: #204d74;text-decoration: none;display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+			}
+			.edit a{background:#286090; padding:0 11px;}
+	</style>
+<body style="background:#f1f1f1">
+
+	<div class="place">
+		<span>所在位置：红包管理</span>
+		<!-- <ul class="placeul">
+			<li><a th:href="@{/welcome}">首页</a></li>
+			<li>红包管理</li>
+		</ul> -->
+	</div>
+	<div class="paketTable">
+		<table>
+			<tr>
+				<th>发放时间</th>
+				<th>提交时间</th>
+				<th>店铺名称</th>
+				<th>红包数量</th>
+				<th>红包价格</th>
+				<th>操作</th>
+			</tr>
+			<tr>
+				<td>2016-02-12 12:00</td>
+				<td>2016-02-12 12:00</td>
+				<td>星巴克</td>
+				<td>2000</td>
+				<td>15000</td>
+				<td class="edit"><a>编辑</a></td>
+			</tr>
+			<tr>
+				<td>2016-02-12 12:00</td>
+				<td>2016-02-12 12:00</td>
+				<td>星巴克</td>
+				<td>2000</td>
+				<td>15000</td>
+				<td class="edit"><a>编辑</a></td>
+			</tr>
+			<tr>
+				<td>2016-02-12 12:00</td>
+				<td>2016-02-12 12:00</td>
+				<td>星巴克</td>
+				<td>2000</td>
+				<td>15000</td>
+				<td class="edit"><a>编辑</a></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

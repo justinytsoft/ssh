@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	$(function(){
+		$.each($("td[name=status]"),function(){
+			var obj = $(this);
+			if(obj.text()=="0"){
+				obj.text("未结算");
+			}else if(obj.text()=="1"){
+				obj.text("申请结算");
+			}else if(obj.text()=="2"){
+				obj.text("已结算");
+			}
+		});
+		var msg = [[${msg}]];
+		if(msg!=null){
+			cAlert(msg);
+		}
+	});
+	
+	function closed(obj){
+		obj = $(obj);
+		cConfirm('确认结算吗',function(f){
+			if(f){
+				window.location.href = [[@{/statement/settlement(id=${c.id})}]];
+			}
+		}); 
+	}
+/*]]>*/
+</script>
+<style>
+	.edit a{
+    line-height: 25px;
+    padding: 0 15px;
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+    text-decoration: none;
+    display: inline-block;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-family: inherit;
+    -webkit-appearance: button;
+    text-transform: none;
+    overflow: visible;
+    height: 26px;
+    width: 54px;
+    font-weight: normal;
+    margin-top: 4px;
+    font-size: 13px;
+}
+
+</style>
+<body style="background:#f1f1f1">
+	<div class="place">
+		<span>所在位置：结算详情</span>
+	</div>
+	<div class="paketTable">
+		<table>
+			<tr>
+				<th>商家名称</th>
+				<th>商家电话</th>
+				<th>开户行名称</th>
+				<th>开户行号码</th>
+			</tr>
+			<tr>
+				<td th:text="${c.company_name}"></td>
+				<td th:text="${c.company_phone}">￥2000</td>
+				<td th:text="${c.bank_name}">15000 1215454</td>
+				<td th:text="${c.bank_card_num}">demi</td>
+			</tr>
+		</table>
+		
+		<div th:if="${status==1}" class="edit" style="margin: 20px 0">
+			<a href="javascript:" onclick="closed(this)">确认结算</a>
+		</div>
+				
+		<span th:unless="${frs!=null and not #lists.isEmpty(frs)}" style="margin: 20px 0">暂无数据！</span>
+		<table th:if="${frs!=null and not #lists.isEmpty(frs)}" style="margin: 20px 0">
+			<tr>
+				<th>状态</th>
+				<th>消费时间</th>
+				<th>消费金额</th>
+				<th>消费单号</th>
+				<th>消费用户</th>
+				<!-- <th>消费用户号</th> -->
+			</tr>
+			<tr th:each="fr:${frs}">
+				<td name="status" th:text="${fr.status}"></td>
+				<td th:text="${#dates.format(fr.create_time,'yyyy-MM-dd HH:mm')}">￥2000</td>
+				<td th:text="${fr.fee_price}">15000 1215454</td>
+				<td th:text="${fr.fee_number}">demi</td>
+				<td th:text="${fr.fee_user}">18200254565</td>
+				<!-- <td th:text="${c.link_man}">18200254565</td> -->
+			</tr>
+		</table>
+		<div class="mt10" th:if="${frs!=null and not #lists.isEmpty(frs)}" th:include="fragment/paginationbar :: paginationbar"></div>
+	</div>
+</body>
+</html>

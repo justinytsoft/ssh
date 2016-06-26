@@ -1,0 +1,197 @@
+@charset "utf-8";
+@font-face { 
+  font-family: hanyizongyi; 
+  src: url('hanyizongyi.TTF'); 
+} 
+.centercus {width:300px;height:100%;border-radius: 5px;background:#1FB5AC;text-align:center;}
+.centercus img {width:70px;padding-top:65px;padding-bottom:47px}
+.centercus div {text-align:center;}
+.centercus span {color:#1FB5AC; display:inline-block; width:154px;height:40px;background-color:#fff;text-align:center;line-height:40px;border-radius:3px}
+.my_CSS3_class { 
+  font-family: hanyizongyi;  
+}
+*{font-size:14px;border:0;margin:0;padding:0;}
+body{font-family:"微软雅黑"; margin:0 auto;}
+ul{display:block;margin:0;padding:0;list-style:none;}
+li{display:block;margin:0;padding:0;list-style: none;}
+img{border:0;}
+dl,dt,dd{margin:0;padding:0;display:block;}
+a,a:focus{text-decoration:none;color:#000;outline:none;blr:expression(this.onFocus=this.blur());}
+table{border-collapse:collapse;border-spacing: 0;}
+cite{font-style:normal;}
+h2{font-weight:normal;}
+a {cursor: pointer;}
+.basic_info {width:388px;height:100%;border-radius:5px;background: #fff;}
+.basic_info p {height:35px;background:#e5e5e5;border-top-right-radius: 5px;    border-top-left-radius: 5px;}
+.basic_info p span {margin-left:20px;line-height:35px;font-size:14px}
+.basic_info p a {float:right;margin-right:20px;line-height:35px;font-size:14px;color:#1FB5AC;} 
+.button{
+	cursor:pointer;
+	padding:20px;
+	color:white;
+	margin:0 10px;
+	background-color: #00BDE3
+}
+
+
+/***********Login************/
+.Login{width: 398px; height: 340px;left:50%;top:50%;margin-left:-199px;margin-top:-170px; background:rgba(191,191,191,0.8);position:absolute; border-radius: 15px; }
+.Login{filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#8FFFFFFF,endColorstr=#8FFFFFFF)\9;}
+.Login .Login_Top{width: 217px; height: 35px;margin-top: 43px; position: absolute; margin-left: 100px;}
+.Login .Login_Top p{display: inline-block;color: #6F6F6F;}
+.Login .Login_Top p:nth-of-type(1){font-size: 25px;}
+.Login .Login_Top p:nth-of-type(2){font-size: 19px;}
+.Login form{top: 80px; position: absolute;}
+.Login form input{width: 320px; height: 46px; margin-left: 34px; margin-top: 20px;padding-left: 10px; border-radius: 5px;}
+.Login #submit_Login{width: 328px;border-radius: 5px; padding-left: 10px; bottom: 0;bottom: 60px;left: 35px; background: #00B7EE; font-size: 25px; color:#FEFFFF;letter-spacing:5px }
+
+
+/**************************HomePage.html***********************/
+.Content{/*margin-left: 118px; margin-top: 100px;*/width: 93%; }
+.Content .Content_top{margin-left:15px;margin-top:20px;width:1036px}
+.Content .Content_top .Content_left p{font-size: 20px; text-align: center; margin-top: 10px; }
+.Content .Content_top .TwoSub{margin-top: 10px; margin-left: 35px;font-family: inherit;margin-top:0px\9;}
+.Content .Content_top ul li.li_2{height:235px; background: #FFFFFF;float: left; border-radius: 5px;margin-left: 15px;}
+.Content .Content_top ul li.li_1{    width: 220px;height:235px; background: #FFFFFF;float: left;  border-radius: 5px;}
+.Content .Content_top ul li.li_3{height:235px; float: left; margin-left: 0; border-radius: 5px;}
+.Content .Content_top .Content_left_wrap{width:74%; margin-top: 15px; margin-left: 50px; margin: auto; margin-top: 15px;}
+.Content .Content_top .Content_left_wrap span{display: inline-block; margin-left: 50px; font-size: 15px; margin:auto;color: #BCBCBC; padding-top: 4px; padding-left: 39px;}
+.Content .Content_top .Content_Time{width:61%;  margin-top: 15px; margin-left: 80px; }
+.Content .Content_top .Content_Time span{color: #A6A6A6;}
+.Content .Content_top input{width: 154px; height: 40px; color: #FFFFFF; background: #1FB5AC; margin-left: 78px; margin-top: 31px; border-radius: 3px;}
+.Content .Content_top .Content_between{color: #A6A5A1;margin-top:15px;}
+.Content .Content_top .Content_between span.numP{font-size: 20px; color: #85817E;margin-left: 57px;margin-top: 12px;}
+.Content .Content_top .Content_between span.my_CSS3_class{display:block;text-align:center;font-size: 107px; color: #B38645;}
+.Content .Content_top .Content_between input{width: 232px; height: 63px;color: #FFFFFF; background: #20B3B0; margin-left: 55px; margin-top: 40px; border-radius: 5px;}
+.Content .Content_Wrap{width:95%; border: 2px solid #F7F7F7; margin-left: 15px;top: 43%;/*  position: absolute; */ background: #FFFFFF;}
+.Content .Content_Wrap table th{ border: 2px solid #F7F7F7; text-align: center;font-size: 15px; color: #906F4A; border-top: none; border-left: none;} 
+.foot{width: 92%; height:60px; position: fixed; bottom: 0px; margin-left: 15px;}
+.foot p{font-size: 18px; margin-top: 5px;}
+.foot p span{color: #77CABC;font-size: 30px;}
+.foot p span:nth-of-type(2){color: red;font-size: 30px;}
+.Content .Content_Wrap table td{border: 2px solid #F9F9F9; border-left: none; border-right: none; text-align: center;}
+.Content .Content_Wrap table tr .Tleft{text-align: left; padding-left: 60px;}
+.Content .Content_Wrap table tr .nocost{color: #993525;}
+.Content .Content_Wrap table tr .right{padding-left: 30px;}
+.Content .Content_Wrap table .Look{width: 60px; height: 30px; background: #00BDE3;border-radius:3px;display: inline-block;padding: 0 5px;}
+.Content .Content_Wrap table .Look a{color:#FFFFFF;text-align: center;margin-top: 5px; line-height:32px;}
+.Content .Content_Wrap table .wait,.put,.zcif{width: 100px; height: 30px; background: #B5B5B5; color: #FFFFFF;text-align: center;line-height: 32px;}
+.Content .Content_Wrap table .put{background: #1BB7AC;line-height: 32px;}
+.Content .Content_Wrap table .zcif{background: #F8AB0F;line-height: 32px;}
+
+
+/*******************************Message.html****************************/
+.Massage_Content{ height: 388px; position: absolute; background: #FFFFFF;margin-top: 20px;margin-left: 15px;}
+.Massage_Content th{border-left: 1px solid #F0F0F0; color:#BA791E; font-size: 16px; text-align: center;font-weight: normal;}
+.Massage_Content td{border: 1px solid #F0F0F0; color:#BA791E; font-size: 16px; text-align: center; border-left: none; border-right: none;}
+.Massage_Content td{color: #918B80;}
+
+
+/*******************************MoneyCash.html**************************/
+.Money_Top{width: 100%; height:58px; background: #BEBEBE;}
+.Money_Top p{width: 195px; height: 100%;background: #CACACA; text-align: center; font-size: 25px; color: #BC2C15; line-height: 55px;}
+
+/******************HideDiv***************************/
+.HideDiv{width: 100%; height:100%;background:#CCCCCC;background:rgba(1,1,1,0.7);  position: fixed;z-index: 1004;top: 0;left: 0; display: none;} 
+.HideDiv .Recharge{ width: 580px; height: 430px; background: #FFFFFF; position:absolute;left:50%;top:50%;margin-left:-290px;margin-top:-215px; border-radius: 5px;}
+.HideDiv .Recharge .top{width: 100%; height: 60px;border-radius: 10px;}
+.HideDiv .Recharge .top p{display: inline-block;}
+.HideDiv .Recharge .top p:nth-of-type(1){font-size: 25px; color: #C98D36; font-weight: 600; margin-left: 50px;margin-top: 15px;}
+.HideDiv .Recharge .top p:nth-of-type(2){width: 25px;background: #C8C8C8; margin-right: 5px; margin-top: 5px; font-size: 20px; cursor: pointer; color: #FFFFFF; text-align: center; border-radius: 5px; float: right;}
+.HideDiv .solid{border-top: 1px solid #FAFAFA; margin-top: 20px;}
+.HideDiv .HideDiv_Wrap{width: 100%; height: 140px;margin-top: 20px;}
+.HideDiv .HideDiv_Wrap p{font-size: 16px; color: #CCCCCC; display: inline-block; margin-left: 50px; margin-top: 20px;}
+.HideDiv .HideDiv_Wrap input{width: 400px; height: 37px;margin-left: 10px; border-radius: 1px;font-size: 16px;}
+.HideDiv .HideDiv_Wrap select{margin-left: 10px; width: 123px; border: 1px solid #B2B5B9;  height: 37px; border-radius: 1px;}
+.HideDiv .foot{width: 100px; height: 30px;background: #B28750;margin: 135px auto;color: #ffffff;text-align: center;line-height: 27px;border-radius: 5px; cursor: pointer;}
+
+/**********************认证框**************/
+.HideDiv_RG{width: 100%; height:100%;background:#CCCCCC;background:rgba(1,1,1,0.7);  position: fixed;z-index: 1004;top: 0;left: 0; display: none;}
+.HideDiv_RG .rengzheng{width: 580px; height: 430px; background: #FFFFFF; border-radius: 5px;position:absolute;left:50%;top:50%;margin-left:-290px;margin-top:-215px;}
+.HideDiv_RG .rengzheng p{width: 25px;background: #C8C8C8; margin-right: 5px; margin-top: 5px; font-size: 20px; cursor: pointer; color: #FFFFFF; text-align: center; border-radius: 5px; float: right;}
+.HideDiv_RG .rengzheng .HideDiv_RG_wrap{width: 120px; height:186px; background: deepskyblue;    margin-top: 4%;margin-left: 12%; position: absolute;}
+.HideDiv_RG .rengzheng span{font-size: 16px; color: #B3B3B3;    margin-left: 170px;margin-top: 270px;position: absolute;}
+.HideDiv_RG .rengzheng .bottom{width: 122px; height: 35px; background: #1FB5AA; color: #FFFFFF;text-align: center; border-radius: 5px; line-height:35px; position: absolute; margin-left: 12%; margin-top: 16%; cursor: pointer;} 
+/*footer*/
+.r-footer {
+    width: 100%;
+    height: 46px;
+    background-color: #ffffff;
+    position: fixed;
+    bottom: 0px;
+    padding-left: 30px;
+    webkit-box-shadow: 0 0 10px #ccc;
+    -moz-box-shadow: 0 0 10px #ccc;
+    box-shadow: 0 0 10px #ccc;
+    z-index: 2;
+}
+.fl {
+    float: left;
+    display: inline;
+}
+.page {
+    margin-right: 15%;
+    line-height: 46px;
+}
+.fr {
+    float: right;
+    display: inline;
+}
+.page .unclick {
+    color: #ddd;
+}
+.page a, .grid-span {
+    display: inline-block;
+    border: 1px solid #dddddd;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 5px;
+    margin-right: 10px;
+    color: #333;
+    cursor: pointer;
+}
+.page .currentPage {
+    border-bottom: 2px solid red;
+}
+a.next {
+    display: inline-block;
+    border: 1px solid #dddddd;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 5px;
+    margin-right: 10px;
+    color: #333;
+    cursor: pointer;
+}
+.page {
+    line-height: 46px;
+}
+.page .txt_pageNum {
+    width: 40px;
+    height: 25px;
+    border: 1px solid #b0a296;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 25px;
+}
+html input[type=button]{
+    -webkit-appearance: button;
+    cursor: pointer;
+}
+.btn_pageNum {
+    float: right;
+    margin-left: 10px;
+}
+.btn_pageNum {
+    background: url(../img/fanye.png) no-repeat left center;
+    border: none;
+    width: 22px;
+    height: 46px;
+}
+.resume-num, .newadd {
+    color: red;
+    line-height: 46px;
+    font-style: normal;
+    font-weight: normal;
+}
+.blue {color: #1BB7AC;}

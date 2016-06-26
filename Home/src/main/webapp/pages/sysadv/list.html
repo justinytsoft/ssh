@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+<script th:src="@{/assets/js/ajaxfileupload.js}"></script>
+<script th:src="@{/assets/js/jquery.ui.plupload/jquery.ui.plupload.min.js}"></script>
+<link th:href="@{/assets/js/jquery.ui.plupload/css/jquery.ui.plupload.css}" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+<style type="text/css">
+	.blueBtn {padding:5px 20px;background:#6dcff6;color:#fff;border-radius:2px;cursor:pointer}
+	.tablelist tbody tr:hover {background:none;}
+	.tablelist tbody tr:nth-child(2n-1){background:#f9f9f9;height:40px}
+	.tablelist tbody tr:nth-child(2n){background:#fff;height:40px}
+	.tablelist th {background:none;height:45px;font-size:14px;font-weight:normal;}
+	.tablelist th,.tablelist td {border:1px solid #e3eaf2;text-indent:0px}
+	.tablelist td>a {padding:5px 10px;background:#6dcff6;color:#fff;border-radius:2px;cursor:pointer}
+	.scbtn{line-height: 25px;padding: 0 11px;color: #fff;background-color: #286090;border-color: #204d74;text-decoration: none;display: inline-block;touch-action: manipulation;cursor: pointer;
+	-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;background-image: none;border: 1px solid transparent;border-radius: 4px;font-family: inherit;-webkit-appearance: button;
+	text-transform: none;overflow: visible;height: 26px; width:70px; font-weight: normal;font-size: 13px;}
+	.blueBtn{background:#286090;border-radius:5px;}
+	a:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+.uew-select select {top:8px;}
+.uew-select .uew-select-value {margin-top:13px;}
+</style>
+<body>
+	<div class="place">
+    	<span>位置：公告管理</span>
+	    <!-- <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>商品管理 </li>
+	    	<li>商品查看：</li>
+	    </ul> -->
+    </div>
+    <div class="webPage">
+	    <form id="searchForm" th:action="@{/sysadv/list}" method="post" class="formbody" style="width:960px">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<!-- <div class="search">
+			<ul class="seachform mauto">
+				<li style="margin-left:15px">
+					公告类型：
+				</li>
+			    <li>
+			    	<select name="type" class="select1">
+			    		<option value="-1">全部</option>
+			    		<option value="0" th:selected="${type==0}">图片</option>
+			    		<option value="1" th:selected="${type==1}">文本</option>
+			    	</select>
+			    </li>
+			    <li class="fr mr0"><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+			    <li class="fr mr0">
+			    	<a th:href="@{/sysadv/add}" class="comEdit blueBtn">添加</a>
+			    </li>
+			</ul>
+			</div> -->
+			
+			<div>
+				<span th:unless="${saList!=null and not #lists.isEmpty(saList)}" th:utext="暂无数据！"></span>
+				<table  class="tablelist mauto" th:if="${saList!=null and not #lists.isEmpty(saList)}">
+					<thead>
+						<tr>
+							<th width="100">客户端类型</th>
+							<th width="100">标题</th>
+							<th width="200">内容</th>
+							<th width="400">链接</th>
+							<th>详情</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="sa:${saList}">
+							<td><p th:text="${sa.id==1?'玩家端':'商户端'}"/></td>
+							<td>
+								<p th:text="${sa.push_title}" ></p>
+							</td>
+							<td>
+								<p th:text="${sa.push_content}" ></p>
+							</td>
+							<td>
+								<p th:text="${sa.content}" ></p>
+							</td>
+							<td>
+								<input type="hidden" name="id" th:value="${sa.id}"/>
+								<a th:href="@{/sysadv/detail(id=${sa.id})}" class="comEdit" >修改</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div style="width:400px;height:800px;position:fixed;left:1000px;top:50px">
+					<div class="iframeBox1">
+						<iframe id="iframe_preview" style="width:400px;height:600px;"></iframe>
+					</div>
+				</div>
+				<div class="clr"></div>
+	        </div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+var imageurl = [[${application.baseImageUrl}]]
+
+$(document).ready(function() {
+
+	$(".select1").uedSelect({
+		width : 160
+	});
+	
+
+});
+
+/*]]>*/
+</script>
+</html>

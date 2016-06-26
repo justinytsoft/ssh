@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/modify.css}" />
+<body>
+	<form th:action="@{/pages/user/headupload}"  method="post" enctype="multipart/form-data" >
+	<table >
+	
+	<tr>
+		<td>
+		   <input type="file" name="file"/>
+		   <input type="submit" value="上传" />
+		</td>
+	</tr>
+</table>
+</form>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+/*]]>*/
+</script>
+</html>

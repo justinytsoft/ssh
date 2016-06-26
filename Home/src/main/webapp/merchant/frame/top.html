@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="merchant/fragment/common :: header"></head>
+
+<body>
+	<link rel="stylesheet" th:href="@{/merchant/assets/css/style1.css}" />
+	<style>
+body {
+	background: #2d2d2d;
+	color: #EEEEEE;
+}
+
+.left {
+	float: left;
+}
+
+.left span {
+	font-size: 12px;
+}
+
+.right {
+	float: right;
+	margin-right: 20px;
+}
+
+.right>div {
+	float: right;
+}
+
+.info {
+	padding-top: 20px;
+}
+
+.jinB {
+	margin-top: 10px;
+}
+
+.jinB p:nth-of-type(1) {
+	padding-top: 5px;
+	padding-bottom: 10px;
+	text-align: center;
+}
+
+.jinB p:nth-of-type(2) {
+	padding: 6px 25px;
+	background: #ea2201;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.info {
+	padding-right: 60px;
+	padding-left: 20px;
+}
+
+.jinB {
+	padding-right: 20px;
+}
+
+.message {
+	margin-top: 15px;
+}
+
+.loginout {
+	padding: 3px 10px;
+	background: #a3a3a3;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.left>div {
+	margin-left: 15px;
+	margin-top: 18px;
+}
+
+.left>div img {
+	padding-bottom: 8px;
+}
+
+.info>div span {
+	color: #fff;
+}
+
+.right .info>div {
+	float: right;
+	margin-left: 10px;
+	margin-top: 6px
+}
+
+#merChargeDialog .HideDiv_Wrap {
+	margin-top: 10px;
+}
+
+#merChargeDialog .solid {
+	margin-top: 5px;
+}
+
+#merChargeDialog .HideDiv_Wrap p {
+	margin-top: 10px;
+}
+</style>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	function myBrowser() {
+		var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
+		var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") < 1; //判断是否Safari  
+	
+		if (isSafari) {
+			$('.safari').css('margin-top','-45px')
+		}
+	}  
+	
+	$(function(){
+		myBrowser();
+	});
+/*]]>*/
+</script>
+
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			$(function(){
+				//退出登录
+				$(".loginout").click(function(){
+					cConfirm("确定要退出登录吗",function(f){
+						if(f){
+							window.location.href = [[@{/logout}]] + "?lp=/merchant/login";
+						}
+					});
+				});
+				
+				//查看消息
+				$(".message").click(function(){
+					$("#messageDot").hide();
+					$("#newMessageNumber").text("0");
+					iRight.panel("refresh",[[@{/merchant/message/index}]]);
+				});
+				
+				//弹出充值框
+				$("#clickCharge").click(function(){
+					$("input[name=receipt]:first").trigger("click");
+					$("#merChargeDialog").fadeIn();
+				});
+				
+				//初始化充值方式
+				$("#chargeType").combobox({
+					url:[[@{/merchant/getChargeType}]],
+					valueField:'id',
+					textField:'name',
+					height:40,
+					panelHeight:'auto',
+					value:"1",
+					editable:false,
+					required:true,
+					validateOnCreate:false
+				}); 
+				
+				//充值提交
+				$("#chargeConfirm").click(function(){
+					var form = $("#merCharge");
+					form.form("enableValidation");
+					
+					if(form.form("validate")){
+						$.extend($.messager.defaults,{  
+						    ok:"已完成支付",  
+						    cancel:"支付失败"  
+						}); 
+						var code ="CZ_"+(new Date().getTime())+((Math.random()*1000000)+"").substring(0,6);
+						$("input[name=fee_num]").val(code);
+						form.submit();
+						$("#merChargeDialog").fadeOut();
+						cConfirm("<div style='color:orange;font-weight:900;font-size:18px;border-bottom:1px solid #E2E2E2'>请在新页面完成支付</div>支付完成前请<span style='color:orange'>不要关闭此窗口</span>, 完成支付后根据您的情况点击下面的按钮",function(f){
+							if(f){
+								$.get([[@{/merchant/charge/check}]],{code:code},function(data){
+									if(data.flag){
+										updateMessage();
+									}else{
+										cAlert(data.msg);
+									}
+								});
+							}else{
+								//跳链接
+								cAlert("支付失败要跳链接");
+							}
+							
+							form.form("reset");
+							form.form("disableValidation");
+							
+							$.extend($.messager.defaults,{  
+							    ok:"确定",  
+							    cancel:"取消"  
+							});
+						});
+					}
+				});
+				
+				//是否需要发票
+				$("input[name=receipt]").on("click",function(){
+					var invoice = $("#invoice");
+					if($(this).val()==0){//required:true,validateOnCreate:false
+						invoice.hide();
+						$("#invoiceName").textbox({required:false});
+						$("#invoicePhone").textbox({required:false});
+						$("#invoiceAddress").textbox({required:false});
+						$('.footer_sure').css('padding-top','100px');
+					}else{
+						invoice.show();
+						$("#invoiceName").textbox({required:true,validateOnCreate:false});
+						$("#invoicePhone").textbox({required:true,validateOnCreate:false});
+						$("#invoiceAddress").textbox({required:true,validateOnCreate:false});
+						$('.footer_sure').css('padding-top','180px');
+					}
+				});
+			});
+		
+			//认证页面
+			function gotoAuth(obj){
+				$(obj).parent().parent().parent().hide();
+				//切换左侧菜单 下标从0开始
+				selMenu(5);
+			}
+		/*]]>*/
+		</script>
+
+	<div class="left">
+		<img th:src="@{/merchant/assets/img/jinlogo.jpg}"
+			style="width: 90px; height: 80px; background-color: #ea2201; float: left" />
+		<div style="float: left;">
+			<p>
+				<img th:src="@{/merchant/assets/img/wordE.png}" />
+			</p>
+			<span class="loginout">退出登录</span>
+		</div>
+		<!-- <span style="font-size: 18px;float: left;color:white">商户端</span> -->
+	</div>
+	<div class="right">
+		<div class="info" style="padding-top: 13px;">
+			<!-- <img alt="退出" title="退出" th:src="@{/merchant/assets/img/logout.png}" style="width:50px;height:50px" /> -->
+			<img th:if="${company.logo!=null}" alt="logo"
+				th:src="${application.baseImageUrl + company.logo}"
+				style="width: 55px; height: 55px; border-radius: 50%" /> <img
+				th:unless="${company.logo!=null}" alt="logo"
+				th:src="@{/merchant/assets/img/logo_7.png}"
+				style="width: 55px; height: 55px; border-radius: 50%" />
+			<div class="safari">
+				<span th:text="${company.company_name}">成都恒梦科技有限公司</span><br /> <span
+					th:text="${company.company_phone}">18200262502</span>
+			</div>
+		</div>
+		<div class="jinB">
+			<p th:text="${'黄金币:' + user.gold_count}" style="color: white"
+				id="merGoldCount"></p>
+			<p style="color: white" id="clickCharge">点击充值</p>
+		</div>
+		<div class="message" style="cursor: pointer;">
+			<em id="messageDot"
+				style="color: red; top: -10px; left: 16px; position: absolute; font-style: normal; display: none">●</em>
+			<span class="msg_num"><span id="newMessageNumber">0</span></span>
+		</div>
+
+		<!--充值框 弹出框-->
+		<div id="merChargeDialog" class="HideDiv" style="display: none;">
+			<!-- <form method="post" id="saveForm"  target="_blank" th:action="@{/pay_select}"> -->
+			<div class="Recharge">
+				<a class="close"
+					style="float: right; margin-right: 3px; margin-top: 3px;"><img
+					th:src="@{/merchant/assets/img/close.png}" /></a>
+				<div class="top">
+					<p class="Loginp" id="userGoldBalance">黄金币余额：￥1200</p>
+				</div>
+				<div class="HideDiv_Wrap">
+					<form th:action="@{/merchant/charge/charge}" target="_blank"
+						method="post" id="merCharge">
+						<p>充值金额</p>
+						<input class="easyui-numberbox" name="chargeMoney"
+							data-options="height:40,required:true,validateOnCreate:false,validType:'minNum[1]'"></input>
+						<div class="solid">
+							<p>充值方式</p>
+							<input id="chargeType" name="chargeType" />
+						</div>
+						<div class="solid">
+							<p>是否发票</p>
+							否<input style="width: auto; height: auto;" type="radio"
+								name="receipt" value="0" checked="checked" /> 是<input
+								style="width: auto; height: auto;" type="radio" name="receipt"
+								value="1" />
+						</div>
+						<div id="invoice" style="display: none">
+							<div class="solid">
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<p>联系人</p>
+								<input class="easyui-textbox" id="invoiceName" name="name"
+									data-options="height:40"></input>
+							</div>
+							<div class="solid">
+								<p>联系电话</p>
+								<input class="easyui-numberbox" id="invoicePhone" name="phone"
+									data-options="height:40,validType:'isPhone'"></input>
+							</div>
+							<div class="solid">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<p>地址</p>
+								<input class="easyui-textbox" id="invoiceAddress" name="address"
+									data-options="height:40"></input>
+							</div>
+							<input type="hidden" name="fee_num" />
+						</div>
+					</form>
+				</div>
+				<div class="footer_sure">
+					<span
+						style="padding: 5px 25px; background: #C98D36; color: #fff; border-radius: 3px; cursor: pointer"
+						id="chargeConfirm">确定</span>
+				</div>
+			</div>
+			<!-- </form> -->
+		</div>
+
+		<!--认证框 弹出框-->
+		<div id="merAuthDialog" class="HideDiv_RG" style="display: none;">
+			<div class="rengzheng">
+				<a class="close"
+					style="float: right; margin-right: 3px; margin-top: 3px;"><img
+					th:src="@{/merchant/assets/img/close.png}" /> </a>
+				<div style="text-align: center; padding-top: 60px;">
+					<img th:src="@{/merchant/assets/img/rezhenglogo.png}" />
+				</div>
+				<span
+					style="display: block; margin: 0px; margin-top: 20px; text-align: center; width: 100%; position: inherit;">亲:只有认证成功后才能发放红包哦</span>
+				<div style="width: 100%; text-align: center; margin-top: 40px;">
+					<span class="bottom"
+						style="margin: auto; position: inherit; padding: 5px 20px;"
+						onclick="gotoAuth(this)">去认证</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+			//弹窗关闭按钮
+			$(".close").on("click",function(){
+				$("#merChargeDialog").fadeOut();
+				$("#merAuthDialog").fadeOut();
+				$("#merCharge").form("reset");
+				$("#merCharge").form("disableValidation");
+			});
+		</script>
+</body>
+
+</html>

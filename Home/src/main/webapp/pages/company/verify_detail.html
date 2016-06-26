@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/basic.css}" />
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+    var msg = [[${msg}]];
+	if(msg!=null){
+		cAlert(msg);
+	}
+           
+    //审核       
+	function verifyOption(){
+		var obj = $(this);
+		var form = $("#auditForm");
+		
+		cConfirm("确认要操作吗",function(f){
+			if(f){
+				if(obj.text()=="通过"){
+					$("input[name=status]").val(1);
+					form.submit();
+				}else{
+					cPrompt("请输入未通过审核的理由：",function(r){
+						if(typeof r == "string"){
+							if($.trim(r)==""){
+								cAlert("操作失败，理由不能为空");
+							}else{
+								$("input[name=status]").val(-1);
+								$("input[name=reason]").val(r);
+								form.submit();
+							}
+						}
+					});
+				}
+			}
+		});
+	}
+/*]]>*/
+</script>
+
+<body class="body">
+	<div class="place">
+		<span>商铺详情信息</span>
+	</div>
+	<div class="normal-box normal2-box">
+		<!-- <div class="box-top">
+			<h4>商铺详情信息</h4>
+			<a th:href="@{/admin/company/edit(id=${company.id})}" style="margin-right: 66px;">修改公司信息</a>
+			
+		</div> -->
+		<div class="paketTable">
+		<table>
+			<tr>
+				<th>商铺名称</th>
+				<td th:text="${company.company_name}">深圳市金贝儿教育投资有限公司</td>
+				<th width="90">商铺电话</th>
+				<td width="135" th:text="${company.company_phone}">18200180405</td>
+				<th>商铺类型</th>
+				<td th:text="${company.type_name}">教育</td>
+			</tr>
+			<tr>
+				<th width="90">商铺地址</th>
+				<td width="135" th:text="${company.provinceName+company.cityName+company.positionName+company.address}">18200180405</td>
+				<th width="90">联系人电话</th>
+				<td width="170" th:text="${company.phone_num}">国有企业</td>
+				<th width="90">网址</th>
+				<td width="140" th:text="${company.web_link}">少于50人</td>
+			</tr>
+			<tr>
+				<th width="90">银行卡号</th>
+				<td width="135" th:text="${company.bank_card_num}">18200180405</td>
+				<th width="90">开户行名称</th>
+				<td width="170" th:text="${company.bank_name}">国有企业</td>
+				<th width="90">开户行信息</th>
+				<td width="140" th:text="${company.bank_phone}">少于50人</td>
+			</tr>
+			<tr th:if="${company.company_type!=3}">
+				<th>许可证</th>
+				<td colspan="5">
+					<img style="margin-top: 10px;width:450px" alt="许可证" th:src="${application.baseImageUrl + company.licence}"/>
+				</td>
+			</tr>
+			<tr th:if="${company.company_type==3}">
+				<th>实名认证</th>
+				<td colspan="5">
+					<img style="margin-top: 10px;width:450px" alt="许可证" th:src="${application.baseImageUrl + company.real_auth}"/>
+				</td>
+			</tr>
+			<tr>
+				<th>特种行业许可证</th>
+				<td colspan="5">
+					<span th:if="${company.trade_license==null}">未提交</span>
+					<img th:if="${company.trade_license!=null}" style="margin-top: 10px;width:450px" alt="许可证" th:src="${application.baseImageUrl + company.trade_license}"/>
+				</td>
+			</tr>
+			 <tr th:if="${company.verify_status != 0}">
+				<th>信息审核</th>
+				<td colspan="6" th:text="${company.verify_status==1?'审核通过':'审核未通过'}"></td>
+			</tr>
+			 <tr th:if="${company.verify_status == -1}">
+				<th>未通过原因</th>
+				<td colspan="6" th:text="${company.verify_desc}"></td>
+			</tr>
+			<tr id="auditTr" th:if="${company.verify_status == 0}">
+				<th>信息审核</th>
+
+				<td colspan="6">
+<!-- 					<a href="javascript:void(0);" th:onclick="'passverify(\''+@{/company/verify/save}+'\')'" id="pass" class="easyui-linkbutton" style="width:100px;margin-right: 20px">通过</a> -->
+					
+<!-- 					<a href="javascript:" id="unpass" class="easyui-linkbutton" style="width:100px">不通过</a> -->
+<!-- 					点击不通过时弹出的窗口 -->
+<!-- 					<div id="reasonWindow" class="easyui-window" title="请输入未通过的理由:" data-options="closed:true,modal:true,collapsible:false,minimizable:false,maximizable:false,closable:false,resizable:false" style="width:386px;height:200px;padding:5px;"> -->
+<!-- 						<div class="easyui-layout" data-options="fit:true"> -->
+<!-- 							<input id="reason" class="easyui-textbox" data-options="multiline:true" style="width:360px;height:100px"/> -->
+<!-- 							<div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;"> -->
+<!-- 								<a class="easyui-linkbutton" href="javascript:void(0)" onclick="confirmReason()" style="width:80px">确定</a> -->
+<!-- 								<a class="easyui-linkbutton panel-tool-close" href="javascript:void(0)" onclick="javascript:$('#reasonWindow').window('close')" style="width:80px">取消</a> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+					
+					 <!-- <form  th:action="@{/company/verify/save}" method="post">
+						<input type="hidden" name="company_id" th:value="${company.id}"/>
+						<input type="submit" value="通过" />
+					</form>
+					
+					<form th:action="@{/company/verify/deny}" method="post" id="saveform">
+							不通过原因:<input type="text" name="verify_desc"  placeholder="理由" class="dfinput" style="width:150px"/>
+							<input type="hidden" name="company_id" th:value="${company.id}"/>
+							<input type="button" value="确认" id="subbut" />
+					</form>   -->
+					
+					  <!-- <form class="huifu-form" id="saveForm" th:if="${posts.state != 2 and posts.tagsMain!='跳蚤市场'}" th:action="@{/services/posts/reply}" method="post">
+            <div class="huifu-box">
+            	<input type="text" name="content" placeholder="写回复" />
+            	<input type="hidden" name="postsId" th:value="${posts.id}"/>
+            	<input type="button" value="发送" id="subbut"/>
+            </div>
+        </form> -->
+        			<a class="easyui-linkbutton c8" data-options="width:100,onClick:verifyOption">通过</a>
+					<a class="easyui-linkbutton c8" data-options="width:100,onClick:verifyOption">不通过</a>
+        
+					<!-- 审核的表单 -->
+					<form id="auditForm" th:action="@{/company/verify/audit}" method="post">
+						<input type="hidden" name="cid" th:value="${company.id}"/>
+						<input type="hidden" name="status"/>
+						<input type="hidden" name="reason"/>
+					</form>
+				</td>
+			</tr>
+		</table>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+function confirmReason(){
+	
+	x=document.getElementById("reason") // 找到元素
+	x.style.color="#ff0000";    
+	alert("wwwwwwwwwwwwww");
+	window.location.href="/goldCity/company/verify/deny"
+}
+function passverify(actionUrl){
+	alert(actionUrl);
+	$("#pass").attr("action", actionUrl);
+	$("#pass").submit();
+}
+
+$(document).ready(function() {
+	
+	
+$("#subbut").click(function() {
+    if($("input[name=verify_desc]").val()==''){
+    	 alert("请输入理由!");
+    	 return false;
+    }
+    $("#saveform").submit();
+   	});
+   	
+});
+ 
+/*]]>*/
+</script>
+
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<style type="text/css">
+.blueBtn {
+	padding: 5px 20px;
+	background: #6dcff6;
+	color: #fff;
+	border-radius: 2px;
+	cursor: pointer
+}
+
+.tablelist tbody tr:hover {
+	background: none;
+}
+
+.tablelist tbody tr:nth-child(2n-1) {
+	background: #f9f9f9;
+	height: 40px
+}
+
+.tablelist tbody tr:nth-child(2n) {
+	background: #fff;
+	height: 40px
+}
+
+.tablelist th {
+	background: none;
+	height: 45px;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.tablelist th, .tablelist td {
+	border: 1px solid #e3eaf2;
+	text-indent: 0px
+}
+
+.tablelist td>a {
+	padding: 5px 10px;
+	background: #6dcff6;
+	color: #fff;
+	border-radius: 2px;
+	cursor: pointer
+}
+
+#searchButton {
+	line-height: 25px;
+	padding: 0 15px;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
+	text-decoration: none;
+	display: inline-block;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+	height: 26px;
+    width:70px; 
+	font-weight: normal;
+	margin-top:4px;
+	font-size: 13px;
+}
+.uew-select select {top:8px;}
+.uew-select .uew-select-value {margin-top:13px;}
+</style>
+<body>
+	<div class="place">
+		<span>位置：商家审核</span>
+		<!-- <ul class="placeul">
+			<li><a th:href="@{/welcome}">首页</a></li>
+			<li>商家管理</li>
+			<li>商家审核：</li>
+		</ul> -->
+	</div>
+	<div class="webPage">
+		<form id="searchForm" th:action="@{/company/verify}" method="post"
+			class="formbody" style="width: 1000px">
+			<div class="formtext" th:if="${msg!=null}">
+				<b th:text="${msg==null?'':msg}"></b>
+			</div>
+			<div class="search">
+			<ul class="seachform mauto">
+				<li style="margin-left:15px">
+				商铺状态：
+				</li>
+				<li>
+ 			<select name="verify_status" class="select1">
+						<option value="-2">全部</option>
+						<option value="0" th:selected="${verify_status==0}">待审核</option>
+						<option value="1" th:selected="${verify_status==1}">已通过</option>
+						<option value="-1" th:selected="${verify_status==-1}">未通过</option>
+				</select></li>
+				<li class="fr mr0"><input id="searchButton" name="searchButton"
+					type="submit" class="scbtn" value="查询" /></li>
+
+			</ul>
+			</div>
+			<div>
+				<span th:unless="${comList!=null and not #lists.isEmpty(comList)}"
+					th:utext="暂无数据！"></span>
+				<table class="tablelist mauto"
+					th:if="${comList!=null and not #lists.isEmpty(comList)}">
+					<thead>
+						<tr>
+							<th width="80">商铺状态</th>
+							<th width="150">商铺名称</th>
+							<th width="100">店铺电话</th>
+							<th width="260">商铺地址</th>
+							<th width="120">商铺网址</th>
+							<th width="100">商铺类型</th>
+							<!-- <th width="100">查看</th> -->
+							<th width="100">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="com:${comList}">
+							<td
+								th:text="${com.verify_status==0?'待审核':com.verify_status==1?'通过':'未通过'}"></td>
+							<td th:text="${com.company_name }">商铺名称</td>
+							<td th:text="${com.company_phone}">商铺电话</td>
+							<td th:text="${com.address}">商铺地址</td>
+							<td th:text="${com.web_link}">商铺网址</td>
+							<td th:text="${com.type_name}">商铺类型</td>
+							<td>
+								<a th:href="@{/company/verify/detail(company_id=${com.id})}">查看</a>
+							</td>
+							<!-- <td>
+								<a th:if="${com.verify_status!=1}" th:onclick="${'saveVerify(this,' + com.id + ')'}">审核通过</a>
+							</td> -->
+						</tr>
+					</tbody>
+				</table>
+				<div class="mt10"
+					th:if="${comList!=null and not #lists.isEmpty(comList)}"
+					th:include="fragment/paginationbar :: paginationbar"></div>
+				<div
+					style="width: 400px; height: 800px; position: fixed; left: 1000px; top: 50px">
+					<div class="iframeBox1">
+
+						<iframe id="iframe_preview" style="width: 400px; height: 600px;"></iframe>
+					</div>
+				</div>
+				<div class="clr"></div>
+			</div>
+		</form>
+	</div>
+	<div class="footLeft"></div>
+	<div class="footRight"></div>
+</body>
+<script type="text/javascript" th:inline="javascript">/*<![CDATA[*/
+function saveVerify(obj,company_id) {
+	if(confirm("是否审核通过？" + company_id)) {
+		$.ajax({
+			url : [[@{/company/verify/savestatus}]],
+			data : {
+				'company_id': company_id,
+				'status': 1
+			},
+			dataType: 'json',
+			type: 'post',
+			async: false,
+			success : function(data, textStatus, jqXHR) {
+				alert(data.message);
+				if(data.status=="200") {
+					$(obj).parent().parent().find("td:first-child").text("通过");
+					$(obj).hide();
+				}
+			},error:function(){
+				window.location.href="/goldCity/login";
+			}
+		});
+	}
+}	           
+	
+	$(".select1").uedSelect({
+		width : 202
+	});
+	function scan(url) {
+
+		$("#iframe_preview").attr("src", url);
+		//$("#iframe_preview").reload();
+	}
+/*]]>*/</script>
+</html>

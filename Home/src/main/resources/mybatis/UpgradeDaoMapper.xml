@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.UpgradeDao">
+	
+	<select id="selectUpgradeByos" resultType="com.goldCityWeb.domain.Upgrade">
+		SELECT * FROM upgrade WHERE os=#{os}
+	</select>
+	
+	<select id="selectAllUpgrade" resultType="com.goldCityWeb.domain.Upgrade">
+		SELECT * FROM upgrade
+	</select>
+	
+	<insert id="insertUpgrade" parameterType="com.goldCityWeb.domain.Upgrade" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO upgrade(os, version, update_path,must_update,message) VALUES(#{os}, #{version}, #{update_path},#{must_update},#{message});
+	</insert>
+	
+	<update id="updateUpgrade" parameterType="com.goldCityWeb.domain.Upgrade">
+		UPDATE upgrade SET version=#{version}, update_path=#{update_path} ,must_update=#{must_update},message=#{message} WHERE id=#{id}
+	</update>
+</mapper>

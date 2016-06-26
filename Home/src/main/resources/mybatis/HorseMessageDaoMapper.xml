@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goldCityWeb.dao.HorseMessageDao">
+	
+	<insert id="saveHorseMessage" parameterType="com.goldCityWeb.domain.HorseMessage"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO horse_message (message, `type`, create_time) VALUES(#{message}, #{type},NOW())
+	</insert>
+	
+	<select id="queryHorseMessage" resultType="com.goldCityWeb.domain.HorseMessage">
+		select * from horse_message where 1= 1
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		ORDER by id desc
+		<if test="limit!=null and offset!=null">
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryHorseMessage_count" resultType="java.lang.Integer">
+		select count(1) from horse_message where 1= 1
+		<if test="type != null">
+			and type = #{type}
+		</if>
+	</select>
+</mapper>

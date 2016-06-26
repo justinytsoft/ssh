@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!-- Pagination Bar -->
+<div th:fragment='paginationbar'>
+	<div class='pagination pagination-centered'>
+		<ul>
+			<li th:class="${page.isFirst()} ? 'disabled' : ''">
+				<span th:if='${page.isFirst()}'>首页</span> 
+				<a th:if='${not page.isFirst()}' href="javascript:void(0);" th:onclick="'paginationLink(\'' + @{${page.url}(pageOffset=0)} + '\')'">首页</a>
+			</li>
+			<li th:class="${page.hasPreviousPage()} ? '' : 'disabled'">
+				<span th:if='${not page.hasPreviousPage()}'>上一页</span> 
+				<a th:if='${page.hasPreviousPage()}' href="javascript:void(0);" th:onclick="'paginationLink(\'' + @{${page.url}(pageOffset=${page.getPrevPageOffset()})} + '\')'" title='上一页'>上一页</a>
+			</li>
+			
+			<li th:if="${page.getShowFirstPageNo() - 1 &gt; 0}">
+		        <span>...</span>
+		    </li>
+		    <li th:each="pageNo : ${#numbers.sequence(page.getShowFirstPageNo(), page.getShowLastPageNo())}"  th:class="${page.getCurrentPage() == pageNo} ? 'active' : ''">
+		        <a href="javascript:void(0);" th:onclick="'paginationLink(\'' + @{${page.url}(pageOffset = ${(pageNo-1) * page.getPageSize()})} + '\')'" th:if="${pageNo != page.getCurrentPage()}" th:text="${pageNo}">2</a>
+		        <span th:if="${pageNo == page.getCurrentPage()}" th:text="${pageNo}">2</span>
+		    </li>
+		    <li th:if="${page.getShowLastPageNo() + 1 &lt;= page.getTotalPage()}">
+		        <span>...</span>
+		    </li>
+			<li th:class="${page.hasNextPage()} ? '' : 'disabled'">
+				<span th:if='${not page.hasNextPage()}'>下一页</span> 
+				<a th:if='${page.hasNextPage()}' href="javascript:void(0);" th:onclick="'paginationLink(\'' + @{${page.url}(pageOffset=${page.getNextPageOffset()})} + '\')'" title='下一页'>下一页</a>
+			</li>
+			<li th:class="${page.isLast()} ? 'disabled' : ''">
+				<span th:if='${page.isLast()}' >末页</span>
+				<a th:if='${not page.isLast()}' href="javascript:void(0);" th:onclick="'paginationLink(\'' + @{${page.url}(pageOffset=${page.getLastPageOffset()})} + '\')'">末页</a>
+			</li>
+		</ul>
+	</div>
+
+</div>
+
+</html>

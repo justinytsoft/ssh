@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script type="text/javascript" th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<title>职位详情</title>
+</head>
+
+<body style="background:#eee;">
+	<section class="webPage" style="margin-bottom:30px;">
+		
+    	<section class="jl-top">
+    		<!-- <a th:if="${isback!=null}" href="javascript:history.back(-1);" class="jl-back">
+				<img width="50" src="/recruitment/assets/images/back.png" />
+			</a> -->
+			<div >
+				<div class="logo-bg"></div>
+        		<div class="logo-box" style="margin-top:10px;">
+            		<img th:src="${resume.head != null? application.baseImageUrl+resume.head:'/recruitment/assets/images/test.jpg'}" />
+            	</div>
+            </div>
+            <div class="jl-bot-box" style="top:105px">
+	            <div class="jl-bot" >
+	            	<img th:src="${su.sex==1?'/recruitment/assets/images/jltop1.png':'/recruitment/assets/images/jltop2.png'}" />
+	                <span th:text="${su.name}"></span>
+	            </div>
+            </div>
+        </section>
+        <section class="jl-txt">
+        	<div class="jl-title">
+            	
+                <h4>个人信息</h4>
+            </div>
+            <ul>
+            	<li>
+                	<label>性别：</label>
+                    <span th:text="${su.sex==1?'男':'女'}">初级程序员</span>
+                </li>
+                <li>
+                	<label>年龄：</label>
+                    <span id="age">初级程序员</span>
+                </li>
+                <li>
+                	<label>职业性质：</label>
+                    <span th:text="${resume.workType}">初级程序员</span>
+                </li>
+            	<li>
+                	<label>期望职位：</label>
+                    <span th:text="${resume.expectPosts}">初级程序员</span>
+                </li>
+                <li>
+                	<label>期望薪资：</label>
+                    <span th:text="${resume.expectSalary}">初级程序员</span>
+                </li>
+                <li>
+                	<label>工作地点：</label>
+                    <span th:text="${resume.area}">成都</span>
+                </li>
+                <li>
+                	<label>联系电话：</label>
+                    <span th:text="${resume.phone}">18200180405</span>
+                </li>
+                <li>
+                	<label>毕业学校：</label>
+                    <span th:text="${resume.college}">电子科技大学</span>
+                </li>
+                <li>
+                	<label>所学专业：</label>
+                    <span th:text="${resume.major}">计算机技术</span>
+                </li>
+                
+            </ul>
+        	<!-- <div class="biaoqian2" id="jn_biaoqian"></div> -->
+        </section>
+        <section class="jl-txt">
+        	<div class="jl-title">
+            	
+                <h4>教育经历</h4>
+            </div>
+            <ul class="jl-ul" id="jiaoyu">
+            	
+            </ul>
+        </section>
+        <section class="jl-txt">
+        	<div class="jl-title">
+            	
+                <h4>工作经历</h4>
+            </div>
+            <ul class="jl-ul"  id="gongzuo">
+            	
+            </ul>
+        </section>
+        
+        <section class="jl-txt">
+        	<div class="jl-title" style="border:none;">
+            	
+                <h4 style="float:left; margin-top:5px;">工作状况</h4>
+                <article style="float:left; margin-top:7px; width:80px; line-height:15px;" th:text="${resume.status==1?'在职':resume.status==2?'在校':'离职'}">
+                	在职
+            	</article>
+            </div>
+            
+        </section>
+        <section class="jl-txt">
+        	<div class="jl-title">
+            	
+                <h4>技能标签</h4>
+            </div>
+            <div class="biaoqian2" id="jn_biaoqian">
+            	<!-- <a href="javascript:void(0);">游泳</a>
+            	<a href="javascript:void(0);">打篮球</a>
+            	<a href="javascript:void(0);">唱歌</a>
+            	<a href="javascript:void(0);">跳舞</a>
+            	<a href="javascript:void(0);">游泳</a>
+            	<a href="javascript:void(0);">打篮球</a>
+            	<a href="javascript:void(0);">唱歌</a>
+            	<a href="javascript:void(0);">跳舞</a> -->
+            </div>
+        </section>
+        <section class="jl-txt">
+        	<div class="jl-title">
+            	
+                <h4>爱好标签</h4>
+            </div>
+            <div class="biaoqian2" id="ah_biaoqian">
+            	<!-- <a href="javascript:void(0);">游泳</a>
+            	<a href="javascript:void(0);">打篮球</a>
+            	<a href="javascript:void(0);">唱歌</a>
+            	<a href="javascript:void(0);">跳舞</a>
+            	<a href="javascript:void(0);">游泳</a>
+            	<a href="javascript:void(0);">打篮球</a>
+            	<a href="javascript:void(0);">唱歌</a>
+            	<a href="javascript:void(0);">跳舞</a> -->
+            </div>
+        </section>
+        <section class="jl-txt" style="margin-top:10px;">
+        	<div class="jl-title">
+            	
+                <h4>自我评价</h4>
+            </div>
+            <pre><article th:text="${resume.selfEvaluate}" style="word-wrap:break-word;">
+            	世界这么大，必须赚很多的钱，才能去世界看一看。本人性格开朗、为人诚恳、乐观向上、兴趣广泛、拥有较强的组织能力和适应能力、并具有较强的管理策划与组织管理协调能力。忠实诚信,讲原则，说到做到，决不推卸责任;有自制力，做事情始终坚持有始有终，从不半途而废;肯学习,有问题不逃避,愿意虚
+心向他人学习;自信但不自负,不以自我为中心;愿意以谦虚态度赞扬接纳优越者,权威者;会用100%的热情和精力投入到工作中;平易近人。为人诚恳,性格开朗,积极进取
+            </article></pre>
+        	<!-- <div class="biaoqian2" id="ah_biaoqian"></div> -->
+        </section>
+    </section>
+    <form id="deliverForm" th:action="@{/services/job/company_deliver}" method="post">
+        	<!-- <input type="hidden" th:value="${job.id}" name="job_id"/> -->
+        	<input type="hidden" th:value="${resume.userId}" name="userId"/>
+        </form>
+        <div style="padding-bottom:30px">
+        <!-- 学生端 -->
+        <div th:if="${isfond == 1 and hasJob == 1}" class="zw-but"  id="delbut">发送人事信息</div>
+        <div th:if="${isfond == 1 and hasJob == null}" class="zw-but" onclick="window.location.href='createJob'">请先发布职位</div>
+    </div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function(){
+    var msg = [[${msg}]];
+	if(msg != null){
+		alert(msg);
+	}
+	
+	$("#delbut").click(function(){
+		window.location.href=[[@{/services/job/company_deliver}]]+"?userId="+$("input[name=userId]").val();
+		//$("#deliverForm").submit();
+	});
+           
+    var hobbys = [[${resume.hobby}]];
+	if(hobbys != null){
+		var hobs = hobbys.split(",");
+		var ah_content = "";
+		for (var i=0; i<hobs.length; i++)
+		  {
+			ah_content += '<a href="javascript:void(0);">'+hobs[i]+'</a>'
+			
+		  }
+		$('#ah_biaoqian').append(ah_content);
+	}
+    
+	var tagses = [[${resume.tags}]];
+	if(tagses != null){
+		var tag = tagses.split(",");
+		var jn_content = "";
+		for (var i=0; i<tag.length; i++)
+		  {
+			jn_content += '<a href="javascript:void(0);">'+tag[i]+'</a>';
+		  }
+		$('#jn_biaoqian').append(jn_content);
+	}
+	
+	var edstate1 = [[${resume.edstate}]];
+	if(edstate1!=null && edstate1!='' ){
+		var eds = edstate1.split(",");
+		var ed_content = "";
+		for(var i=0;i<eds.length;i++){
+			
+			ed_content += '<li>'+eds[i].split("\n")[0]+'</li>';
+			ed_content += '<li>'+eds[i].substring(eds[i].indexOf("\n")+1)+'</li>';
+			
+		}
+		$('#jiaoyu').append(ed_content);
+	}
+	
+	var exstate1 = [[${resume.exstate}]];
+	if(exstate1!=null && exstate1!=''){
+		var exs = exstate1.split(",");
+		var ex_content = "";
+		for(var i=0;i<exs.length;i++){
+			
+			ex_content += '<li>'+exs[i].split("\n")[0]+'</li>';
+			ex_content += '<li>'+exs[i].substring(exs[i].indexOf("\n")+1)+'</li>';
+
+		}
+		$('#gongzuo').append(ex_content);
+	}
+	
+	//居中
+	//$('.jl-bot img').load(function(){
+			var winW = $(window).width();
+			var jlbotW = $('.jl-bot').width();
+			$('.jl-bot').css('left',((winW-jlbotW)/2)+'px');
+			//alert($('.jl-bot').css('left'));
+		//})
+	/* $('.jltx-box img').load(function(){
+		var imgW = $('.jltx-box img').width();
+		var boxW = $('.jltx-box').width();
+		//var jlbotW = $('.jl-bot').width();
+		$('.jltx-box img').css('marginLeft',((boxW-imgW)/2)+'px');
+		
+	}) */
+	$('.logo-box img').load(function(){
+		var imgW = $('.logo-box img').width();
+		var boxW = $('.logo-box').width();
+		$('.logo-box img').css('marginLeft',((boxW-imgW)/2)+'px');
+	})
+	var winW = $(window).width();
+	$('.logo-bg').css('left',((winW-110)/2)+'px');
+	$('.logo-box').css('left',((winW-90)/2)+'px');
+	
+	//function dateToAge(datetime){ 
+	var bir = [[${su.birthday}]];
+	if(bir!=null && bir!=""){
+		//alert(bir.replace("年","-").replace("月","-").replace("日","").replace("-", "/").replace("-", "/"));
+		 var datetime = new Date(bir.replace("年","-").replace("月","-").replace("日","").replace("-", "/").replace("-", "/"));
+		
+		 var year = datetime.getFullYear();
+		 var month = datetime.getMonth()+1;//js从0开始取 
+		 var date = datetime.getDate(); 
+		 var d = new Date();
+		 var d_year = d.getFullYear();
+		 var d_month = d.getMonth()+1;//js从0开始取
+		 var d_date = d.getDate(); 
+		 
+		 var age = d_year - year;
+		 if(d_month < month){
+			 age--;
+		 } else if( d_month == month){
+			 if(d_date < date){
+				 age--;
+			 }
+		 }
+		 $("#age").text(age);
+	}else{
+		$("#age").text(0);
+	}
+		// alert(time);
+		 //return age;
+		//}
+	
+})	
+/*]]>*/
+</script>
+</html>
